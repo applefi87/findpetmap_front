@@ -14,7 +14,7 @@
         </div>
       </div>
     </q-banner>
-    <div id="map" style="height: 400px;"></div>
+    <div id="map" style="height: 600px; width: 100%"></div>
 
   </q-page>
 </template>
@@ -23,43 +23,48 @@
 import { ref, onMounted } from 'vue'
 import { Geolocation } from '@capacitor/geolocation'
 import { useI18n } from 'vue-i18n'
-import { useQuasar } from 'quasar';
-
-const $q = useQuasar();
-
+import "leaflet/dist/leaflet.css";
 const { t } = useI18n({ useScope: 'global' })
 
 // const searchTerm = ref('')
-
+let map;
+let Leaflet
 const position = ref('determining...')
 function getCurrentPosition() {
   Geolocation.getCurrentPosition().then(newPosition => {
     console.log('Current', newPosition)
-    position.value = newPosition
+    const { latitude, longitude } = newPosition.coords;
+    position.value = `Lat: ${latitude}, Lng: ${longitude}`;
+    if (map) {
+      map.setView([latitude, longitude], 13);
+      if (!map.marker) {
+        map.marker = Leaflet.marker([latitude, longitude]).addTo(map);
+      } else {
+        map.marker.setLatLng([latitude, longitude]);
+      }
+    }
   })
 }
+
 onMounted(async () => {
-  if ($q.platform.is.client) {
-    const leaflet = await import('leaflet');
-    console.log('Leaflet loaded:', leaflet);
-
-    const map = leaflet.map('map').setView([51.505, -0.09], 13);
-    console.log('Map initialized:', map);
-
-    leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19
+  const isServerSide = process.env.SERVER
+  if (!isServerSide) {
+    Leaflet = await import('leaflet');
+    map = Leaflet.map('map').setView([25.0474014, 121.5374556], 13);
+    Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 15,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
-
-    console.log('Tile layer added');
-    // Add a marker
-    leaflet.marker([51.505, -0.09]).addTo(map)
-      .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-      .openPopup();
-    getCurrentPosition();
+    map.on("locationfound", (e) => {
+      console.log("locationfound");
+      map.setView(e.latlng, e.accuracy / 2)
+    })
+    // Leaflet.marker([25.04740, 121.53745]).addTo(map)
+    //   .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+    //   .openPopup();
+    // getCurrentPosition();
   }
 })
 </script>
 
-<style>
-@import "leaflet/dist/leaflet.css";
-</style>
+<style></style>
