@@ -1,14 +1,14 @@
 <template>
   <q-layout view="hHh lpR fff">
     <AppHeader @toggle-left-drawer="toggleLeftDrawer" />
-    <q-drawer v-model='leftDrawer' side="left" :overlay="leftDrawerOverlay" persistent bordered elevated :breakpoint="768"
-      style="height: 100% ;display:flex;flex-direction: column">
+    <q-drawer v-model='leftDrawer' side="left" :overlay="leftDrawerOverlay" persistent bordered elevated
+      :breakpoint="768" style="height: 100% ;display:flex;flex-direction: column">
       <q-scroll-area class="fit">
         <q-list padding>
           <q-item class="custom-item" v-for="(item, index) in drawerItems" :key="index" clickable v-ripple
             @click="navigateTo(item)">
             <q-item-section>
-              <q-item-label class="custom-label">{{ t(item.label) }}</q-item-label>
+              <!-- <q-item-label class="custom-label">{{ t(item.label) }}</q-item-label> -->
             </q-item-section>
           </q-item>
         </q-list>

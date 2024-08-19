@@ -15,8 +15,8 @@ import {
   ssrClose,
   ssrCreate,
   ssrListen,
-  ssrRenderPreloadTag,
-  ssrServeStaticContent
+  ssrServeStaticContent,
+  ssrRenderPreloadTag
 } from 'quasar/wrappers'
 
 /**
@@ -24,7 +24,7 @@ import {
  * If needed, prepare your webserver to receive
  * connect-like middlewares.
  *
- * Should NOT be async!
+ * Can be async: ssrCreate(async ({ ... }) => { ... })
  */
 export const create = ssrCreate((/* { ... } */) => {
   const app = express()
@@ -52,10 +52,12 @@ export const create = ssrCreate((/* { ... } */) => {
  *
  * For production, you can instead export your
  * handler for serverless use or whatever else fits your needs.
+ *
+ * Can be async: ssrListen(async ({ app, devHttpsApp, port }) => { ... })
  */
-export const listen = ssrListen(async ({ app, port, isReady }) => {
-  await isReady()
-  return app.listen(port, () => {
+export const listen = ssrListen(({ app, devHttpsApp, port }) => {
+  const server = devHttpsApp || app
+  return server.listen(port, () => {
     if (process.env.PROD) {
       console.log('Server listening at port ' + port)
     }
@@ -70,7 +72,7 @@ export const listen = ssrListen(async ({ app, port, isReady }) => {
  * Should you need the result of the "listen()" call above,
  * you can use the "listenResult" param.
  *
- * Can be async.
+ * Can be async: ssrClose(async ({ listenResult }) => { ... })
  */
 export const close = ssrClose(({ listenResult }) => {
   return listenResult.close()
@@ -81,14 +83,19 @@ const maxAge = process.env.DEV
   : 1000 * 60 * 60 * 24 * 30
 
 /**
- * Should return middleware that serves the indicated path
- * with static content.
+ * Should return a function that will be used to configure the webserver
+ * to serve static content at "urlPath" from "pathToServe" folder/file.
+ *
+ * Notice resolve.urlPath(urlPath) and resolve.public(pathToServe) usages.
+ *
+ * Can be async: ssrServeStaticContent(async ({ app, resolve }) => {
+ * Can return an async function: return async ({ urlPath = '/', pathToServe = '.', opts = {} }) => {
  */
-export const serveStaticContent = ssrServeStaticContent((path, opts) => {
-  return express.static(path, {
-    maxAge,
-    ...opts
-  })
+export const serveStaticContent = ssrServeStaticContent(({ app, resolve }) => {
+  return ({ urlPath = '/', pathToServe = '.', opts = {} }) => {
+    const serveFn = express.static(resolve.public(pathToServe), { maxAge, ...opts })
+    app.use(resolve.urlPath(urlPath), serveFn)
+  }
 })
 
 const jsRE = /\.js$/
@@ -103,13 +110,13 @@ const pngRE = /\.png$/
  * Should return a String with HTML output
  * (if any) for preloading indicated file
  */
-export const renderPreloadTag = ssrRenderPreloadTag((file) => {
+export const renderPreloadTag = ssrRenderPreloadTag((file/* , { ssrContext } */) => {
   if (jsRE.test(file) === true) {
     return `<link rel="modulepreload" href="${file}" crossorigin>`
   }
 
   if (cssRE.test(file) === true) {
-    return `<link rel="stylesheet" href="${file}">`
+    return `<link rel="stylesheet" href="${file}" crossorigin>`
   }
 
   if (woffRE.test(file) === true) {
@@ -121,15 +128,15 @@ export const renderPreloadTag = ssrRenderPreloadTag((file) => {
   }
 
   if (gifRE.test(file) === true) {
-    return `<link rel="preload" href="${file}" as="image" type="image/gif">`
+    return `<link rel="preload" href="${file}" as="image" type="image/gif" crossorigin>`
   }
 
   if (jpgRE.test(file) === true) {
-    return `<link rel="preload" href="${file}" as="image" type="image/jpeg">`
+    return `<link rel="preload" href="${file}" as="image" type="image/jpeg" crossorigin>`
   }
 
   if (pngRE.test(file) === true) {
-    return `<link rel="preload" href="${file}" as="image" type="image/png">`
+    return `<link rel="preload" href="${file}" as="image" type="image/png" crossorigin>`
   }
 
   return ''

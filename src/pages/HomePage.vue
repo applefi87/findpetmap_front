@@ -9,13 +9,16 @@
           </q-avatar>
         </div>
         <div class="col">
-          <div class="text-h5">{{ t('validation.lengthMatch', { length: 999 }) }}Welcome to My Knowledge Hub</div>
-          <div class="text-subtitle2">Share your knowledge and learn from others</div>
+          <div class="text-h5">
+            <!-- {{ t('validation.lengthMatch', { length: 999 }) }}Welcome to My Knowledge Hub -->
+          </div>
+          <div class="text-subtitle2">
+            Share your knowledge and learn from others
+          </div>
         </div>
       </div>
     </q-banner>
-    <div id="map" style="height: 600px; width: 100%"></div>
-
+    <div id="map" style="height: 600px; width: 100%" />
   </q-page>
 </template>
 
@@ -24,7 +27,10 @@ import { ref, onMounted } from 'vue'
 import { Geolocation } from '@capacitor/geolocation'
 import { useI18n } from 'vue-i18n'
 import "leaflet/dist/leaflet.css";
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
+// const t = (key) => {
+//   return key
+// }
 
 // const searchTerm = ref('')
 let map;
@@ -32,7 +38,6 @@ let Leaflet
 const position = ref('determining...')
 function getCurrentPosition() {
   Geolocation.getCurrentPosition().then(newPosition => {
-    console.log('Current', newPosition)
     const { latitude, longitude } = newPosition.coords;
     position.value = `Lat: ${latitude}, Lng: ${longitude}`;
     if (map) {
@@ -47,6 +52,11 @@ function getCurrentPosition() {
 }
 
 onMounted(async () => {
+  console.log('Current Locale:', locale.value);
+  console.log('Available Locales:', availableLocales);
+
+  // Check if the current language file is loaded correctly
+  console.log('Translation for key "account":', t('account'));
   const isServerSide = process.env.SERVER
   if (!isServerSide) {
     Leaflet = await import('leaflet');
@@ -62,7 +72,7 @@ onMounted(async () => {
     // Leaflet.marker([25.04740, 121.53745]).addTo(map)
     //   .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
     //   .openPopup();
-    // getCurrentPosition();
+    getCurrentPosition();
   }
 })
 </script>

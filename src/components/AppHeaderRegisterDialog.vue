@@ -1,5 +1,5 @@
 <!--註冊框 -->
-<template >
+<template>
   <!-- 雖然我統一用外面控制，但必須要設v-model,就擺著好看 -->
   <q-dialog persistent v-model="registerState">
     <div class="trttt">
@@ -88,8 +88,8 @@ import { rules, createI18nRules } from 'an-validator';
 const users = useUserStore();
 const registerState = inject('registerState');
 const emit = defineEmits(['register-success']);
-const { t } = useI18n();
-
+// const { t } = useI18n();
+const t = key => key
 // Refs
 const mustSchool = false;
 const isPwd = ref(true);

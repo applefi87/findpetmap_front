@@ -184,7 +184,6 @@ onServerPrefetch(async () => {
 onBeforeMount(async () => {
   clientHandleDatas()
   window.addEventListener('beforeunload', function (event) {
-    submitAndReset("article", props.articleId, ratingForm, debouncedSubmitRating);
   });
 })
 

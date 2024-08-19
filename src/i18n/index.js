@@ -1,5 +1,5 @@
-import enUS from './language/en-US.js'
-import zhTW from './language/zh-TW.js'
+import enUS from 'src/i18n/language/en-US.js'
+import zhTW from 'src/i18n/language/zh-TW.js'
 
 export default {
   'en-US': enUS,

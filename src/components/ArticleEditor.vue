@@ -1,7 +1,7 @@
 <!-- 編輯文章的介面 -->
 <template>
   <div>
-    <q-editor ref="editableContent" v-model="content" @update:model-value="val => emits('input', val)"
+    <q-editor ref="editableContent" v-model="inputContent" @update:model-value="val => emits('input', val)"
       :toolbar="toolbarOptions($q, t)" @paste="evt => handlePasteCapture(evt)" style="min-height: 20rem">
       <template v-slot:colorSelector>
         <color-selector @colorChanged="onColorChanged" />
@@ -30,11 +30,10 @@ const props = defineProps({
 })
 const emits = defineEmits(["input"])
 
-
-const content = ref("")
+let inputContent = ref("")
 onMounted(() => {
-  content.value = props.content || ""
-  emits('input', content.value)
+  inputContent.value = props.content || ""
+  emits('input', inputContent.value)
 })
 const editableContent = ref(null)
 const fileInput = ref(null)

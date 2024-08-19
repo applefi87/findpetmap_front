@@ -78,7 +78,6 @@ const handleAddArticle = async () => {
       await notify(res);
       if (res.success) {
         router.go(-1)
-        return;
       }
     }
   } catch (error) {

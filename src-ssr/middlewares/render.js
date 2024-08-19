@@ -1,19 +1,18 @@
 import { ssrMiddleware } from 'quasar/wrappers'
-import initInterfaceLanguage from "src/utils/initInterfaceLanguage.js"
-import { getReorderLanguagesObjByPlainArr, languagesListObj2str } from "src/utils/languageListTool.js"
+import initInterfaceLanguage from 'src/utils/initInterfaceLanguage.js'
+import { getReorderLanguagesObjByPlainArr, languagesListObj2str } from 'src/utils/languageListTool.js'
 // This middleware should execute as last one
 // since it captures everything and tries to
 // render the page with Vue
 function parseCookies(request) {
   const list = {},
-    rc = request.headers.cookie;
+    rc = request.headers.cookie
   rc && rc.split(';').forEach(cookie => {
-    const parts = cookie.split('=');
-    list[parts.shift().trim()] = decodeURI(parts.join('='));
-  });
-  return list;
+    const parts = cookie.split('=')
+    list[parts.shift().trim()] = decodeURI(parts.join('='))
+  })
+  return list
 }
-
 
 export default ssrMiddleware(({ app, resolve, render, serve }) => {
   // we capture any other Express route and hand it
@@ -21,17 +20,17 @@ export default ssrMiddleware(({ app, resolve, render, serve }) => {
   app.get(resolve.urlPath('*'), (req, res) => {
     res.setHeader('Content-Type', 'text/html')
     // 介面語言
-    const cookies = parseCookies(req);
+    const cookies = parseCookies(req)
     // Data generation will be reliable and complete for both server and client in the future.
     // 有cookie用cookie,不然抓req.headers['accept-language']
-    const interfaceLanguage = cookies?.interfaceLanguage || initInterfaceLanguage(req);
-    const searchLanguages = cookies?.searchLanguages ? JSON.parse(decodeURIComponent(cookies?.searchLanguages)) : languagesListObj2str(getReorderLanguagesObjByPlainArr());
-    const publishLanguages = cookies?.publishLanguages ? JSON.parse(decodeURIComponent(cookies?.publishLanguages)) : languagesListObj2str(getReorderLanguagesObjByPlainArr());
+    const interfaceLanguage = cookies?.interfaceLanguage || initInterfaceLanguage(req)
+    const searchLanguages = cookies?.searchLanguages ? JSON.parse(decodeURIComponent(cookies?.searchLanguages)) : languagesListObj2str(getReorderLanguagesObjByPlainArr())
+    const publishLanguages = cookies?.publishLanguages ? JSON.parse(decodeURIComponent(cookies?.publishLanguages)) : languagesListObj2str(getReorderLanguagesObjByPlainArr())
     const token = cookies?.token
     // 查詢文章語言
     render(/* the ssrContext: */ { req, res, interfaceLanguage, searchLanguages, publishLanguages, token })
       .then(html => {
-        res.send(html);
+        res.send(html)
       })
       .catch(err => {
         // oops, we had an error while rendering the page

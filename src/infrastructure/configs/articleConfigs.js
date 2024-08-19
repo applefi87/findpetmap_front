@@ -43,4 +43,4 @@ const thumbnail = {
 
 
 
-export default { petType, catColorEnum,dogColorEnum ,content };
+export default { petType, catColorEnum, dogColorEnum, content };

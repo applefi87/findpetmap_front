@@ -83,7 +83,8 @@ const $q = useQuasar()
 
 
 const users = useUserStore()
-const { locale, t } = useI18n({ useScope: 'global' })
+const { locale } = useI18n({ useScope: 'global' })
+const t = key => key
 
 const localOptions = ref(languageOptions)
 //
