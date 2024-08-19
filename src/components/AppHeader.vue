@@ -72,11 +72,11 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import { rules, createI18nRules } from 'an-validator';
+import avValidator from 'an-validator';
 import { login, logout, changeInterfaceLang } from '../services/user.js';
 import registerDialog from 'src/components/AppHeaderRegisterDialog.vue'
 import { languageOptions } from 'src/infrastructure/configs/languageOptions.js'
-
+const { rules, createI18nRules } = avValidator
 const route = useRoute()
 const router = useRouter()
 const $q = useQuasar()

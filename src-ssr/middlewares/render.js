@@ -13,27 +13,27 @@ function parseCookies(request) {
   })
   return list
 }
-
 export default ssrMiddleware(({ app, resolve, render, serve }) => {
   // we capture any other Express route and hand it
   // over to Vue and Vue Router to render our page
   app.get(resolve.urlPath('*'), (req, res) => {
-    res.setHeader('Content-Type', 'text/html')
     // 介面語言
     const cookies = parseCookies(req)
     // Data generation will be reliable and complete for both server and client in the future.
     // 有cookie用cookie,不然抓req.headers['accept-language']
     const interfaceLanguage = cookies?.interfaceLanguage || initInterfaceLanguage(req)
-    const searchLanguages = cookies?.searchLanguages ? JSON.parse(decodeURIComponent(cookies?.searchLanguages)) : languagesListObj2str(getReorderLanguagesObjByPlainArr())
-    const publishLanguages = cookies?.publishLanguages ? JSON.parse(decodeURIComponent(cookies?.publishLanguages)) : languagesListObj2str(getReorderLanguagesObjByPlainArr())
     const token = cookies?.token
     // 查詢文章語言
-    render(/* the ssrContext: */ { req, res, interfaceLanguage, searchLanguages, publishLanguages, token })
+    render(/* the ssrContext: */ { req, res, interfaceLanguage, token })
+
+    render(/* the ssrContext: */ { req, res })
       .then(html => {
+        // now let's send the rendered html to the client
         res.send(html)
       })
       .catch(err => {
         // oops, we had an error while rendering the page
+
         // we were told to redirect to another URL
         if (err.url) {
           if (err.code) {
@@ -64,7 +64,10 @@ export default ssrMiddleware(({ app, resolve, render, serve }) => {
           // Render Error Page on production or
           // create a route (/src/routes) for an error page and redirect to it
           res.status(500).send('500 | Internal Server Error')
-          // console.error(err.stack)
+
+          if (process.env.DEBUGGING) {
+            console.error(err.stack)
+          }
         }
       })
   })

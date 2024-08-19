@@ -10,7 +10,7 @@
         </div>
         <div class="col">
           <div class="text-h5">
-            <!-- {{ t('validation.lengthMatch', { length: 999 }) }}Welcome to My Knowledge Hub -->
+            {{ t('validation.lengthMatch', { length: 999 }) }}Welcome to My Knowledge Hub
           </div>
           <div class="text-subtitle2">
             Share your knowledge and learn from others

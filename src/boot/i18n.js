@@ -5,14 +5,10 @@ import messages from 'src/i18n/index.js'
 const i18n = createI18n({
   locale: 'en-US',
   globalInjection: true,
-  messages: {
-    'en-US': { name: "name" },
-    'zh-TW': { name: "名稱" },
-  },
-  // legacy: false,
-  // fallbackLocale: 'en-US',
-  locale: 'en-US', // Set default locale
-  fallbackLocale: 'en-US', // Set fallback locale
+  messages,
+  legacy: false,
+  fallbackLocale: 'zh-TW',
+  locale: 'zh-TW',
   missing: (locale, key) => {
     console.warn(`Missing translation key: ${key} in locale: ${locale}`);
   }

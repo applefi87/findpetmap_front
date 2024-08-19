@@ -83,8 +83,9 @@ import { useUserStore } from 'stores/user';
 import { sendRegisterVerificationCode, verifyCode } from 'src/services/email.js';
 import { register } from 'src/services/user.js';
 import notify from 'src/utils/notify.js'
-import { rules, createI18nRules } from 'an-validator';
+import avValidator from 'an-validator';
 
+const { rules, createI18nRules } = avValidator
 const users = useUserStore();
 const registerState = inject('registerState');
 const emit = defineEmits(['register-success']);
