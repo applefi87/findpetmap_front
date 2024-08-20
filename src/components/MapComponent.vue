@@ -1,27 +1,9 @@
-<!-- 沒任何想法，預計是首頁，目前沒有用到 -->
 <template>
   <q-page>
     <q-no-ssr>
-      <q-banner>
-        <div class="row items-center">
-          <div class="col-auto">
-            <q-avatar size="64px">
-              <!-- <img src="./assets/logo.png" alt="Logo" /> -->
-            </q-avatar>
-          </div>
-          <div class="col">
-            <div class="text-h5">
-              {{ t('validation.lengthMatch', { length: 999 }) }}Welcome to My Knowledge Hub
-            </div>
-            <div class="text-subtitle2">
-              Share your knowledge and learn from others
-            </div>
-          </div>
-        </div>
-      </q-banner>
       <q-btn @click="search" label="Search" />
       <div id="map" style="height: 600px; width: 100%"></div>
-      <q-btn @click="locateHere" label="locateHere" />
+      <q-btn @click="locateHere" label="Locate Here" />
     </q-no-ssr>
   </q-page>
 </template>
@@ -30,14 +12,15 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import "leaflet/dist/leaflet.css";
+import { apiCallToPostRegion } from '@/services/apiService'; // Placeholder for your API service
+
 const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
 let map;
-let Leaflet
-
+let Leaflet;
 const centerMarker = ref(null);
+const loadedRegions = ref([]);
 
-const position = ref('determining...')
-function getCurrentPosition() {
+const getCurrentPosition = () => {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(getCurrentPositionSuccessHandler, (err) => { }, {
       enableHighAccuracy: true,
@@ -45,11 +28,8 @@ function getCurrentPosition() {
       maximumAge: 0,
     });
   } else {
-    alert("你的裝置或瀏覽器不支援定位功能");
+    alert("Your device or browser does not support geolocation.");
   }
-  // Geolocation.getCurrentPosition().then(newPosition => {
-
-  // })
 }
 
 const locateHere = () => {
@@ -77,11 +57,9 @@ onMounted(async () => {
       map.setView(e.latlng, e.accuracy / 2)
     })
     getCurrentPosition();
-    centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
-    map.on('move', () => {
-      centerMarker.value.setLatLng(map.getCenter());
-    });
-    centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map);
+    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+    map.on('moveend', handleMapDrag);
+    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map);
   }
 })
 
@@ -92,7 +70,6 @@ onBeforeUnmount(() => {
   }
 });
 
-// Search function to log the center and bounds
 const search = () => {
   const center = map.getCenter();
   console.log('Center Coordinates: ', center);
@@ -120,6 +97,8 @@ const search = () => {
   console.log(`Width (Left-Right Distance): ${width.toFixed(2)} km`);
   console.log(`Height (Top-Bottom Distance): ${height.toFixed(2)} km`);
 };
+
+// Function to calculate distance between two points
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // Radius of the Earth in km
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -145,6 +124,33 @@ function getCurrentPositionSuccessHandler(newPosition) {
   }
 }
 
-</script>
+// Handle the map dragging event
+function handleMapDrag() {
+  const bounds = map.getBounds();
+  const bottomLeft = bounds.getSouthWest();
+  const topRight = bounds.getNorthEast();
 
-<style></style>
+  // Check if the current bounds are within the already loaded regions
+  const isRegionAlreadyLoaded = loadedRegions.value.some(region => {
+    return (
+      bottomLeft.lat >= region.bottomLeft.lat &&
+      bottomLeft.lng >= region.bottomLeft.lng &&
+      topRight.lat <= region.topRight.lat &&
+      topRight.lng <= region.topRight.lng
+    );
+  });
+
+  if (!isRegionAlreadyLoaded) {
+    // Post to the API if the region hasn't been loaded yet
+    apiCallToPostRegion(bottomLeft, topRight)
+      .then((response) => {
+        // Add the actual region returned by the API to the loadedRegions array
+        loadedRegions.value.push(response.data.region);
+        console.log('Region loaded:', response.data.region);
+      })
+      .catch((error) => {
+        console.error('Error posting region data:', error);
+      });
+  }
+}
+</script>
