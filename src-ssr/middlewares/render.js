@@ -17,6 +17,7 @@ export default ssrMiddleware(({ app, resolve, render, serve }) => {
   // we capture any other Express route and hand it
   // over to Vue and Vue Router to render our page
   app.get(resolve.urlPath('*'), (req, res) => {
+    res.setHeader('Content-Type', 'text/html')
     // 介面語言
     const cookies = parseCookies(req)
     // Data generation will be reliable and complete for both server and client in the future.

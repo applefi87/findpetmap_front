@@ -1,40 +1,41 @@
 <!-- 沒任何想法，預計是首頁，目前沒有用到 -->
 <template>
   <q-page>
-    <q-banner>
-      <div class="row items-center">
-        <div class="col-auto">
-          <q-avatar size="64px">
-            <!-- <img src="./assets/logo.png" alt="Logo" /> -->
-          </q-avatar>
-        </div>
-        <div class="col">
-          <div class="text-h5">
-            {{ t('validation.lengthMatch', { length: 999 }) }}Welcome to My Knowledge Hub
+    <q-no-ssr>
+      <q-banner>
+        <div class="row items-center">
+          <div class="col-auto">
+            <q-avatar size="64px">
+              <!-- <img src="./assets/logo.png" alt="Logo" /> -->
+            </q-avatar>
           </div>
-          <div class="text-subtitle2">
-            Share your knowledge and learn from others
+          <div class="col">
+            <div class="text-h5">
+              {{ t('validation.lengthMatch', { length: 999 }) }}Welcome to My Knowledge Hub
+            </div>
+            <div class="text-subtitle2">
+              Share your knowledge and learn from others
+            </div>
           </div>
         </div>
-      </div>
-    </q-banner>
-    <div id="map" style="height: 600px; width: 100%" />
+      </q-banner>
+      <q-btn @click="search" label="Search" />
+      <div id="map" style="height: 600px; width: 100%"></div>
+    </q-no-ssr>
   </q-page>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Geolocation } from '@capacitor/geolocation'
 import { useI18n } from 'vue-i18n'
 import "leaflet/dist/leaflet.css";
 const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
-// const t = (key) => {
-//   return key
-// }
-
-// const searchTerm = ref('')
 let map;
 let Leaflet
+
+const centerMarker = ref(null);
+
 const position = ref('determining...')
 function getCurrentPosition() {
   Geolocation.getCurrentPosition().then(newPosition => {
@@ -69,12 +70,37 @@ onMounted(async () => {
       console.log("locationfound");
       map.setView(e.latlng, e.accuracy / 2)
     })
-    // Leaflet.marker([25.04740, 121.53745]).addTo(map)
-    //   .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-    //   .openPopup();
     getCurrentPosition();
+    centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+
+    map.on('move', () => {
+      centerMarker.value.setLatLng(map.getCenter());
+    });
+
+    centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map);
   }
 })
+
+// Clean up the map instance on unmount
+onBeforeUnmount(() => {
+  if (map) {
+    map.remove();
+  }
+});
+
+// Search function to log the center and bounds
+const search = () => {
+  const center = map.getCenter();
+  console.log('Center Coordinates: ', center);
+
+  const bounds = map.getBounds();
+  const bottomLeft = bounds.getSouthWest();
+  const topRight = bounds.getNorthEast();
+
+  console.log('Bottom-Left Coordinates: ', bottomLeft);
+  console.log('Top-Right Coordinates: ', topRight);
+};
+
 </script>
 
 <style></style>
