@@ -1,26 +1,43 @@
+<!-- 沒任何想法，預計是首頁，目前沒有用到 -->
 <template>
-  <q-item>
+  <q-page>
     <q-no-ssr>
+      <q-banner>
+        <div class="row items-center">
+          <div class="col-auto">
+            <q-avatar size="64px">
+              <!-- <img src="./assets/logo.png" alt="Logo" /> -->
+            </q-avatar>
+          </div>
+          <div class="col">
+            <div class="text-h5">
+              {{ t('validation.lengthMatch', { length: 999 }) }}Welcome to My Knowledge Hub
+            </div>
+            <div class="text-subtitle2">
+              Share your knowledge and learn from others
+            </div>
+          </div>
+        </div>
+      </q-banner>
       <q-btn @click="search" label="Search" />
-      <div id="map" style="height: 100%; width: 900px"></div>
-      <q-btn @click="locateHere" label="Locate Here" />
+      <div id="map" style="height: 600px; width: 100%"></div>
+      <q-btn @click="locateHere" label="locateHere" />
     </q-no-ssr>
-  </q-item>
+  </q-page>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import "leaflet/dist/leaflet.css";
-import { apiCallToPostRegion } from 'src/services/mapService'; // Placeholder for your API service
-
 const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
 let map;
-let Leaflet;
-const centerMarker = ref(null);
-const loadedRegions = ref([]);
+let Leaflet
 
-const getCurrentPosition = () => {
+const centerMarker = ref(null);
+
+const position = ref('determining...')
+function getCurrentPosition() {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(getCurrentPositionSuccessHandler, (err) => { }, {
       enableHighAccuracy: true,
@@ -28,8 +45,11 @@ const getCurrentPosition = () => {
       maximumAge: 0,
     });
   } else {
-    alert("Your device or browser does not support geolocation.");
+    alert("你的裝置或瀏覽器不支援定位功能");
   }
+  // Geolocation.getCurrentPosition().then(newPosition => {
+
+  // })
 }
 
 const locateHere = () => {
@@ -57,9 +77,11 @@ onMounted(async () => {
       map.setView(e.latlng, e.accuracy / 2)
     })
     getCurrentPosition();
-    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
-    map.on('moveend', handleMapDrag);
-    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map);
+    centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+    map.on('move', () => {
+      centerMarker.value.setLatLng(map.getCenter());
+    });
+    centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map);
   }
 })
 
@@ -70,6 +92,7 @@ onBeforeUnmount(() => {
   }
 });
 
+// Search function to log the center and bounds
 const search = () => {
   const center = map.getCenter();
   console.log('Center Coordinates: ', center);
@@ -97,8 +120,6 @@ const search = () => {
   console.log(`Width (Left-Right Distance): ${width.toFixed(2)} km`);
   console.log(`Height (Top-Bottom Distance): ${height.toFixed(2)} km`);
 };
-
-// Function to calculate distance between two points
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // Radius of the Earth in km
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -124,72 +145,6 @@ function getCurrentPositionSuccessHandler(newPosition) {
   }
 }
 
-// Handle the map dragging event
-// Set to store already added article IDs
-const addedArticleIds = new Set();
-
-function handleMapDrag() {
-  const bounds = map.getBounds();
-  const bottomLeft = bounds.getSouthWest();
-  const topRight = bounds.getNorthEast();
-
-  // Check if the current bounds are within the already loaded regions
-  const isRegionAlreadyLoaded = loadedRegions.value.some(region => {
-    return (
-      bottomLeft.lat >= region.bottomLeft.lat &&
-      bottomLeft.lng >= region.bottomLeft.lng &&
-      topRight.lat <= region.topRight.lat &&
-      topRight.lng <= region.topRight.lng
-    );
-  });
-
-  if (!isRegionAlreadyLoaded) {
-    // Post to the API if the region hasn't been loaded yet
-    apiCallToPostRegion(bottomLeft, topRight)
-      .then((response) => {
-        // Save the region returned by the API to the loadedRegions array
-        const region = response.data.region;
-        loadedRegions.value.push(region);
-        console.log('Region loaded:', region);
-
-        // Add the articles' points to the map as markers
-        const articles = response.data.articles;
-        articles.forEach(article => {
-          if (!addedArticleIds.has(article._id)) {
-            const iconHtml = `
-            <div style="text-align: center;">
-              <img src="path/to/your/image.png" style="width: 30px; height: 30px;" />
-              <div style="background-color: white; padding: 2px; border-radius: 3px;">
-                ${article.rewardAmount}
-              </div>
-            </div>
-          `;
-
-            const customIcon = L.divIcon({
-              html: iconHtml,
-              className: '', // Add a custom class if needed for styling
-              iconSize: [30, 42], // Adjust size based on your design
-              iconAnchor: [15, 42], // The point of the icon which will correspond to the marker's location
-              popupAnchor: [0, -42], // The point from which the popup should open relative to the iconAnchor
-            });
-
-            const marker = L.marker([article.location.coordinates[1], article.location.coordinates[0]], {
-              icon: customIcon,
-              title: article.lostDistrict,
-            }).addTo(map);
-
-            marker.on('click', () => {
-              // You can handle the click event here if needed
-            });
-
-            // Store the article ID in the set to prevent duplication
-            addedArticleIds.add(article._id);
-          }
-        });
-      })
-      .catch((error) => {
-        console.error('Error posting region data:', error);
-      });
-  }
-}
 </script>
+
+<style></style>

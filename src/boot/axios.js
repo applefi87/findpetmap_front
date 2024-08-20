@@ -115,7 +115,7 @@ function translateDataMessage(data) {
     const { key, params } = data.message.title;
     data.message.title = t(key, params);
   } else {
-    data.message.title = t(`${data.message.title}`);
+    // data.message.title = data.message.title
   }
 }
 //
