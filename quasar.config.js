@@ -4,6 +4,7 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 import dotenv from 'dotenv';
 import { configure } from 'quasar/wrappers'
+import path from 'path';
 import { fileURLToPath } from 'node:url'
 
 export default configure((ctx) => {
@@ -43,6 +44,9 @@ export default configure((ctx) => {
       target: {
         browser: ['es2022', 'firefox115', 'chrome115', 'safari14'],
         node: 'node20'
+      },
+      alias: {
+        src: path.resolve(__dirname, 'src'),
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
