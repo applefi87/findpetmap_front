@@ -49,7 +49,7 @@ onMounted(async () => {
     map = Leaflet.map('map').setView([25.0474014, 121.5374556], 13);
     Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 16,
-      minZoom: 13,
+      minZoom: 8,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     map.on("locationfound", (e) => {
@@ -147,6 +147,7 @@ function handleMapDrag() {
     // Post to the API if the region hasn't been loaded yet
     apiCallToPostRegion(bottomLeft, topRight)
       .then((response) => {
+        if (!response.success) return
         // Save the region returned by the API to the loadedRegions array
         const region = response.data.region;
         loadedRegions.value.push(region);
@@ -154,11 +155,12 @@ function handleMapDrag() {
 
         // Add the articles' points to the map as markers
         const articles = response.data.articles;
+        console.log(articles.length);
         articles.forEach(article => {
           if (!addedArticleIds.has(article._id)) {
             const iconHtml = `
             <div style="text-align: center;">
-              <img src="path/to/your/image.png" style="width: 30px; height: 30px;" />
+              <img src="https://img.icons8.com/?size=100&id=j2EzyY8lgLyo&format=png&color=000000" style="width: 30px; height: 30px;" />
               <div style="background-color: white; padding: 2px; border-radius: 3px;">
                 ${article.rewardAmount}
               </div>
@@ -179,7 +181,7 @@ function handleMapDrag() {
             }).addTo(map);
 
             marker.on('click', () => {
-              // You can handle the click event here if needed
+              console.log("id:" + article._id);
             });
 
             // Store the article ID in the set to prevent duplication

@@ -7,66 +7,53 @@ import notify from 'src/utils/notify.js'
 
 const t = i18n.global.t;
 
-function handleApiResponse(response) {
+async function handleApiResponse(response) {
   if (!response) {
-    // Throw an error when there is no response object
-    throw new Error('Request failed', createErrorResponse(t('errors.requestFailed')));
+    const data = createErrorResponse(t('axios.responseNotFound'), 'handleApiResponse !response')
+    await notify(data)
+    return data
   }
   const { data } = response;
-  if (!data.success) {
-    // Throw an error when the response object has a success property set to false
-    translateDataMessage(data || 'responseFailed')
-    // const finalErrorMsg = createErrorResponse(data)
-    // console.log(finalErrorMsg);
-    throw new Error('Response failed', data);
-  }
-  translateDataMessage(data);
-  return data;
+  // 如果前端是200 &&!data.success 應該是有其他考量，交給前端處理
+  // if (!data.success) {
+  //   // Throw an error when the response object has a success property set to false
+  //   throw new Error('Response failed', data || 'responseFailed');
+  // } else {
+  //   return data;
+  // }
+  return data
 }
 
+// 只要是後端傳非2xx 都是錯誤，都應該要直接給文字訊息，而且會廣播(notify)
 async function handleApiError(error) {
   const result = processApiError(error)
   await notify(result)
   return result;
 }
 
-// ---這趨穩定了之後拔掉log
+// 多了登錄相關判斷處理
 async function handleApiAuthError(error) {
   const { response, config } = error;
-  if (response && response.status === 401) {
-    const users = useUserStore();
-    if (config.url !== '/user/extend' && config.url !== '/user/logout') {
-      let isExtend = true
-      try {
-        await extendToken(users, config);
-        // log(`reget data: ${JSON.stringify(config)}`);
-        isExtend = false
-        const { data } = await axios(config);
-        return data
-      } catch (err) {
-        if (isExtend) {
-          // log("handleAuthApiError>401>extendErr:" + JSON.stringify(err));
-          const resError = { response: { data: { success: false, message: { title: "loginExpired" } } } }
-          const res = await processApiError(resError);
-          users.clearLocalStorageAndCookie();
-          await notify(res)
-          // 透過這裡通知登入過期的，用下面方法避免丟error觸發其他頁面的自動notify error
-          return { success: false }
-        } else {
-          log("handleAuthApiError>401>afterExtendErr:");
-          // If original doing(After extend.) fails, clear the local storage and reject the Promise with the error
-          throw await processApiError(err);
-        }
-      }
-    } else {
-      users.clearLocalStorageAndCookie()
-      throw await processApiError(error);
-    }
+  if (!response) {
+    const data = createErrorResponse(t('axios.responseNotFound'), "handleApiAuthError 沒 response ")
+    await notify(data)
+    return data
   }
-  throw await processApiError(error);
+  if (response.status === 426) {
+    const users = useUserStore();
+    await extendToken(users, config);
+    // 成功後重打原本request (應要跟handleApiResponse 依樣邏輯)
+    const secondResponse = await axios(config);
+    return handleApiResponse(secondResponse)
+    // 後端非過期等jwt驗證錯,直接登出
+  } else if (response.status === 401) {
+    users.clearLocalStorageAndCookie()
+    await notify({ success: false, message: { title: "loginExpired" } })
+    // 透過這裡通知登入過期的，用下面方法避免丟error觸發其他頁面的自動notify error
+    return { success: false }
+  }
+  return await handleApiError(error)
 }
-
-// ---
 
 const api = axios.create({
   baseURL: process.env.SERVER_URL,
@@ -94,37 +81,25 @@ export { api, apiAuth };
 
 //
 function processApiError(error) {
-  const errorMessage = error?.response?.data || createErrorResponse('axiosObj.resFormatErr');
-  translateDataMessage(errorMessage);
+  const errorMessage = error?.response?.data || createErrorResponse('axios.resFormatErr');
   return errorMessage;
 }
 
-function createErrorResponse(errorMessage) {
+function createErrorResponse(errorMessage, extraMessage) {
   return {
     success: false,
-    message: {
-      title: errorMessage
-    },
+    message: errorMessage,
+    log: extraMessage || undefined
   };
 }
 
-function translateDataMessage(data) {
-  if (!data.message) {
-    data.message = { title: "" }
-  } else if (typeof data.message?.title === 'object') {
-    const { key, params } = data.message.title;
-    data.message.title = t(key, params);
-  } else {
-    // data.message.title = data.message.title
-  }
-}
 //
 function log(message) {
   console.log(message);
 }
 async function extendToken(users, config) {
   log("extend token");
-  const { data } = await apiAuth.post('/user/extend', {});
+  const { data } = await apiAuth.get('/user/extend', {});
   users.extendToken(data.token)
   config.headers.authorization = `Bearer ${data.token}`;
   log("extend token end");

@@ -14,7 +14,6 @@ const i18n = createI18n({
 });
 
 export default boot(({ app }) => {
-  console.log(12);
   // Set i18n instance on app
   app.use(i18n);
 });
