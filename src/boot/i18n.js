@@ -6,7 +6,6 @@ const i18n = createI18n({
   globalInjection: true,
   messages,
   legacy: false,
-  fallbackLocale: 'zh-TW',
   locale: 'zh-TW',
   missing: (locale, key) => {
     console.warn(`Missing translation key: ${key} in locale: ${locale}`);

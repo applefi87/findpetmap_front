@@ -27,20 +27,6 @@ const content = {
 //   maxLength: 10000
 // };
 
-const previewContent = {
-  minLength: 5,
-  maxLength: 50
-};
-
-const thumbnail = {
-  maxLength: 1000
-};
-
-
-
-
-
-
 
 
 export default { petType, catColorEnum, dogColorEnum, content };

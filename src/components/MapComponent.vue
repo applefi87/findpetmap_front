@@ -12,7 +12,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import "leaflet/dist/leaflet.css";
-import { apiCallToPostRegion } from 'src/services/mapService'; // Placeholder for your API service
+import * as  articleService from 'src/services/articleService.js'; // Placeholder for your API service
 
 const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
 let map;
@@ -128,7 +128,7 @@ function getCurrentPositionSuccessHandler(newPosition) {
 // Set to store already added article IDs
 const addedArticleIds = new Set();
 
-function handleMapDrag() {
+async function handleMapDrag() {
   const bounds = map.getBounds();
   const bottomLeft = bounds.getSouthWest();
   const topRight = bounds.getNorthEast();
@@ -144,21 +144,16 @@ function handleMapDrag() {
   });
 
   if (!isRegionAlreadyLoaded) {
-    // Post to the API if the region hasn't been loaded yet
-    apiCallToPostRegion(bottomLeft, topRight)
-      .then((response) => {
-        if (!response.success) return
-        // Save the region returned by the API to the loadedRegions array
-        const region = response.data.region;
-        loadedRegions.value.push(region);
-        console.log('Region loaded:', region);
-
-        // Add the articles' points to the map as markers
-        const articles = response.data.articles;
-        console.log(articles.length);
-        articles.forEach(article => {
-          if (!addedArticleIds.has(article._id)) {
-            const iconHtml = `
+    const response = await articleService.getArticleByRegion(bottomLeft, topRight)
+    if (!response.success) return
+    const region = response.data.region;
+    loadedRegions.value.push(region);
+    console.log('Region loaded:', region);
+    const articles = response.data.articles;
+    console.log(articles.length);
+    articles.forEach(article => {
+      if (!addedArticleIds.has(article._id)) {
+        const iconHtml = `
             <div style="text-align: center;">
               <img src="https://img.icons8.com/?size=100&id=j2EzyY8lgLyo&format=png&color=000000" style="width: 30px; height: 30px;" />
               <div style="background-color: white; padding: 2px; border-radius: 3px;">
@@ -167,31 +162,27 @@ function handleMapDrag() {
             </div>
           `;
 
-            const customIcon = L.divIcon({
-              html: iconHtml,
-              className: '', // Add a custom class if needed for styling
-              iconSize: [30, 42], // Adjust size based on your design
-              iconAnchor: [15, 42], // The point of the icon which will correspond to the marker's location
-              popupAnchor: [0, -42], // The point from which the popup should open relative to the iconAnchor
-            });
-
-            const marker = L.marker([article.location.coordinates[1], article.location.coordinates[0]], {
-              icon: customIcon,
-              title: article.lostDistrict,
-            }).addTo(map);
-
-            marker.on('click', () => {
-              console.log("id:" + article._id);
-            });
-
-            // Store the article ID in the set to prevent duplication
-            addedArticleIds.add(article._id);
-          }
+        const customIcon = L.divIcon({
+          html: iconHtml,
+          className: '', // Add a custom class if needed for styling
+          iconSize: [30, 42], // Adjust size based on your design
+          iconAnchor: [15, 42], // The point of the icon which will correspond to the marker's location
+          popupAnchor: [0, -42], // The point from which the popup should open relative to the iconAnchor
         });
-      })
-      .catch((error) => {
-        console.error('Error posting region data:', error);
-      });
+
+        const marker = L.marker([article.location.coordinates[1], article.location.coordinates[0]], {
+          icon: customIcon,
+          title: article.lostDistrict,
+        }).addTo(map);
+
+        marker.on('click', () => {
+          console.log("id:" + article._id);
+        });
+
+        // Store the article ID in the set to prevent duplication
+        addedArticleIds.add(article._id);
+      }
+    })
   }
 }
 </script>

@@ -14,7 +14,7 @@
         <!-- <input type="text" placeholder="Search..." /> -->
       </div>
       <q-select class="langSelect" v-model="locale" @update:model-value="handlechangeInterfaceLang"
-        :options="localOptions" :label='t("language")' borderless emit-value map-options style="width:100px"
+        :options="languageOptions" :label='t("language")' borderless emit-value map-options style="width:100px"
         padding="none" />
       <q-no-ssr>
         <!-- <q-btn-dropdown v-if="users.token" class="info " dense flat :label='t("userInfo")' no-caps> -->
@@ -73,7 +73,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import avValidator from 'an-validator';
-import { login, logout, changeInterfaceLang } from '../services/user.js';
+import { login, logout } from '../services/user.js';
 import registerDialog from 'src/components/AppHeaderRegisterDialog.vue'
 import { languageOptions } from 'src/infrastructure/configs/languageOptions.js'
 const { rules, createI18nRules } = avValidator
@@ -85,8 +85,6 @@ const $q = useQuasar()
 const users = useUserStore()
 const { locale } = useI18n({ useScope: 'global' })
 const t = key => key
-
-const localOptions = ref(languageOptions)
 //
 const isPwd = ref(true)
 const registerState = ref(false)
@@ -102,15 +100,15 @@ function onRegisterSuccess() {
 }
 // 不用notify 因為即使出錯就算了
 
-async function handlechangeInterfaceLang() {
+async function handlechangeInterfaceLang(value) {
   try {
+    // locale.value = value
     $q.cookies.set('interfaceLanguage', locale.value, { expires: 365, path: '/', sameSite: 'Strict' })
     // $q.cookies.set('interfaceLanguage', locale.value, { expires: 365, sameSite: 'Lax', httpOnly: true, secure: true })
-    if (users.token) { await changeInterfaceLang(locale.value) }
   } catch (error) {
     console.log(error)
   } finally {
-    users.interfaceLanguage = locale.value
+    // users.interfaceLanguage = locale.value
   }
 }
 
