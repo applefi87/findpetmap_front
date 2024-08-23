@@ -34,7 +34,8 @@
 
       <q-select v-model="articleForm.lostDistrict" :options="districtOptions" :label="t('lostDistrict')"
         :rules="createI18nRules(rules.createMustInputRules, t)" :disable="!articleForm.lostCityCode" />
-      <MapSelectorComponent />
+      <MapSelectorComponent v-model="articleForm.coordinates" />
+
       <q-input v-model="articleForm.content" filled type="textarea"
         :rules="createI18nRules(rules.createLengthBetweenRule, t, contentMinLength, contentMaxLength)"
         :label="t('articleContent')" />
@@ -70,9 +71,13 @@ const articleForm = reactive({
   lostDate: '',
   lostCityCode: '',
   lostDistrict: '',
-  coordinates: '',
+  coordinates: "",
   content: '',
 })
+
+setInterval(() => {
+  console.log(articleForm.coordinates);
+}, 2000);
 
 const updateRewardAmount = (value) => {
   if (!value) {

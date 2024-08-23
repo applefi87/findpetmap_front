@@ -13,6 +13,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import "leaflet/dist/leaflet.css";
 import * as  articleService from 'src/services/articleService.js'; // Placeholder for your API service
+import { nextTick } from 'vue';
 
 const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
 let map;
@@ -36,6 +37,7 @@ const locateHere = () => {
   getCurrentPosition();
 }
 
+
 onMounted(async () => {
   console.log('Current Locale:', locale.value);
   console.log('Available Locales:', availableLocales);
@@ -52,14 +54,23 @@ onMounted(async () => {
       minZoom: 8,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+
     map.on("locationfound", (e) => {
-      console.log("locationfound");
       map.setView(e.latlng, e.accuracy / 2)
     })
     getCurrentPosition();
-    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+
     map.on('moveend', handleMapDrag);
-    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map);
+
+    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+    let isUpdatingMarker = false;
+    map.on('move', (event) => {
+      if (!isUpdatingMarker) {
+        isUpdatingMarker = true;
+        centerMarker.value.setLatLng(event.target.getCenter());
+        isUpdatingMarker = false;
+      }
+    });
   }
 })
 

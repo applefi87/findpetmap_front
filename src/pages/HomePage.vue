@@ -8,8 +8,8 @@
 </template>
 
 <script setup>
-// import Map from 'components/MapComponent.vue'
-import Map from 'components/MapCoordinateSelectComponent.vue'
+import Map from 'components/MapComponent.vue'
+// import Map from 'components/MapCoordinateSelectComponent.vue'
 
 </script>
 

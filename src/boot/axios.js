@@ -81,8 +81,8 @@ export { api, apiAuth };
 
 //
 function processApiError(error) {
-  const errorMessage = error?.response?.data || createErrorResponse('axios.resFormatErr');
-  return errorMessage;
+  if (error.code === "ERR_NETWORK") { return createErrorResponse('axios.networkErr') }
+  return error?.response?.data || createErrorResponse('axios.resFormatErr');
 }
 
 function createErrorResponse(errorMessage, extraMessage) {
