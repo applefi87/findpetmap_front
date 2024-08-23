@@ -34,7 +34,7 @@
 
       <q-select v-model="articleForm.lostDistrict" :options="districtOptions" :label="t('lostDistrict')"
         :rules="createI18nRules(rules.createMustInputRules, t)" :disable="!articleForm.lostCityCode" />
-
+      <MapSelectorComponent />
       <q-input v-model="articleForm.content" filled type="textarea"
         :rules="createI18nRules(rules.createLengthBetweenRule, t, contentMinLength, contentMaxLength)"
         :label="t('articleContent')" />
@@ -49,11 +49,12 @@ import { ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { rules, createI18nRules } from 'an-validator';
 import { useRouter } from 'vue-router'
+import notify from 'src/utils/notify.js'
 // import { useUserStore } from 'stores/user';
 import { cityCodeToNameMap, cityCodeToAreaList } from 'src/infrastructure/configs/cityConfigs.js';
 import articleConfigs from 'src/infrastructure/configs/articleConfigs.js';
 import * as  articleService from 'src/services/articleService.js';
-import notify from 'src/utils/notify.js'
+import MapSelectorComponent from 'components/MapCoordinateSelectComponent.vue'; // Import your new component
 
 const router = useRouter()
 // const users = useUserStore();
@@ -69,6 +70,7 @@ const articleForm = reactive({
   lostDate: '',
   lostCityCode: '',
   lostDistrict: '',
+  coordinates: '',
   content: '',
 })
 
