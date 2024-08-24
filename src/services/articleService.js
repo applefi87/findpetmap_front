@@ -2,7 +2,16 @@ import { api, apiAuth } from 'src/boot/axios';
 
 export async function createArticle(form) {
   try {
-    return await apiAuth.post('/article/create', JSON.parse(JSON.stringify(form)))
+    const sendForm = JSON.parse(JSON.stringify(form))
+    console.log(form);
+    const objectCoordinates = JSON.parse(sendForm.coordinates)
+    sendForm.location = {
+      type: "Point",
+      // 後台統一是先經再緯
+      coordinates: [objectCoordinates[1], objectCoordinates[0]]
+    }
+    delete sendForm.coordinates
+    return await apiAuth.post('/article/create', sendForm)
   } catch (error) {
     console.log("article-err");
     throw error

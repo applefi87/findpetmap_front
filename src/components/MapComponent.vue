@@ -180,7 +180,7 @@ async function handleMapDrag() {
           iconAnchor: [15, 42], // The point of the icon which will correspond to the marker's location
           popupAnchor: [0, -42], // The point from which the popup should open relative to the iconAnchor
         });
-
+        // 後台傳來統一先經再緯度，但leaflet 事先緯再經度
         const marker = L.marker([article.location.coordinates[1], article.location.coordinates[0]], {
           icon: customIcon,
           title: article.lostDistrict,

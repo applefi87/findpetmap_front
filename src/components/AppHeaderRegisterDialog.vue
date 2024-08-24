@@ -27,7 +27,7 @@
                 </template>
               </q-btn>
               <q-input filled v-model="registerForm.verificationCode" :label='t("verificationCode")'
-                :rules="createI18nRules(rules.createRules, t, 'basic', true, 8)" ref="mailCodeValid">
+                :rules="createI18nRules(rules.createRules, t, 'number', true, 8)" ref="mailCodeValid">
                 <template v-slot:before>
                   {{ identifierDisplay }}
                 </template>
@@ -112,7 +112,7 @@ const registerForm = reactive({
   password: '',
   nickname: '',
   gender: 'male',
-  role: 'user'
+  role: 1
 });
 const identifier = computed(() => t('identifier'))
 const identifierDisplay = ref(identifier.value)
