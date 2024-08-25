@@ -163,7 +163,7 @@ async function handleMapDrag() {
       if (!addedArticleIds.has(article._id)) {
         const iconHtml = `
             <div style="text-align: center;">
-              <img src="https://img.icons8.com/?size=100&id=j2EzyY8lgLyo&format=png&color=000000" style="width: 30px; height: 30px;" />
+              <img src="https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${article.previewImage}" style="width: 80px; height: 80px;" />
               <div style="background-color: white; padding: 2px; border-radius: 3px;">
                 ${article.rewardAmount}
               </div>
