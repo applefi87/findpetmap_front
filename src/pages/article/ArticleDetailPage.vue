@@ -4,7 +4,7 @@
     <q-toolbar>
       <q-btn flat icon="arrow_back" round @click="goBack" />
     </q-toolbar>
-    <articleDetail :articleId="articleId" v-if="articleId" @backPage="goBack" />
+    <articleDetail :articleId="articleId" v-if="articleId" @backPage="goBack" @articleDeleted="articleDeleted" />
   </q-page>
 </template>
 
@@ -15,6 +15,7 @@ import articleDetail from '../../components/ArticleDetail.vue'
 const route = useRoute()
 const router = useRouter()
 const articleId = route.params.id
+
 function goBack() {
   const [navEntry] = performance.getEntriesByType('navigation');
   if (navEntry && navEntry.type === 'back_forward') {
@@ -23,6 +24,11 @@ function goBack() {
     router.push('/');
   }
 }
+
+
+const articleDeleted = (id) => {
+  goBack()
+};
 
 </script>
 

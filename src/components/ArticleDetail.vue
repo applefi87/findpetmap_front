@@ -113,7 +113,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from 'src/stores/user'
 import { useSSRStore } from 'src/stores/ssr.js'
 import ArticleEdit from 'src/components/ArticleUpdate.vue';
-import { getArticleDetail, deleteArticle } from 'src/services/articleService.js';
+import * as articleService from 'src/services/articleService.js';
 import { cityCodeToNameMap } from 'src/infrastructure/configs/cityConfigs.js';
 import { shareArticle } from '../utils/shareLink.js'
 import notify from 'src/utils/notify.js'
@@ -146,9 +146,9 @@ const emit = defineEmits(['articleDeleted', "updateArticleList", "backPage"])
 
 async function handleDeleteArticle() {
   try {
-    const rep = await deleteArticle(props.articleId);
+    const rep = await articleService.deleteArticle(props.articleId);
     if (rep.success) {
-      notify({ success: true, message: t('deleted') })
+      notify(t('deleted'))
       emit('articleDeleted', props.articleId);
     }
   } catch (error) {
@@ -157,8 +157,10 @@ async function handleDeleteArticle() {
 }
 // 雖然也可以重整頁面，但考量部分情境是彈出視窗的articleDetail, 編輯頁面連地圖也要重載入，還是不要重整
 async function handleArticleUpdated() {
+  console.log("DETAIL.vue:" + "handleArticleUpdated");
   editDialog.value = false
-  await fetchAndInit()
+  const newDatas = await fetchAndInit()
+  emit('updateArticleList', newDatas.article);
 }
 
 async function fetchAndInit() {
@@ -169,6 +171,7 @@ async function fetchAndInit() {
     return
   }
   init(newDatas)
+  return newDatas
 }
 
 // meta
@@ -209,7 +212,7 @@ onBeforeMount(async () => {
 async function fetchArticle() {
   console.log("fetchArticle");
   try {
-    const { data } = await getArticleDetail(props.articleId)
+    const { data } = await articleService.getArticleDetail(props.articleId)
     return JSON.parse(JSON.stringify(data))
   } catch (error) {
     return null

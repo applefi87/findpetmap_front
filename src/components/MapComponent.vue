@@ -165,7 +165,7 @@ async function handleMapDrag() {
     const articles = response.data.articles;
     console.log(articles.length);
     articles.forEach(article => {
-      const marker = createArticleMarker(article);
+      createArticleMarker(article);
     })
   }
 }
@@ -243,7 +243,15 @@ function updateArticleList(article) {
   const theArticle = markerList[article._id]
   if (theArticle) {
     delete markerList[article._id]
-    const marker = createArticleMarker(article);
+    addedArticleIds.delete(article._id);
+
+    const formatedArticle = JSON.parse(JSON.stringify(article))
+    const previewImage = formatedArticle.images.find(item => item.isPreview)
+    console.log("previewImage:", previewImage);
+    console.log("previewImage.fullPath:", previewImage.fullPath.replace("original", "preview"));
+    formatedArticle.previewImage = previewImage.fullPath.replace("original", "preview")
+    createArticleMarker(formatedArticle);
+    console.log("MapComponent.vue: updateArticleList formatedArticle", formatedArticle);
   }
 }
 

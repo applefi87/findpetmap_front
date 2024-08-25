@@ -1,4 +1,3 @@
-import { is } from 'quasar';
 import { api, apiAuth } from 'src/boot/axios';
 
 export async function createArticle(form) {
@@ -54,9 +53,9 @@ export async function updateArticle(strArticleId, form, images) {
   }
 }
 
-export async function deleteArticle(id) {
+export async function deleteArticle(articleId) {
   try {
-    const res = await apiAuth.delete(`/article/${id}`)
+    const res = await apiAuth.delete(`/article/${articleId}`)
     return res
   } catch (error) {
     console.log("article-err");
@@ -74,21 +73,3 @@ export async function getArticleDetail(articleId) {
     throw error
   }
 }
-
-
-// export async function getArticleList(filter, lang, skip, limit, navigationParams) {
-//   try {
-//     // const lang = langObj.map(o => o.value);
-//     const res = await apiAuth.post('/article/', {
-//       filter,
-//       lang,
-//       skip,
-//       limit,
-//       // ...navigationParams
-//     });
-//     return res;
-//   } catch (error) {
-//     console.log('article-err');
-//     throw error;
-//   }
-// }

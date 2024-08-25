@@ -74,7 +74,7 @@ import notify from 'src/utils/notify.js'
 // import { useUserStore } from 'stores/user';
 import { cityCodeToNameMap, cityCodeToAreaList } from 'src/infrastructure/configs/cityConfigs.js';
 import articleConfigs from 'src/infrastructure/configs/articleConfigs.js';
-import * as  articleService from 'src/services/articleService.js';
+import * as articleService from 'src/services/articleService.js';
 import MapSelectorComponent from 'components/MapCoordinateSelectComponent.vue'; // Import your new component
 
 const props = defineProps({
