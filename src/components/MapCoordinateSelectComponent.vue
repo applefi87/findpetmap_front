@@ -9,7 +9,7 @@
             <q-btn @click="closeMap" :label="t('close')" class="absolute-top-right q-mr-md q-mt-md" flat round
               icon="close" />
             <br />
-            <div id="map" style="height: 80vh; width: 90%; margin: 0 auto;"></div>
+            <div id="map" style="height: 80vh; width: 70vw; margin: 0 auto;"></div>
           </div>
         </q-card-section>
         <q-card-actions align="center">

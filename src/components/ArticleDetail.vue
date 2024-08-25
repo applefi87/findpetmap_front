@@ -59,7 +59,14 @@
                 {{ article.hasMicrochip ? t('yes') : t('no') }}
               </q-item-label>
             </q-card-section>
-
+            <q-card-section>
+              <div v-if="article.images.length > 0" class="q-mt-md">
+                <div v-for="(image, index) in article.images" :key="index" class="q-mb-md row items-center">
+                  <q-img :src="`https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${image.fullPath}`"
+                    style="width: 100px; height: 100px; object-fit: cover;" />
+                </div>
+              </div>
+            </q-card-section>
             <div class="text-caption q-mt-sm " style="color: gray;">
               {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full', timeStyle: 'medium' }).format(new
       Date(article.createdAt)) }}

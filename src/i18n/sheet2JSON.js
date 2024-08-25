@@ -20,7 +20,7 @@ extractSheets(
   {
     spreadsheetKey: process.env.GOOGLE_SHEET_TABLE_ID_I18NTable,
     credentials: JSON.parse(key),
-    sheetsToExtract: ['user', 'article', 'email', 'image', 'ValidationErrorMessage', "api"]
+    sheetsToExtract: ['common', 'user', 'article', 'email', 'image', 'ValidationErrorMessage', "api"]
   },
   (err, data) => {
     if (err) throw err;
@@ -45,11 +45,13 @@ extractSheets(
     fs.ensureDirSync(outputDir);
     const writeFiles = files.map((fileName) => {
       const outputPath = path.join(outputDir, `${fileName}.js`);
+
+      // Stringify with keys wrapped in quotes
       const content = `export default ${JSON.stringify(
         flat.unflatten(result[fileName], { object: true }),
         null,
         2
-      ).replace(/"([^"]+)":/g, '$1:')};\n`;
+      )};\n`;
 
       // Use async method for non-blocking I/O operations
       return fs.writeFile(outputPath, content);

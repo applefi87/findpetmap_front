@@ -25,6 +25,14 @@ export const getArticleByRegion = async (bottomLeft, topRight) => {
   })
 };
 
+export const uploadImage = async (articleId, formData) => {
+  return await apiAuth.post(`/image/upload/article/${articleId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+};
+
 
 // export async function editArticle(id, form) {
 //   try {
@@ -35,6 +43,7 @@ export const getArticleByRegion = async (bottomLeft, topRight) => {
 //     throw error
 //   }
 // }
+
 export async function deleteArticle(id) {
   try {
     const res = await apiAuth.delete(`/article/${id}`)

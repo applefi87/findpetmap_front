@@ -1,8 +1,8 @@
 <template>
   <div style="width:80%; height: 80vh; margin:auto; padding: 20px">
-    <q-btn @click="search" label="Search" />
+    <q-btn @click="search" :label="t('search')" />
     <div id="map" style="height: 100%; width: 900px"></div>
-    <q-btn @click="locateHere" label="Locate Here" />
+    <q-btn @click="locateHere" :label="t('locateHere')" />
   </div>
   <q-dialog v-model="articleDialog" :maximized="$q.platform.is.mobile" @before-hide="back2ArticleDetail">
     <q-card style="max-width:820px">
@@ -60,8 +60,8 @@ onMounted(async () => {
     Leaflet = await import('leaflet');
     map = Leaflet.map('map').setView([25.0474014, 121.5374556], 13);
     Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 16,
-      minZoom: 8,
+      maxZoom: 17,
+      minZoom: 12,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
@@ -71,16 +71,7 @@ onMounted(async () => {
     getCurrentPosition();
 
     map.on('moveend', handleMapDrag);
-
-    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
-    let isUpdatingMarker = false;
-    map.on('move', (event) => {
-      if (!isUpdatingMarker) {
-        isUpdatingMarker = true;
-        centerMarker.value.setLatLng(event.target.getCenter());
-        isUpdatingMarker = false;
-      }
-    });
+    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup(t("youAreHere")).openPopup();
   }
 })
 
@@ -136,12 +127,8 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 function getCurrentPositionSuccessHandler(newPosition) {
   const { latitude, longitude } = newPosition.coords;
   if (map) {
-    map.setView([latitude, longitude], 13);
-    if (!map.marker) {
-      map.marker = Leaflet.marker([latitude, longitude]).addTo(map);
-    } else {
-      map.marker.setLatLng([latitude, longitude]);
-    }
+    centerMarker.value.setLatLng([latitude, longitude]);
+    map.setView([latitude, longitude], 15);
   }
 }
 
