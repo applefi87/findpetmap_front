@@ -1,19 +1,29 @@
 <template>
-  <q-item>
-    <q-no-ssr>
-      <q-btn @click="search" label="Search" />
-      <div id="map" style="height: 100%; width: 900px"></div>
-      <q-btn @click="locateHere" label="Locate Here" />
-    </q-no-ssr>
-  </q-item>
+  <div style="width:80%; height: 80vh; margin:auto; padding: 20px">
+    <q-btn @click="search" label="Search" />
+    <div id="map" style="height: 100%; width: 900px"></div>
+    <q-btn @click="locateHere" label="Locate Here" />
+  </div>
+  <q-dialog v-model="articleDialog" :maximized="$q.platform.is.mobile" @before-hide="back2ArticleDetail">
+    <q-card style="max-width:820px">
+      <q-bar style="background: transparent; position: sticky; top: 0; z-index: 1;">
+        <q-space />
+        <q-btn dense flat icon="close" v-close-popup @click="handleBackButton" size="lg">
+          <q-tooltip>{{ t('close') }}</q-tooltip>
+        </q-btn>
+      </q-bar>
+      <ArticleDetail :articleId="articleId" v-if="articleId" @articleDeleted="articleDeleted"
+        @updateArticleList="updateArticleList" />
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import "leaflet/dist/leaflet.css";
-import * as  articleService from 'src/services/articleService.js'; // Placeholder for your API service
-import { nextTick } from 'vue';
+import * as  articleService from 'src/services/articleService.js';
+import ArticleDetail from 'src/components/ArticleDetail.vue';
 
 const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
 let map;
@@ -188,6 +198,7 @@ async function handleMapDrag() {
 
         marker.on('click', () => {
           console.log("id:" + article._id);
+          openArticleDetail(article._id)
         });
 
         // Store the article ID in the set to prevent duplication
@@ -196,4 +207,58 @@ async function handleMapDrag() {
     })
   }
 }
+
+
+
+
+const articleDialog = ref(false);
+const articleId = ref(null);
+function openArticleDetail(id) {
+  window.history.pushState({}, '', generateArticleUrl(id))
+  articleId.value = id
+  articleDialog.value = true;
+}
+
+function back2ArticleDetail() {
+  articleDialog.value = false;
+  window.history.pushState({}, '', generateArticleUrl())
+}
+function generateArticleUrl(id) {
+  let result
+  result = `/article/`
+  if (id) {
+    result += `${id}`
+  }
+  return result;
+}
+// 網址相關
+const handleBackButton = (event) => {
+  if (articleDialog.value) {
+    event.preventDefault();
+    back2ArticleDetail()
+  } else {
+    history.go(-1);
+  }
+};
+
+function updateArticleList(article) {
+  const theArticle = articleList.value.findIndex(a => a._id.toString() === article._id)
+  if (theArticle) {
+    theArticle.title = article.title
+    theArticle.content = article.content
+    theArticle.previewContent = article.previewContent
+    theArticle.thumbnail = article.thumbnail
+  }
+}
+
+// Delete related
+const articleDeleted = (id) => {
+  articleId.value = null
+  const deletedIndex = articleList.value.findIndex(article => article._id === id);
+  if (deletedIndex !== -1) {
+    articleList.value.splice(deletedIndex, 1);
+  }
+  back2ArticleDetail()
+};
+
 </script>

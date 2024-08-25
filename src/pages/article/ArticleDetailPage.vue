@@ -16,10 +16,11 @@ const route = useRoute()
 const router = useRouter()
 const articleId = route.params.id
 function goBack() {
-  if (window.history.length > 1) {
+  const [navEntry] = performance.getEntriesByType('navigation');
+  if (navEntry && navEntry.type === 'back_forward') {
     router.go(-1);
   } else {
-    router.push('/article');
+    router.push('/');
   }
 }
 

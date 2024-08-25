@@ -2,7 +2,7 @@
 <template>
   <q-page>
     <q-no-ssr>
-      <Map style="height:500px" />
+      <Map />
     </q-no-ssr>
   </q-page>
 </template>

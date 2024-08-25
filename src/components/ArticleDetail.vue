@@ -1,20 +1,15 @@
 <!-- 文章詳情，裡面包了許多元件，像留言區 留言清單 編輯文章的浮動式窗 -->
 <template>
-  <div class="q-mt-md" v-if="article?.parentBoard">
-    <q-card>
+  <div class="q-mt-md">
+    <q-card v-if="article">
       <q-card-section>
         <div class="text-subtitle2 q-mt-sm row justify-between ">
           <div>
-            <q-avatar size="50px" v-if="article.privacy === '1' && article.user.profileImage?.url"><img
-                :src="article.user.profileImage.url" /> </q-avatar>
-            {{ article.privacy === '1' ? article.user.nickname : t('anonymous') }} - {{ article.user.score }}
-            <div v-for="(badge, index) in article.user.badges" :key="index" class="badge">
-              <img class="badge-image" :src="`./badges/${badge}.png`" :alt="t(badge)" :title="t(badge)" />
-            </div>
+            <!-- {{ article.user.nickname }} -->
           </div>
           <div>
-            <q-btn-dropdown v-if="!onlyView" v-model="optionState" icon="more_horiz" flat round>
-              <q-list v-if="article.isSelf">
+            <q-btn-dropdown v-if="article.isSelf" v-model="optionState" icon="more_horiz" flat round>
+              <q-list>
                 <q-item clickable v-close-popup @click="openDeleteDialog">
                   <q-item-section avatar>
                     <q-avatar icon="delete" color="negative" text-color="white" />
@@ -39,23 +34,41 @@
                 </q-item>
               </q-list>
             </q-btn-dropdown>
-            <q-btn @click="shareArticle(article.parentBoard._id, article._id, t)" icon="share" flat round />
+            <q-btn @click="shareArticle(article._id, t)" icon="share" flat round />
           </div>
         </div>
-        <div class="text-h5 q-my-xs">{{ article.title }}</div>
-        <div class="text-subtitle2 q-mt-sm">{{ t("articleTopic") + ":" +
-    getName(article.parentBoard?.name, users)
-          }}
-        </div>
-        <q-no-ssr>
-          <div class="text-caption q-mt-sm " style="color: gray;">
-            • {{ date.formatDate(article.createdAt, 'YYYY/MM/DD h:mm:ss A') }}
-          </div>
-        </q-no-ssr>
-      </q-card-section>
+        <div class="text-h5 q-my-xs">{{ `${article.petType}-${article.color}` }}</div>
+        <div class="text-subtitle2 q-mt-sm"> <q-card>
+            <q-card-section>
+              <q-item-label class="q-mt-sm"><strong>{{ t('petType') }}:</strong> {{ article.petType }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('color') }}:</strong> {{ article.color }}</q-item-label>
+              <!-- <q-item-label class="q-mt-sm"><strong>{{ t('location') }}:</strong> {{ article.location }}</q-item-label> -->
+              <q-item-label class="q-mt-sm"><strong>{{ t('lostDate') }}:</strong>
+                {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full' }).format(new
+      Date(article.lostDate)) }}
+              </q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('lostCity') }}:</strong> {{
+      cityCodeToNameMap[article.lostCityCode]
+    }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('lostDistrict') }}:</strong> {{ article.lostDistrict
+                }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('rewardAmount') }}:</strong>
+                {{ article.hasReward ? `${article.rewardAmount}` : t('noReward') }}
+              </q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('hasMicrochip') }}:</strong>
+                {{ article.hasMicrochip ? t('yes') : t('no') }}
+              </q-item-label>
+            </q-card-section>
 
+            <div class="text-caption q-mt-sm " style="color: gray;">
+              {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full', timeStyle: 'medium' }).format(new
+      Date(article.createdAt)) }}
+            </div>
+          </q-card>
+        </div>
+      </q-card-section>
       <q-card-section>
-        <div v-html="article.content"></div>
+        <q-input v-model="article.content" readonly filled type="textarea" :label="t('articleContent')" />
       </q-card-section>
     </q-card>
     <q-dialog v-model="deleteDialog">
@@ -86,19 +99,18 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onBeforeMount, provide, nextTick, watch, onServerPrefetch } from 'vue'
+import { ref, onBeforeMount, watch, onServerPrefetch } from 'vue'
 import { date, useMeta } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from 'src/stores/user'
 import { useSSRStore } from 'src/stores/ssr.js'
 import ArticleEdit from 'src/pages/article/ArticleEditPage.vue';
-import { getArticleDetail, deleteArticle } from 'src/services/article.js';
+import { getArticleDetail, deleteArticle } from 'src/services/articleService.js';
+import { cityCodeToNameMap } from 'src/infrastructure/configs/cityConfigs.js';
 import { shareArticle } from '../utils/shareLink.js'
 import notify from 'src/utils/notify.js'
 import getName from 'src/utils/getNames.js'
-import { validAllBoardNamesInput } from 'src/utils/validator/validBoardNames.js'
-
 
 const { t } = useI18n({ useScope: 'global' })
 const users = useUserStore()
@@ -108,7 +120,6 @@ const router = useRouter()
 const route = useRoute()
 // const commentForm = ref("");
 const optionState = ref(false)
-const ratingForm = ref({ rate: 0, edited: false })
 const deleteDialog = ref(false);
 const editDialog = ref(false);
 
@@ -148,9 +159,6 @@ function handleArticleUpdated(rep) {
   editDialog.value = false
   emit('updateArticleList', { _id: article.value._id, ...rep.data });
 }
-let skip = 0;
-const limit = 10
-
 // meta
 const metaData = () => {
   return {
@@ -174,7 +182,6 @@ const metaData = () => {
 // meta在後端沒效 但可以給meta
 useMeta(metaData);
 
-
 // 初始頁面相關
 onServerPrefetch(async () => {
   const datas = await fetchArticle()
@@ -183,18 +190,11 @@ onServerPrefetch(async () => {
 })
 onBeforeMount(async () => {
   clientHandleDatas()
-  window.addEventListener('beforeunload', function (event) {
-  });
 })
 
 async function fetchArticle() {
   try {
-    const { data } = await getArticleDetail(props.articleId, skip,
-      limit,
-      {
-        commentId: route.query.commentId,
-        replyId: route.query.replyId,
-      })
+    const { data } = await getArticleDetail(props.articleId)
     return JSON.parse(JSON.stringify(data))
   } catch (error) {
     return null
@@ -203,6 +203,7 @@ async function fetchArticle() {
 
 async function clientHandleDatas() {
   let datas
+  // 如果是ssr 取出來的內容，直接使用，不然前端取
   if (ssrs.articleDetailPage_datas) {
     datas = ssrs.articleDetailPage_datas
     ssrs.articleDetailPage_datas = undefined
@@ -231,24 +232,7 @@ async function init(datas) {
     await notify(error);
   }
 }
-function scroll2Target(id) {
-  if (!import.meta.env.SSR) {
-    nextTick(() => {
-      const element = document.getElementById(`c-${id}`);
-      if (element) {
-        setTimeout(() => { element.scrollIntoView({ behavior: "smooth", block: "start" }); }, 800)
-      }
-    })
-  }
-}
 
-// 觸發同個網址,只有reply不同時,會自動下滑
-watch(() => route.query.commentId, () => {
-  // console.log("commentId changed:" + route.query.commentId);
-  scroll2Target(route.query.commentId)
-}, {
-  deep: true
-})
 </script>
 
 <style lang='sass' scoped>

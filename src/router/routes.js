@@ -40,7 +40,7 @@ const routes = [
     children: [
       // { path: '', name: 'articles', displayName: 'articles', component: () => import('src/pages/article/ArticleListPage.vue') },
       { path: 'create', name: 'createArticle', displayName: 'createArticle', component: () => import('src/pages/article/CreateArticlePage.vue'), beforeEnter: requireLogin },
-      // { path: ':id', name: 'articleDetail', displayName: 'articleDetail', component: () => import('src/pages/article/ArticleDetailPage.vue') },
+      { path: ':id', name: 'articleDetail', displayName: 'articleDetail', component: () => import('src/pages/article/ArticleDetailPage.vue') },
       // { path: 'edit/:id', name: 'articleEdit', displayName: 'articleDetail', component: () => import('src/pages/article/ArticleEditPage.vue') }
     ]
   },
