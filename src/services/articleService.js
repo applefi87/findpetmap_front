@@ -1,9 +1,9 @@
+import { is } from 'quasar';
 import { api, apiAuth } from 'src/boot/axios';
 
 export async function createArticle(form) {
   try {
     const sendForm = JSON.parse(JSON.stringify(form))
-    console.log(form);
     const objectCoordinates = JSON.parse(sendForm.coordinates)
     sendForm.location = {
       type: "Point",
@@ -34,15 +34,25 @@ export const uploadImage = async (articleId, formData) => {
 };
 
 
-// export async function editArticle(id, form) {
-//   try {
-//     const res = await apiAuth.post(`/article/edit/${id}`, form)
-//     return res
-//   } catch (error) {
-//     console.log("article-err");
-//     throw error
-//   }
-// }
+export async function updateArticle(strArticleId, form, images) {
+  try {
+    const sendForm = JSON.parse(JSON.stringify(form))
+    const objectCoordinates = JSON.parse(sendForm.coordinates)
+    sendForm.location = {
+      type: "Point",
+      // 後台統一是先經再緯
+      coordinates: [objectCoordinates[1], objectCoordinates[0]]
+    }
+    delete sendForm.coordinates
+    // 加工舊有圖片清單
+    sendForm.updateImageList = images.filter(image => image.id).map(image => { return { isPreview: image.isPreview, id: image.id } })
+
+    return await apiAuth.put('/article/update/' + strArticleId, sendForm)
+  } catch (error) {
+    console.log("article-err", error);
+    throw error
+  }
+}
 
 export async function deleteArticle(id) {
   try {

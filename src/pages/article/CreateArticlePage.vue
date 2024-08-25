@@ -102,10 +102,6 @@ const articleForm = reactive({
   content: '我的狗不建了',
 })
 
-setInterval(() => {
-  console.log(articleForm.coordinates);
-}, 2000);
-
 const updateRewardAmount = (value) => {
   if (!value) {
     articleForm.rewardAmount = 0;

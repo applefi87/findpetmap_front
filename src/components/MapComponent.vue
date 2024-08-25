@@ -4,6 +4,8 @@
     <div id="map" style="height: 100%; width: 900px"></div>
     <q-btn @click="locateHere" :label="t('locateHere')" />
   </div>
+  <q-btn v-if="users.token" class="q-my-md circle-float" color="primary" fab round floating icon="add"
+    to="/article/create" />
   <q-dialog v-model="articleDialog" :maximized="$q.platform.is.mobile" @before-hide="back2ArticleDetail">
     <q-card style="max-width:820px">
       <q-bar style="background: transparent; position: sticky; top: 0; z-index: 1;">
@@ -13,7 +15,7 @@
         </q-btn>
       </q-bar>
       <ArticleDetail :articleId="articleId" v-if="articleId" @articleDeleted="articleDeleted"
-        @updateArticleList="updateArticleList" />
+        @updateArticleList="updateArticleList" @backPage="back2ArticleDetail" />
     </q-card>
   </q-dialog>
 </template>
@@ -21,11 +23,13 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useUserStore } from 'src/stores/user'
 import "leaflet/dist/leaflet.css";
 import * as  articleService from 'src/services/articleService.js';
 import ArticleDetail from 'src/components/ArticleDetail.vue';
 
 const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
+const users = useUserStore()
 let map;
 let Leaflet;
 const centerMarker = ref(null);
@@ -136,6 +140,7 @@ function getCurrentPositionSuccessHandler(newPosition) {
 // Set to store already added article IDs
 const addedArticleIds = new Set();
 
+const markerList = {};
 async function handleMapDrag() {
   const bounds = map.getBounds();
   const bottomLeft = bounds.getSouthWest();
@@ -160,42 +165,49 @@ async function handleMapDrag() {
     const articles = response.data.articles;
     console.log(articles.length);
     articles.forEach(article => {
-      if (!addedArticleIds.has(article._id)) {
-        const iconHtml = `
-            <div style="text-align: center;">
-              <img src="https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${article.previewImage}" style="width: 80px; height: 80px;" />
-              <div style="background-color: white; padding: 2px; border-radius: 3px;">
-                ${article.rewardAmount}
-              </div>
-            </div>
-          `;
-
-        const customIcon = L.divIcon({
-          html: iconHtml,
-          className: '', // Add a custom class if needed for styling
-          iconSize: [30, 42], // Adjust size based on your design
-          iconAnchor: [15, 42], // The point of the icon which will correspond to the marker's location
-          popupAnchor: [0, -42], // The point from which the popup should open relative to the iconAnchor
-        });
-        // 後台傳來統一先經再緯度，但leaflet 事先緯再經度
-        const marker = L.marker([article.location.coordinates[1], article.location.coordinates[0]], {
-          icon: customIcon,
-          title: article.lostDistrict,
-        }).addTo(map);
-
-        marker.on('click', () => {
-          console.log("id:" + article._id);
-          openArticleDetail(article._id)
-        });
-
-        // Store the article ID in the set to prevent duplication
-        addedArticleIds.add(article._id);
-      }
+      const marker = createArticleMarker(article);
     })
   }
 }
 
+function createArticleMarker(article) {
+  if (addedArticleIds.has(article._id)) return
+  // Generate the HTML for the custom icon
+  const iconHtml = `
+    <div style="text-align: center;">
+      <img src="https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${article.previewImage}" style="width: 80px; height: 80px;" />
+      <div style="background-color: white; padding: 2px; border-radius: 3px;">
+        ${article.rewardAmount}
+      </div>
+    </div>
+  `;
 
+  // Create the custom icon using Leaflet's divIcon
+  const customIcon = L.divIcon({
+    html: iconHtml,
+    className: '', // Add a custom class if needed for styling
+    iconSize: [30, 42], // Adjust size based on your design
+    iconAnchor: [15, 42], // The point of the icon which will correspond to the marker's location
+    popupAnchor: [0, -42], // The point from which the popup should open relative to the iconAnchor
+  });
+
+  // Create the marker with the custom icon
+  const marker = L.marker([article.location.coordinates[1], article.location.coordinates[0]], {
+    icon: customIcon,
+    title: article.lostDistrict,
+  }).addTo(map);
+
+  // Attach a click event to the marker
+  marker.on('click', () => {
+    console.log("id:" + article._id);
+    openArticleDetail(article._id);
+  });
+  markerList[article._id] = marker;
+  // Store the article ID in the set to prevent duplication
+  addedArticleIds.add(article._id);
+  // Optionally return the marker in case you need to do further operations on it
+  return marker;
+}
 
 
 const articleDialog = ref(false);
@@ -211,12 +223,11 @@ function back2ArticleDetail() {
   window.history.pushState({}, '', generateArticleUrl())
 }
 function generateArticleUrl(id) {
-  let result
-  result = `/article/`
   if (id) {
-    result += `${id}`
+    return `/article/${id}`
+  } else {
+    return "/"
   }
-  return result;
 }
 // 網址相關
 const handleBackButton = (event) => {
@@ -229,23 +240,30 @@ const handleBackButton = (event) => {
 };
 
 function updateArticleList(article) {
-  const theArticle = articleList.value.findIndex(a => a._id.toString() === article._id)
+  const theArticle = markerList[article._id]
   if (theArticle) {
-    theArticle.title = article.title
-    theArticle.content = article.content
-    theArticle.previewContent = article.previewContent
-    theArticle.thumbnail = article.thumbnail
+    delete markerList[article._id]
+    const marker = createArticleMarker(article);
   }
 }
 
 // Delete related
 const articleDeleted = (id) => {
-  articleId.value = null
-  const deletedIndex = articleList.value.findIndex(article => article._id === id);
-  if (deletedIndex !== -1) {
-    articleList.value.splice(deletedIndex, 1);
-  }
+  delete markerList[id]
   back2ArticleDetail()
 };
 
 </script>
+<style lang='sass' scoped>
+.circle-float
+  position: fixed
+  bottom: 20px
+  right: 20px
+  width: 60px
+  height: 60px
+  border-radius: 50%
+  display: flex
+  justify-content: center
+  align-items: center
+  z-index: 9999
+</style>

@@ -1,6 +1,6 @@
 <!-- 文章詳情，裡面包了許多元件，像留言區 留言清單 編輯文章的浮動式窗 -->
 <template>
-  <div class="q-mt-md">
+  <div class="q-mt-md" style="width:90vw">
     <q-card v-if="article">
       <q-card-section>
         <div class="text-subtitle2 q-mt-sm row justify-between ">
@@ -112,7 +112,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from 'src/stores/user'
 import { useSSRStore } from 'src/stores/ssr.js'
-import ArticleEdit from 'src/pages/article/ArticleEditPage.vue';
+import ArticleEdit from 'src/components/ArticleUpdate.vue';
 import { getArticleDetail, deleteArticle } from 'src/services/articleService.js';
 import { cityCodeToNameMap } from 'src/infrastructure/configs/cityConfigs.js';
 import { shareArticle } from '../utils/shareLink.js'
@@ -133,8 +133,6 @@ const editDialog = ref(false);
 const props = defineProps({
   onlyView: Boolean,
   articleId: String,
-  commentId: String,
-  replyId: String,
 });
 
 function openDeleteDialog() {
@@ -144,7 +142,7 @@ function openEditDialog() {
   editDialog.value = true;
 }
 
-const emit = defineEmits(['articleDeleted', "updateArticleList"])
+const emit = defineEmits(['articleDeleted', "updateArticleList", "backPage"])
 
 async function handleDeleteArticle() {
   try {
@@ -157,15 +155,22 @@ async function handleDeleteArticle() {
     await notify(error);
   }
 }
-
-function handleArticleUpdated(rep) {
-  article.value.title = rep.data.title
-  article.value.content = rep.data.content
-  article.value.previewContent = rep.data.previewContent
-  article.value.thumbnail = rep.data.thumbnail
+// 雖然也可以重整頁面，但考量部分情境是彈出視窗的articleDetail, 編輯頁面連地圖也要重載入，還是不要重整
+async function handleArticleUpdated() {
   editDialog.value = false
-  emit('updateArticleList', { _id: article.value._id, ...rep.data });
+  await fetchAndInit()
 }
+
+async function fetchAndInit() {
+  const newDatas = await fetchArticle()
+  if (!newDatas) {
+    await notify(t('noFoundArticle'))
+    emit('backPage');
+    return
+  }
+  init(newDatas)
+}
+
 // meta
 const metaData = () => {
   return {
@@ -191,7 +196,9 @@ useMeta(metaData);
 
 // 初始頁面相關
 onServerPrefetch(async () => {
+  // TODO ssr 遇到沒有頁面，要怎麼處理，但應該是把錯誤內容留給前端重顯示一次
   const datas = await fetchArticle()
+  if (!datas) { return }
   ssrs.articleDetailPage_datas = datas
   init(datas)
 })
@@ -200,6 +207,7 @@ onBeforeMount(async () => {
 })
 
 async function fetchArticle() {
+  console.log("fetchArticle");
   try {
     const { data } = await getArticleDetail(props.articleId)
     return JSON.parse(JSON.stringify(data))
@@ -209,25 +217,22 @@ async function fetchArticle() {
 }
 
 async function clientHandleDatas() {
-  let datas
   // 如果是ssr 取出來的內容，直接使用，不然前端取
   if (ssrs.articleDetailPage_datas) {
-    datas = ssrs.articleDetailPage_datas
-    ssrs.articleDetailPage_datas = undefined
+    let datas = ssrs.articleDetailPage_datas
+    delete ssrs.articleDetailPage_datas
+    init(datas)
     // console.log("have ssrs.article");
   } else {
+    console.log("clientHandleDatas");
     // console.log("no ssrs.article");
-    const newDatas = await fetchArticle()
-    if (!newDatas) return notify(t('noFoundArticle'))
-    datas = newDatas
+    await fetchAndInit()
   }
-  init(datas)
 }
 
 watch(() => props.articleId, async () => {
-  const newDatas = await fetchArticle()
-  if (!newDatas) return notify(t('noFoundArticle'))
-  init(newDatas)
+  console.log("watch");
+  await fetchAndInit()
 })
 
 async function init(datas) {

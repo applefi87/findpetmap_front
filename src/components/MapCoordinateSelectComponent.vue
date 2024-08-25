@@ -3,13 +3,13 @@
     <q-btn @click="toggleMap" :label="isMapOpen ? t('closeMap') : t('openMap')" class="q-mb-md" />
 
     <q-dialog v-model="isMapOpen" @show="initializeMap" @hide="destroyMap">
-      <q-card>
+      <q-card style="width: 80%">
         <q-card-section>
           <div style="position: relative;">
             <q-btn @click="closeMap" :label="t('close')" class="absolute-top-right q-mr-md q-mt-md" flat round
               icon="close" />
             <br />
-            <div id="map" style="height: 80vh; width: 70vw; margin: 0 auto;"></div>
+            <div id="map" style="height: 80vh; width: 100%; margin: 0 auto;"></div>
           </div>
         </q-card-section>
         <q-card-actions align="center">
@@ -99,10 +99,11 @@ const initializeMap = async () => {
         isUpdatingMarker = false;
       }
     });
-  } else {
-    map.invalidateSize(); // Recalculate map size
-    map.setView(map.getCenter(), map.getZoom()); // Re-center the map
   }
+  // else {
+  //   map.invalidateSize(); // Recalculate map size
+  //   map.setView(map.getCenter(), map.getZoom()); // Re-center the map
+  // }
 };
 
 const destroyMap = () => {
