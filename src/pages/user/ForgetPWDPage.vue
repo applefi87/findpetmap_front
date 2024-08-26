@@ -43,8 +43,8 @@ import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import notify from 'src/utils/notify'
 import { sendForgetPWDCode, resetPWD } from '../../services/user.js';
-import { rules, createI18nRules } from 'an-validator';
-
+import anv from 'an-validator';
+const { rules, createI18nRules } = anv
 
 const { t } = useI18n({ useScope: 'global' })
 const users = useUserStore()

@@ -21,11 +21,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import "leaflet/dist/leaflet.css";
 import * as  articleService from 'src/services/articleService.js';
+
 import ArticleDetail from 'src/components/ArticleDetail.vue';
 
 const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
@@ -34,6 +35,40 @@ let map;
 let Leaflet;
 const centerMarker = ref(null);
 const loadedRegions = ref([]);
+
+const props = defineProps({
+  filter: Object
+});
+
+function isEqual(obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
+
+watch(() => props.filter, async (newFilter, oldFilter) => {
+  if (!isEqual(newFilter, oldFilter)) {
+    console.log("try clear old data");
+    clearOldData();
+    await handleMapDrag();
+  }
+}, { deep: true });
+function clearOldData() {
+  clearAllMarkers();
+  loadedRegions.value = []
+  addedArticleIds = new Set();
+  markerList = {};
+}
+function clearAllMarkers() {
+  for (const id in markerList) {
+    console.log("remove marker", id);
+    if (markerList[id]) {
+      console.log("have mark");
+      markerList[id].remove(); // Remove the marker from the map
+      console.log(markerList[id]);
+    }
+  }
+  Object.keys(markerList).forEach(key => delete markerList[key]);
+}
+
 
 const getCurrentPosition = () => {
   if ("geolocation" in navigator) {
@@ -51,7 +86,6 @@ const locateHere = () => {
   getCurrentPosition();
 }
 
-
 onMounted(async () => {
   console.log('Current Locale:', locale.value);
   console.log('Available Locales:', availableLocales);
@@ -60,7 +94,7 @@ onMounted(async () => {
   console.log('Translation for key "account":', t('account'));
   const isServerSide = process.env.SERVER
   if (!isServerSide) {
-
+    await nextTick()
     Leaflet = await import('leaflet');
     map = Leaflet.map('map').setView([25.0474014, 121.5374556], 13);
     Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -136,11 +170,8 @@ function getCurrentPositionSuccessHandler(newPosition) {
   }
 }
 
-// Handle the map dragging event
-// Set to store already added article IDs
-const addedArticleIds = new Set();
-
-const markerList = {};
+let addedArticleIds = new Set();
+let markerList = {};
 async function handleMapDrag() {
   const bounds = map.getBounds();
   const bottomLeft = bounds.getSouthWest();
@@ -157,7 +188,7 @@ async function handleMapDrag() {
   });
 
   if (!isRegionAlreadyLoaded) {
-    const response = await articleService.getArticleByRegion(bottomLeft, topRight)
+    const response = await articleService.getArticleByRegion(bottomLeft, topRight, props.filter)
     if (!response.success) return
     const region = response.data.region;
     loadedRegions.value.push(region);
@@ -169,6 +200,7 @@ async function handleMapDrag() {
     })
   }
 }
+
 
 function createArticleMarker(article) {
   if (addedArticleIds.has(article._id)) return

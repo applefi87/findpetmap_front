@@ -35,7 +35,8 @@ import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { changePWD } from '../../services/user.js';
-import { rules, createI18nRules } from 'an-validator';
+import anv from 'an-validator';
+const { rules, createI18nRules } = anv
 const router = useRouter()
 const { t } = useI18n({ useScope: 'global' })
 const pwdChanged = ref(false)
@@ -44,6 +45,7 @@ const isPwd = ref(true)
 const users = useUserStore()
 const form = reactive({ password: '', newPWD: '' })
 const account = ref('')
+
 
 const handleChangePWD = async () => {
   try {

@@ -17,10 +17,11 @@ export async function createArticle(form) {
   }
 }
 
-export const getArticleByRegion = async (bottomLeft, topRight) => {
+export const getArticleByRegion = async (bottomLeft, topRight, filter) => {
   return await api.post('/article/', {
     bottomLeft,
-    topRight
+    topRight,
+    filter
   })
 };
 

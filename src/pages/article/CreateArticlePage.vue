@@ -19,7 +19,7 @@
               <q-popup-proxy ref="datePicker" cover transition-show="scale" transition-hide="scale">
                 <q-date v-model="articleForm.lostDate" @update:model-value="() => { datePicker.hide() }">
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="t('close')" color="primary" flat />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -61,7 +61,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { rules, createI18nRules } from 'an-validator';
+import anv from 'an-validator';
 import { useRouter } from 'vue-router'
 import notify from 'src/utils/notify.js'
 // import { useUserStore } from 'stores/user';
@@ -69,6 +69,7 @@ import { cityCodeToNameMap, cityCodeToAreaList } from 'src/infrastructure/config
 import articleConfigs from 'src/infrastructure/configs/articleConfigs.js';
 import * as  articleService from 'src/services/articleService.js';
 import MapSelectorComponent from 'components/MapCoordinateSelectComponent.vue'; // Import your new component
+const { rules, createI18nRules } = anv
 
 const router = useRouter()
 // const users = useUserStore();

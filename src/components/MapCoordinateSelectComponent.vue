@@ -71,34 +71,37 @@ const closeMap = () => {
 const initializeMap = async () => {
   await nextTick(); // Ensure the DOM is updated
   if (!map) {
-    Leaflet = await import('leaflet');
-    map = Leaflet.map('map').setView(internalCoordinates.value || [25.0474014, 121.5374556], 13);
-    Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      minZoom: 8,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
+    // 不然偶爾會警告沒有map這html
+    setTimeout(async () => {
+      Leaflet = await import('leaflet');
+      map = Leaflet.map('map').setView(internalCoordinates.value || [25.0474014, 121.5374556], 13);
+      Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        minZoom: 8,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
 
-    if (!internalCoordinates.value) {
-      map.on("locationfound", (e) => {
-        if (!internalCoordinates.value) {
-          map.setView(e.latlng, e.accuracy / 2)
-        }
-      })
-      getCurrentPosition();
-    }
-
-    map.on('moveend', handleMapDrag);
-
-    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map);
-    let isUpdatingMarker = false;
-    map.on('move', (event) => {
-      if (!isUpdatingMarker) {
-        isUpdatingMarker = true;
-        centerMarker.value.setLatLng(event.target.getCenter());
-        isUpdatingMarker = false;
+      if (!internalCoordinates.value) {
+        map.on("locationfound", (e) => {
+          if (!internalCoordinates.value) {
+            map.setView(e.latlng, e.accuracy / 2)
+          }
+        })
+        getCurrentPosition();
       }
-    });
+
+      map.on('moveend', handleMapDrag);
+
+      centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map);
+      let isUpdatingMarker = false;
+      map.on('move', (event) => {
+        if (!isUpdatingMarker) {
+          isUpdatingMarker = true;
+          centerMarker.value.setLatLng(event.target.getCenter());
+          isUpdatingMarker = false;
+        }
+      });
+    }, 100);
   }
   // else {
   //   map.invalidateSize(); // Recalculate map size
