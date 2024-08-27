@@ -207,7 +207,7 @@ function createArticleMarker(article) {
   // Generate the HTML for the custom icon
   const iconHtml = `
     <div style="text-align: center;">
-      <img src="https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${article.previewImage}" style="width: 80px; height: 80px;" />
+      <img src="https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${article.previewImage}" class="markerImage" />
       <div style="background-color: white; padding: 2px; border-radius: 3px;">
         ${article.rewardAmount}
       </div>
@@ -294,7 +294,7 @@ const articleDeleted = (id) => {
 };
 
 </script>
-<style lang='sass' scoped>
+<style lang='sass'>
 .circle-float
   position: fixed
   bottom: 20px
@@ -306,4 +306,8 @@ const articleDeleted = (id) => {
   justify-content: center
   align-items: center
   z-index: 9999
+.markerImage
+  width: 80px !important
+  height: 80px !important
+  border-radius: 40px !important
 </style>

@@ -102,7 +102,7 @@ function onRegisterSuccess() {
 
 async function handlechangeInterfaceLang(value) {
   try {
-    $q.cookies.set('interfaceLanguage', value, { expires: 365, path: '/' })
+    $q.cookies.set('interfaceLanguage', value, { expires: 365, path: '/', sameSite: 'Lax' })
     // $q.cookies.set('interfaceLanguage', locale.value, { expires: 365, sameSite: 'Lax', httpOnly: true, secure: true })
   } catch (error) {
     console.log(error)
