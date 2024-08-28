@@ -53,9 +53,12 @@ const handleChangePWD = async () => {
     pwdVerifying.value = true
     const res = await changePWD(form)
     await notify(res)
+    // 印象要這樣取最新的，淡忘記理由 之後測試否必要
+    // 似乎是別的程式會直接改，這時users 要重用才會是最新的
+    // const users = useUserStore()
     if (res.success || !users.token) {
       users.clearLocalStorageAndCookie();
-      router.push('/')
+      router.go(0)
     }
     pwdVerifying.value = false
   } catch (error) {

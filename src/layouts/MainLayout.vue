@@ -7,12 +7,18 @@
         <q-scroll-area class="fit">
           <q-list padding>
             <q-item class="custom-item" v-for="(item, index) in drawerItems" :key="index" clickable v-ripple
-              @click="navigateTo(item)">
+              @click="handleAction(item)">
+              <q-item-section avatar>
+                <q-icon :name="item.icon" />
+              </q-item-section>
               <q-item-section>
-                <!-- <q-item-label class="custom-label">{{ t(item.label) }}</q-item-label> -->
+                <q-item-label class="custom-label">{{ t(item.label) }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
+          <!-- <b>{{ t('contactUs:') }}</b>
+          <br>
+          <b>applefi87@gmail.com</b> -->
         </q-scroll-area>
       </q-drawer>
       <q-page-container>
@@ -25,8 +31,14 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import AppHeader from 'components/AppHeader.vue';
 import { useI18n } from 'vue-i18n'
+import { useUserStore } from 'src/stores/user'
+import AppHeader from 'src/components/AppHeader.vue';
+import { logout } from '../services/user.js';
+import notify from 'src/utils/notify'
+
+
+
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -37,14 +49,31 @@ const toggleLeftDrawer = () => {
 };
 const router = useRouter()
 const drawerItems = [
-  { label: 'articleList', route: 'article' },
-  { label: 'boardList', route: 'board' },
+  { label: "userInfo", route: '/me', icon: 'contact_page' },
+  // { label: "setting", route: '/me/setting', icon: 'settings' },
+  { label: "logout", route: '', icon: 'logout', action: handleLogout },
 ]
 
-const navigateTo = (item) => {
+async function handleLogout() {
+  try {
+    await logout();
+  } catch (error) {
+  } finally {
+    // At final for apiauth can remove jwt
+    // Not at appheader for after post then must quickly remove data. not wait after notify.
+    const users = useUserStore();
+    users.clearLocalStorageAndCookie();
+    await notify({ success: true, message: { title: t("logoutSuccess") } });
+    router.go(0)
+  }
+}
+
+const handleAction = (item) => {
   if (item.route) {
-    router.push("/" + item.route)
+    router.push(item.route)
     leftDrawer.value = false
+  } else if (item.action) {
+    item.action()
   }
 }
 

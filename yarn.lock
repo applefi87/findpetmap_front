@@ -906,10 +906,10 @@ ajv@^8.0.1:
     json-schema-traverse "^1.0.0"
     require-from-string "^2.0.2"
 
-an-validator@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/an-validator/-/an-validator-2.3.0.tgz#fbd0b8e2ca1870e38011a6bf524ade49c8294d61"
-  integrity sha512-K/68Qu/x9llN/guem16uLtJRnCziqnFg9ph5r5zrPJhlPq58gwPKSU2XiMfXjOithn44xria10NYidTecAjyKQ==
+an-validator@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/an-validator/-/an-validator-3.0.0.tgz#283918c6c6d2f63ab342d873c145f42f97df4135"
+  integrity sha512-Se/v/qA5SGg26eGRCm/XgtORcI+qznbXBiNlIcC0vc3h2y6shDLz7aLlTiNmsXw+cW9uUhXtFpLNoPaIrn50bA==
 
 ansi-escapes@^4.3.0, ansi-escapes@^4.3.2:
   version "4.3.2"

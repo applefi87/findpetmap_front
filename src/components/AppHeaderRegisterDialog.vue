@@ -89,8 +89,7 @@ const { rules, createI18nRules } = avValidator
 const users = useUserStore();
 const registerState = inject('registerState');
 const emit = defineEmits(['register-success']);
-// const { t } = useI18n();
-const t = key => key
+const { t } = useI18n();
 // Refs
 const mustSchool = false;
 const isPwd = ref(true);

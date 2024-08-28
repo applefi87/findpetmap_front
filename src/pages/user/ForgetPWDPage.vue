@@ -16,8 +16,8 @@
         </q-btn>
 
         <q-input filled v-model="form.verificationCode" :label='t("verificationCode")'
-          :rules="createI18nRules(rules.createRules, t, 'standard', true, 10)" ref="mailCodeValid"> <template
-            v-slot:before>
+          :rules="createI18nRules(rules.createRules, t, verificationCodeMode, true, verificationCodeLength)"
+          ref="mailCodeValid"> <template v-slot:before>
             {{ identifier }}
           </template>
         </q-input>
@@ -42,6 +42,7 @@ import { ref, reactive } from 'vue'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import notify from 'src/utils/notify'
+import emailConfigs from 'src/infrastructure/configs/emailConfigs.js'
 import { sendForgetPWDCode, resetPWD } from '../../services/user.js';
 import anv from 'an-validator';
 const { rules, createI18nRules } = anv
@@ -73,6 +74,9 @@ const handleSendForgetPWDCode = async () => {
     mailSending.value = false
   }
 }
+const type = "forgetPWD"
+const verificationCodeLength = emailConfigs[`${type}VerificationCode`].codeRandomLength
+const verificationCodeMode = emailConfigs[`${type}VerificationCode`].codeRandomMode
 
 // 驗證email
 const mailVerifying = ref(false)

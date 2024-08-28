@@ -46,7 +46,7 @@ export const register = async (form) => {
 //
 export async function sendForgetPWDCode(emailObj, lang) {
   try {
-    const res = await api.post('/email/sendForgetPWDCode', { ...emailObj, lang })
+    const res = await api.post('/email/forgetPWDCode/send', { ...emailObj })
     return res
   } catch (error) {
     return error
@@ -62,11 +62,6 @@ export async function changePWD(form) {
     // console.log("user:" + JSON.stringify(res));
     return res
   } catch (error) {
-    if (error.action === "logout") {
-      console.log("e-changePWD-logout");
-      const users = useUserStore();
-      users.clearLocalStorageAndCookie();
-    }
     console.log("user-err:" + JSON.stringify(error));
     return error
   }

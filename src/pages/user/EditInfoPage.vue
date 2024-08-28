@@ -4,12 +4,6 @@
     <q-toolbar>
       <q-toolbar-title>{{ t('editUserInfo') }}</q-toolbar-title>
     </q-toolbar>
-    <div class="text-subtitle2 q-mt-sm">
-      <q-no-ssr>
-        <q-avatar size="100px" v-if="users.profileImageUrl"><img :src="users.profileImageUrl" /> </q-avatar>
-      </q-no-ssr>
-    </div>
-    <q-btn to="/me/editProfile" :label="t('editProfileImage')" outline color="primary" />
     <q-form @submit.prevent="handleEditUserInfo">
       <q-select v-model="userInfo.interfaceLanguage" :options="refLanguageOptions" :label="t('interfaceLanguage')" />
       <q-btn type="submit" class="q-mt-md" :label="t('save')" />

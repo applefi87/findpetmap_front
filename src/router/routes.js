@@ -54,19 +54,19 @@ const routes = [
       { path: 'forgetPWD', name: 'forgetPWD', displayName: 'forgetPWD', component: () => import('src/pages/user/ForgetPWDPage.vue'), beforeEnter: requireNotLogin },
     ]
   },
-  // {
-  //   path: '/me',
-  //   displayName: 'me',
-  //   name: 'me',
-  //   component: () => import('layouts/MainLayout.vue'),
-  //   children: [
-  //     { path: '', name: 'userInfo', displayName: 'userInfo', component: () => import('src/pages/user/UserInfoPage.vue') },
-  //     { path: 'setting', name: 'setting', displayName: 'setting', component: () => import('src/pages/user/SettingPage.vue') },
-  //     { path: 'changePWD', name: 'changePWD', displayName: 'changePWD', component: () => import('src/pages/user/ChangePWDPage.vue') },
-  //     { path: 'edit', name: 'editMe', displayName: 'editMe', component: () => import('src/pages/user/EditInfoPage.vue') },
-  //   ],
-  //   beforeEnter: requireLogin
-  // },
+  {
+    path: '/me',
+    displayName: 'me',
+    name: 'me',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      // { path: '', name: 'userInfo', displayName: 'userInfo', component: () => import('src/pages/user/UserInfoPage.vue') },
+      { path: '', name: 'userInfo', displayName: 'userInfo', component: () => import('src/pages/user/SettingPage.vue') },
+      { path: 'changePWD', name: 'changePWD', displayName: 'changePWD', component: () => import('src/pages/user/ChangePWDPage.vue') },
+      // { path: 'edit', name: 'editMe', displayName: 'editMe', component: () => import('src/pages/user/EditInfoPage.vue') },
+    ],
+    beforeEnter: requireLogin
+  },
   // Handle 404 errors with ErrorNotFound component
   {
     path: '/:pathMatch(.*)*',

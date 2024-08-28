@@ -17,8 +17,12 @@ export function updateDataToLocalStorageAndCookie(key, data) {
 
 
 export function doesCookieExist(key) {
-  const regex = new RegExp('(?:^|;\\s*)' + encodeURIComponent(key) + '=');
-  return regex.test(decodeURIComponent(document.cookie));
+  // Create a regex to match the cookie by key
+  const regex = new RegExp('(?:^|;\\s*)' + encodeURIComponent(key) + '=([^;]*)');
+  // Match the cookie in the document.cookie string
+  const match = regex.exec(decodeURIComponent(document.cookie));
+  // Check if the cookie exists and has a defined, non-empty value
+  return match !== null && match[1] !== "undefined" && match[1] !== '';
 }
 
 export function removeCookie(key) {

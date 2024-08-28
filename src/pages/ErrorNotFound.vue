@@ -1,10 +1,12 @@
 <template>
   <q-layout>
     <q-page-container>
-      <q-page>
-        <div class="text-h2">{{ t('404NotFound') }}</div>
-        <div class="text-body-1">{{ t('pageNotExist') }}</div>
-      </q-page>
+      <q-no-ssr>
+        <q-page>
+          <div class="text-h2">{{ t('404NotFound') }}</div>
+          <div class="text-body-1">{{ t('pageNotExist') }}</div>
+        </q-page>
+      </q-no-ssr>
     </q-page-container>
   </q-layout>
 </template>

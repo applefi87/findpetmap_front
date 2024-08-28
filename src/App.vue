@@ -29,10 +29,10 @@ try {
     // locale.value = "zh-TW"
 
     // If any match then not regular state so need to reset all as server rendered preference.
-    if (!localStorage.getItem("users") || !doesCookieExist("interfaceLanguage") || !doesCookieExist("searchLanguages") || !doesCookieExist("publishLanguages") || (doesCookieExist("token") && !users.token) || (!doesCookieExist("token") && users.token)) {
-      console.log("Welcome to KnowForum first time! Setting preference for you in localStorage & Cookie~");
+    if (!localStorage.getItem("users") || !doesCookieExist("interfaceLanguage") || (doesCookieExist("token") && !users.token) || (!doesCookieExist("token") && users.token)) {
+      console.log("Welcome to PetFinder first time! Setting preference for you in localStorage & Cookie~");
       users.clearLocalStorageAndCookie()
-      updateDataToLocalStorageAndCookie("interfaceLanguage", backendInterfaceLanguage);
+      updateDataToLocalStorageAndCookie("interfaceLanguage", locale.value);
     }
   }
 } catch (error) {
