@@ -3,10 +3,20 @@
   <div class="q-mt-md" style="width:90vw">
     <q-card v-if="article">
       <q-card-section>
+        <q-carousel v-model="slide" v-model:fullscreen="fullscreen" transition-prev="scale" transition-next="scale"
+          swipeable animated control-color="white" padding arrows height="300px" width="90%" infinite thumbnails
+          class="bg-primary text-white shadow-1 rounded-borders">
+          <q-carousel-slide v-for="(image, index) in article.images" :key="index" :name="index + 1"
+            class="carousel-image"
+            :img-src="`https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${image.fullPath}`" />
+          <template v-slot:control>
+            <q-carousel-control position="bottom-right" :offset="[18, 18]">
+              <q-btn push round dense color="white" text-color="primary"
+                :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'" @click="fullscreen = !fullscreen" />
+            </q-carousel-control>
+          </template>
+        </q-carousel>
         <div class="text-subtitle2 q-mt-sm row justify-between ">
-          <div>
-            <!-- {{ article.user.nickname }} -->
-          </div>
           <div>
             <q-btn-dropdown v-if="article.isSelf" v-model="optionState" icon="more_horiz" flat round>
               <q-list>
@@ -59,14 +69,6 @@
                 {{ article.hasMicrochip ? t('yes') : t('no') }}
               </q-item-label>
             </q-card-section>
-            <q-card-section>
-              <div v-if="article.images.length > 0" class="q-mt-md">
-                <div v-for="(image, index) in article.images" :key="index" class="q-mb-md row items-center">
-                  <q-img :src="`https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${image.fullPath}`"
-                    style="width: 100px; height: 100px; object-fit: cover;" />
-                </div>
-              </div>
-            </q-card-section>
             <div class="text-caption q-mt-sm " style="color: gray;">
               {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full', timeStyle: 'medium' }).format(new
       Date(article.createdAt)) }}
@@ -97,9 +99,7 @@
             <q-tooltip>{{ t('close') }}</q-tooltip>
           </q-btn>
         </q-bar>
-        <q-card-section style="padding-top: 0;">
-          <ArticleEdit :article="article" @articleUpdated="handleArticleUpdated" @close="editDialog = false" />
-        </q-card-section>
+        <ArticleUpdateComponent :article="article" @articleUpdate="handleArticleUpdated" @close="editDialog = false" />
       </q-card>
     </q-dialog>
   </div>
@@ -109,10 +109,9 @@
 import { ref, onBeforeMount, watch, onServerPrefetch } from 'vue'
 import { date, useMeta } from 'quasar'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from 'src/stores/user'
 import { useSSRStore } from 'src/stores/ssr.js'
-import ArticleEdit from 'src/components/ArticleUpdate.vue';
+import ArticleUpdateComponent from 'src/components/ArticleUpdate.vue';
 import * as articleService from 'src/services/articleService.js';
 import { cityCodeToNameMap } from 'src/infrastructure/configs/cityConfigs.js';
 import { shareArticle } from '../utils/shareLink.js'
@@ -123,12 +122,14 @@ const { t } = useI18n({ useScope: 'global' })
 const users = useUserStore()
 const ssrs = useSSRStore()
 const article = ref(null);
-const router = useRouter()
-const route = useRoute()
+
 // const commentForm = ref("");
 const optionState = ref(false)
 const deleteDialog = ref(false);
 const editDialog = ref(false);
+
+const slide = ref(1)
+const fullscreen = ref(false)
 
 const props = defineProps({
   onlyView: Boolean,
@@ -283,5 +284,14 @@ async function init(datas) {
 .badge-image
   max-width: 50px
   max-height: 50px
+
+.carousel-image
+  width: 100%
+  height: 100%
+  background-size: contain  /* Ensures the image fits inside without cropping */
+  background-position: center  /* Centers the image */
+  background-repeat: no-repeat  /* Prevents the image from repeating */
+
+
 
 </style>

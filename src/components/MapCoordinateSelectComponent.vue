@@ -70,11 +70,14 @@ const closeMap = () => {
 
 const initializeMap = async () => {
   await nextTick(); // Ensure the DOM is updated
+  if (map && map.remove) {
+    map.remove(); // Remove the existing map instance if it exists
+  }
   if (!map) {
     // 不然偶爾會警告沒有map這html
     setTimeout(async () => {
       Leaflet = await import('leaflet');
-      map = Leaflet.map('map').setView(internalCoordinates.value || [25.0474014, 121.5374556], 13);
+      map = Leaflet.map('map').setView(internalCoordinates.value || [25.0474014, 121.5374556], 15);
       Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         minZoom: 8,
