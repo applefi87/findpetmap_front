@@ -107,7 +107,7 @@
 
 <script setup>
 import { ref, onBeforeMount, watch, onServerPrefetch } from 'vue'
-import { date, useMeta } from 'quasar'
+import { useMeta } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import { useSSRStore } from 'src/stores/ssr.js'
