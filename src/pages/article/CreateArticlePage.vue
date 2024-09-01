@@ -21,8 +21,12 @@ const { t } = useI18n({ useScope: 'global' })
 const emit = defineEmits(["close"]);
 
 // const articleForm = reactive({
+// title: "",
 //   petType: '',
 //   color: '',
+//   gender: '',
+//   size: '',
+//   age: null,
 //   hasMicrochip: false,
 //   hasReward: false,
 //   rewardAmount: 0,
@@ -33,8 +37,13 @@ const emit = defineEmits(["close"]);
 //   content: '',
 // })
 const articleForm = reactive({
+  title: "寶貝名",
   petType: '貓',
+  breed: "波斯貓",
   color: '黑',
+  gender: 'F',
+  size: 'M',
+  age: 1.5,
   hasMicrochip: false,
   hasReward: false,
   rewardAmount: 0,

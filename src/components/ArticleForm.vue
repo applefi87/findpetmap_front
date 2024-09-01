@@ -6,7 +6,10 @@
 
         <!-- a center circle image for diaplay the select isPreview image as it on map icon-->
         <div v-if="images.length > 0" class="q-mb-md row justify-center">
-          <div v-for="image in images.filter(i => i.isPreview)" :key="image.previewUrl" class="center-circle">
+          <div class="text-center q-mb-sm">
+            <span class="text-h6">{{ t("mapIconPreview") }}</span>
+          </div>
+          <div v-for="image in images.filter(i => i.isPreview)" :key="image.previewUrl" class="center-circle q-mx-sm">
             <q-img :src="image.previewUrl" class="circle-image" />
           </div>
         </div>
@@ -33,9 +36,17 @@
           :rules="createI18nRules(rules.createLengthBetweenRule, t, titleMinLength, titleMaxLength)"
           :label="t('articleTitle')" />
         <q-select v-model="articleForm.petType" :options="articleConfigs.petType" :label="t('petType')"
-          :rules="createI18nRules(rules.createMustInputRules, t)" @update:model-value="updateColorOptions" />
+          :rules="createI18nRules(rules.createMustInputRules, t)" @update:model-value="changePetType" />
+        <q-select v-model="articleForm.breed" :options="breedOptions" :label="t('breed')"
+          :rules="createI18nRules(rules.createMustInputRules, t)" />
         <q-select v-model="articleForm.color" :options="colorOptions" :label="t('color')"
           :rules="createI18nRules(rules.createMustInputRules, t)" />
+        <q-select v-model="articleForm.gender" :options="genderOptions" :label="t('gender')" emit-value map-options
+          :rules="createI18nRules(rules.createMustInputRules, t)" />
+        <q-select v-model="articleForm.size" :options="sizeOptions" :label="t('size')" emit-value map-options
+          :rules="createI18nRules(rules.createMustInputRules, t)" />
+        <q-input v-model.number="articleForm.age" :label="t('age')" type="number"
+          :rules="[val => (val >= ageMin && val <= ageMax) || t('ageBetween', { min: ageMin, max: ageMax })]" />
 
         <q-checkbox v-model="articleForm.hasMicrochip" :label="t('hasMicrochip')" /><br />
         <q-checkbox v-model="articleForm.hasReward" :label="t('hasReward')" @update:model-value="updateRewardAmount" />
@@ -82,7 +93,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import anv from 'an-validator';
 // import { useUserStore } from 'stores/user';
@@ -141,9 +152,29 @@ const updateRewardAmount = (value) => {
     articleForm.rewardAmount = 0;
   }
 }
+
+const ageMin = articleConfigs.age.min
+const ageMax = articleConfigs.age.max
+const changePetType = (value) => {
+  updateColorOptions(value)
+  updateBreedOptions(value)
+}
+const breedOptions = ref([]);
+const updateBreedOptions = (petType) => {
+  if (petType === '貓') {
+    breedOptions.value = articleConfigs.catBreedEnum;
+  } else if (petType === '狗') {
+    breedOptions.value = articleConfigs.dogBreedEnum;
+  } else {
+    breedOptions.value = [];
+  }
+  // 對應不到再清空，不然初始化就會把原有值被清空
+  if (!breedOptions.value.includes(articleForm.breed)) {
+    articleForm.breed = ""
+  }
+};
 const colorOptions = ref([]);
 const updateColorOptions = (petType) => {
-  articleForm.color = ""
   if (petType === '貓') {
     colorOptions.value = articleConfigs.catColorEnum;
   } else if (petType === '狗') {
@@ -151,7 +182,20 @@ const updateColorOptions = (petType) => {
   } else {
     colorOptions.value = [];
   }
+  // 對應不到再清空，不然初始化就會把原有值被清空
+  if (!colorOptions.value.includes(articleForm.color)) {
+    articleForm.color = ""
+  }
 };
+
+const sizeOptions = Object.entries(articleConfigs.sizeMap).map(([value, label]) => ({
+  value,
+  label: t(label)
+}))
+const genderOptions = Object.entries(articleConfigs.genderMap).map(([value, label]) => ({
+  value,
+  label: t(label)
+}))
 
 const cityOptions = computed(() => {
   return Object.keys(cityCodeToNameMap).map(code => ({
@@ -162,8 +206,11 @@ const cityOptions = computed(() => {
 
 const districtOptions = ref([]);
 const updateDistrictOptions = (cityCode) => {
-  articleForm.lostDistrict = '';
   districtOptions.value = cityCodeToAreaList[cityCode]?.map(district => district) || [];
+  // 對應不到再清空，不然初始化就會把原有值被清空
+  if (!districtOptions.value.includes(articleForm.lostDistrict)) {
+    articleForm.lostDistrict = ""
+  }
 };
 const titleMinLength = articleConfigs.title.minLength
 const titleMaxLength = articleConfigs.title.maxLength
@@ -194,6 +241,11 @@ const removeImage = (index) => {
     images.value[0].isPreview = true
   }
 }
+
+onMounted(() => {
+  changePetType(articleForm.petType)
+  updateDistrictOptions(articleForm.lostCityCode)
+})
 </script>
 
 <style lang='sass' scoped>
@@ -204,14 +256,24 @@ const removeImage = (index) => {
 .q-btn
   margin-top: 20px
 
-  // should contain the image
-  // overflow: hidden
-  // position: relative
-  // margin-right: 10px
+.center-circle
+  position: relative
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 100px /* Adjust the size as needed */
+  height: 100px
+  margin: auto
+
+
 .circle-image
-  width:80px
-  height:80px
+  width: 100%
+  height: 100%
   border-radius: 50%
+  object-fit: cover
+  border: 2px solid #ccc /* Optional: add border to the circle */
+
+
 .image-item
   display: flex
   flex-direction: column
