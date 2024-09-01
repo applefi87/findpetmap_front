@@ -9,7 +9,7 @@
             <q-btn @click="closeMap" :label="t('close')" class="absolute-top-right q-mr-md q-mt-md" flat round
               icon="close" />
             <br />
-            <div id="map" style="height: 80vh; width: 100%; margin: 0 auto;"></div>
+            <div id="mapSelect" style="height: 80vh; width: 100%; margin: 0 auto;"></div>
           </div>
         </q-card-section>
         <q-card-actions align="center">
@@ -70,14 +70,11 @@ const closeMap = () => {
 
 const initializeMap = async () => {
   await nextTick(); // Ensure the DOM is updated
-  if (map && map.remove) {
-    map.remove(); // Remove the existing map instance if it exists
-  }
   if (!map) {
     // 不然偶爾會警告沒有map這html
     setTimeout(async () => {
       Leaflet = await import('leaflet');
-      map = Leaflet.map('map').setView(internalCoordinates.value || [25.0474014, 121.5374556], 15);
+      map = Leaflet.map('mapSelect').setView(internalCoordinates.value || [25.0474014, 121.5374556], 15);
       Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         minZoom: 8,
@@ -106,10 +103,10 @@ const initializeMap = async () => {
       });
     }, 100);
   }
-  // else {
-  //   map.invalidateSize(); // Recalculate map size
-  //   map.setView(map.getCenter(), map.getZoom()); // Re-center the map
-  // }
+  else {
+    map.invalidateSize(); // Recalculate map size
+    map.setView(map.getCenter(), map.getZoom()); // Re-center the map
+  }
 };
 
 const destroyMap = () => {
@@ -126,11 +123,11 @@ const locateHere = () => {
 
 const setCoordinates = () => {
   internalCoordinates.value = [parseFloat(map.getCenter().lat.toFixed(8)), parseFloat(map.getCenter().lng.toFixed(8))];
-  console.log("setCoordinates:", internalCoordinates.value);
-  console.log("setCoordinates type:", typeof internalCoordinates.value);
-  const result = JSON.stringify(internalCoordinates.value)
-  console.log("setCoordinates result:", result);
-  console.log("setCoordinates type:", typeof result);
+  // console.log("setCoordinates:", internalCoordinates.value);
+  // console.log("setCoordinates type:", typeof internalCoordinates.value);
+  // const result = JSON.stringify(internalCoordinates.value)
+  // console.log("setCoordinates result:", result);
+  // console.log("setCoordinates type:", typeof result);
   emit('update:modelValue', JSON.stringify(internalCoordinates.value));
   internalCoordinatesString.value = internalCoordinates.value.join(',');
   closeMap();

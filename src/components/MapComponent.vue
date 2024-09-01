@@ -87,11 +87,6 @@ const locateHere = () => {
 }
 
 onMounted(async () => {
-  console.log('Current Locale:', locale.value);
-  console.log('Available Locales:', availableLocales);
-
-  // Check if the current language file is loaded correctly
-  console.log('Translation for key "account":', t('account'));
   const isServerSide = process.env.SERVER
   if (!isServerSide) {
     await nextTick()
@@ -110,6 +105,9 @@ onMounted(async () => {
 
     map.on('moveend', handleMapDrag);
     centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup(t("youAreHere")).openPopup();
+  } else {
+    map.invalidateSize(); // Recalculate map size
+    map.setView(map.getCenter(), map.getZoom()); // Re-center the map
   }
 })
 
@@ -121,31 +119,29 @@ onBeforeUnmount(() => {
 });
 
 const search = () => {
-  const center = map.getCenter();
-  console.log('Center Coordinates: ', center);
+  // const center = map.getCenter();
+  // console.log('Center Coordinates: ', center);
   const bounds = map.getBounds();
   const bottomLeft = bounds.getSouthWest();
   const topRight = bounds.getNorthEast();
-  console.log('Bottom-Left Coordinates: ', bottomLeft);
-  console.log('Top-Right Coordinates: ', topRight);
-  // Calculate width (distance between left and right)
+  // console.log('Bottom-Left Coordinates: ', bottomLeft);
+  // console.log('Top-Right Coordinates: ', topRight);
   const width = calculateDistance(
     bottomLeft.lat,
     bottomLeft.lng,
-    bottomLeft.lat, // Same latitude for horizontal distance
+    bottomLeft.lat,
     topRight.lng
   );
 
-  // Calculate height (distance between top and bottom)
   const height = calculateDistance(
     bottomLeft.lat,
     bottomLeft.lng,
-    topRight.lat,  // Same longitude for vertical distance
+    topRight.lat,
     bottomLeft.lng
   );
 
-  console.log(`Width (Left-Right Distance): ${width.toFixed(2)} km`);
-  console.log(`Height (Top-Bottom Distance): ${height.toFixed(2)} km`);
+  // console.log(`Width (Left-Right Distance): ${width.toFixed(2)} km`);
+  // console.log(`Height (Top-Bottom Distance): ${height.toFixed(2)} km`);
 };
 
 // Function to calculate distance between two points
@@ -192,9 +188,9 @@ async function handleMapDrag() {
     if (!response.success) return
     const region = response.data.region;
     loadedRegions.value.push(region);
-    console.log('Region loaded:', region);
+    // console.log('Region loaded:', region);
     const articles = response.data.articles;
-    console.log(articles.length);
+    // console.log(articles.length);
     articles.forEach(article => {
       createArticleMarker(article);
     })
@@ -231,7 +227,6 @@ function createArticleMarker(article) {
 
   // Attach a click event to the marker
   marker.on('click', () => {
-    console.log("id:" + article._id);
     openArticleDetail(article._id);
   });
   markerList[article._id] = marker;
