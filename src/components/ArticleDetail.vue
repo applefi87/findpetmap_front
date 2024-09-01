@@ -48,28 +48,40 @@
           </div>
         </div>
         <div class="text-h5 q-my-xs">{{ `${article.petType}-${article.color}` }}</div>
-        <div class="text-subtitle2 q-mt-sm"> <q-card>
+        <div class="text-subtitle2 q-mt-sm">
+          <q-card>
             <q-card-section>
+              <q-item-label class="q-mt-sm"><strong>{{ t('articleTitle') }}:</strong> {{ article.title }}</q-item-label>
               <q-item-label class="q-mt-sm"><strong>{{ t('petType') }}:</strong> {{ article.petType }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('breed') }}:</strong> {{ article.breed }}</q-item-label>
               <q-item-label class="q-mt-sm"><strong>{{ t('color') }}:</strong> {{ article.color }}</q-item-label>
-              <!-- <q-item-label class="q-mt-sm"><strong>{{ t('location') }}:</strong> {{ article.location }}</q-item-label> -->
+              <q-item-label class="q-mt-sm">
+                <strong>{{ t('gender') }}:</strong>
+                {{ getTranslatedLabelByOption(article.gender, genderOptions) }}
+              </q-item-label>
+              <q-item-label class="q-mt-sm">
+                <strong>{{ t('size') }}:</strong>
+                {{ getTranslatedLabelByOption(article.size, sizeOptions) }}
+              </q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('age') }}:</strong> {{ article.age }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('hasMicrochip') }}:</strong>
+                {{ article.hasMicrochip ? t('yes') : t('no') }}
+              </q-item-label>
               <q-item-label class="q-mt-sm"><strong>{{ t('lostDate') }}:</strong>
                 {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full' }).format(new
       Date(article.lostDate)) }}
               </q-item-label>
-              <q-item-label class="q-mt-sm"><strong>{{ t('lostCity') }}:</strong> {{
-      cityCodeToNameMap[article.lostCityCode]
-    }}</q-item-label>
-              <q-item-label class="q-mt-sm"><strong>{{ t('lostDistrict') }}:</strong> {{ article.lostDistrict
-                }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('lostCity') }}:</strong>
+                {{ cityCodeToNameMap[article.lostCityCode] }}
+              </q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('lostDistrict') }}:</strong>
+                {{ article.lostDistrict }}
+              </q-item-label>
               <q-item-label class="q-mt-sm"><strong>{{ t('rewardAmount') }}:</strong>
                 {{ article.hasReward ? `${article.rewardAmount}` : t('noReward') }}
               </q-item-label>
-              <q-item-label class="q-mt-sm"><strong>{{ t('hasMicrochip') }}:</strong>
-                {{ article.hasMicrochip ? t('yes') : t('no') }}
-              </q-item-label>
             </q-card-section>
-            <div class="text-caption q-mt-sm " style="color: gray;">
+            <div class="text-caption q-mt-sm" style="color: gray;">
               {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full', timeStyle: 'medium' }).format(new
       Date(article.createdAt)) }}
             </div>
@@ -115,6 +127,7 @@ import ArticleUpdateComponent from 'src/components/ArticleUpdate.vue';
 import * as articleService from 'src/services/articleService.js';
 import { cityCodeToNameMap } from 'src/infrastructure/configs/cityConfigs.js';
 import { shareArticle } from '../utils/shareLink.js'
+import { sizeLabelValueOptions, genderLabelValueOptions } from 'src/utils/updateSelectOptions.js'
 import notify from 'src/utils/notify.js'
 import getName from 'src/utils/getNames.js'
 
@@ -143,6 +156,14 @@ function openEditDialog() {
   editDialog.value = true;
 }
 
+const sizeOptions = sizeLabelValueOptions
+const genderOptions = genderLabelValueOptions
+
+const getTranslatedLabelByOption = (value, options) => {
+  const option = options.find(opt => opt.value === value);
+  return option ? t(option.label) : '';
+};
+
 const emit = defineEmits(['articleDeleted', "updateArticleList", "backPage"])
 
 async function handleDeleteArticle() {
@@ -158,7 +179,6 @@ async function handleDeleteArticle() {
 }
 // 雖然也可以重整頁面，但考量部分情境是彈出視窗的articleDetail, 編輯頁面連地圖也要重載入，還是不要重整
 async function handleArticleUpdated() {
-  console.log("DETAIL.vue:" + "handleArticleUpdated");
   editDialog.value = false
   const newDatas = await fetchAndInit()
   emit('updateArticleList', newDatas.article);
@@ -207,7 +227,7 @@ onServerPrefetch(async () => {
   init(datas)
 })
 onBeforeMount(async () => {
-  clientHandleDatas()
+  await clientHandleDatas()
 })
 
 async function fetchArticle() {

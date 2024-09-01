@@ -272,11 +272,7 @@ const handleBackButton = (event) => {
 };
 
 function updateArticleList(article) {
-  const theArticle = markerList[article._id]
-  if (theArticle) {
-    delete markerList[article._id]
-    addedArticleIds.delete(article._id);
-
+  if (clearMarkerById(article._id)) {
     const formatedArticle = JSON.parse(JSON.stringify(article))
     const previewImage = formatedArticle.images.find(item => item.isPreview)
     console.log("previewImage:", previewImage);
@@ -289,10 +285,19 @@ function updateArticleList(article) {
 
 // Delete related
 const articleDeleted = (id) => {
-  delete markerList[id]
+  clearMarkerById(id)
   back2ArticleDetail()
 };
-
+function clearMarkerById(id) {
+  const theArticle = markerList[id]
+  if (!!theArticle) {
+    console.log("remove marker", id);
+    map.removeLayer(theArticle)
+    delete markerList[id]
+    addedArticleIds.delete(id);
+    return true
+  }
+}
 </script>
 <style lang='sass'>
 .circle-float

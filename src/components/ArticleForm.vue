@@ -36,15 +36,15 @@
           :rules="createI18nRules(rules.createLengthBetweenRule, t, titleMinLength, titleMaxLength)"
           :label="t('articleTitle')" />
         <q-select v-model="articleForm.petType" :options="articleConfigs.petType" :label="t('petType')"
-          :rules="createI18nRules(rules.createMustInputRules, t)" @update:model-value="changePetType" />
+          :rules="createI18nRules(rules.createMustInputRules, t)" @update:model-value="handleChangePetType" />
         <q-select v-model="articleForm.breed" :options="breedOptions" :label="t('breed')"
           :rules="createI18nRules(rules.createMustInputRules, t)" />
         <q-select v-model="articleForm.color" :options="colorOptions" :label="t('color')"
           :rules="createI18nRules(rules.createMustInputRules, t)" />
         <q-select v-model="articleForm.gender" :options="genderOptions" :label="t('gender')" emit-value map-options
-          :rules="createI18nRules(rules.createMustInputRules, t)" />
+          :option-label="(labelObj) => t(labelObj.label)" :rules="createI18nRules(rules.createMustInputRules, t)" />
         <q-select v-model="articleForm.size" :options="sizeOptions" :label="t('size')" emit-value map-options
-          :rules="createI18nRules(rules.createMustInputRules, t)" />
+          :option-label="(labelObj) => t(labelObj.label)" :rules="createI18nRules(rules.createMustInputRules, t)" />
         <q-input v-model.number="articleForm.age" :label="t('age')" type="number"
           :rules="[val => (val >= ageMin && val <= ageMax) || t('ageBetween', { min: ageMin, max: ageMax })]" />
 
@@ -101,6 +101,7 @@ import { cityCodeToNameMap, cityCodeToAreaList } from 'src/infrastructure/config
 import articleConfigs from 'src/infrastructure/configs/articleConfigs.js';
 import imageConfigs from 'src/infrastructure/configs/imageConfigs.js';
 import MapSelectorComponent from 'components/MapCoordinateSelectComponent.vue'; // Import your new component
+import { changePetType, sizeLabelValueOptions, genderLabelValueOptions } from 'src/utils/updateSelectOptions.js'
 import notify from 'src/utils/notify.js'
 const { rules, createI18nRules } = anv
 
@@ -138,7 +139,6 @@ const handleSubmit = () => {
 }
 
 const onFileRejected = async (rejectedEntries) => {
-  console.log(rejectedEntries);
   if (rejectedEntries[0].failedPropValidation === "max-file-size") {
     await notify({ success: false, message: { title: t("maxImageSize", { size: imageConfigs.articleImage.maxFileSize }) } })
   }
@@ -153,49 +153,21 @@ const updateRewardAmount = (value) => {
   }
 }
 
+const breedOptions = ref([]);
+const colorOptions = ref([]);
+const handleChangePetType = (value) => {
+  const { breedOptions: updatedBreedOptions, colorOptions: updatedColorOptions, updatedBreed, updatedColor } = changePetType(value, articleForm);
+  breedOptions.value = updatedBreedOptions;
+  colorOptions.value = updatedColorOptions;
+  articleForm.breed = updatedBreed;
+  articleForm.color = updatedColor;
+}
+
 const ageMin = articleConfigs.age.min
 const ageMax = articleConfigs.age.max
-const changePetType = (value) => {
-  updateColorOptions(value)
-  updateBreedOptions(value)
-}
-const breedOptions = ref([]);
-const updateBreedOptions = (petType) => {
-  if (petType === '貓') {
-    breedOptions.value = articleConfigs.catBreedEnum;
-  } else if (petType === '狗') {
-    breedOptions.value = articleConfigs.dogBreedEnum;
-  } else {
-    breedOptions.value = [];
-  }
-  // 對應不到再清空，不然初始化就會把原有值被清空
-  if (!breedOptions.value.includes(articleForm.breed)) {
-    articleForm.breed = ""
-  }
-};
-const colorOptions = ref([]);
-const updateColorOptions = (petType) => {
-  if (petType === '貓') {
-    colorOptions.value = articleConfigs.catColorEnum;
-  } else if (petType === '狗') {
-    colorOptions.value = articleConfigs.dogColorEnum;
-  } else {
-    colorOptions.value = [];
-  }
-  // 對應不到再清空，不然初始化就會把原有值被清空
-  if (!colorOptions.value.includes(articleForm.color)) {
-    articleForm.color = ""
-  }
-};
 
-const sizeOptions = Object.entries(articleConfigs.sizeMap).map(([value, label]) => ({
-  value,
-  label: t(label)
-}))
-const genderOptions = Object.entries(articleConfigs.genderMap).map(([value, label]) => ({
-  value,
-  label: t(label)
-}))
+const sizeOptions = sizeLabelValueOptions
+const genderOptions = genderLabelValueOptions
 
 const cityOptions = computed(() => {
   return Object.keys(cityCodeToNameMap).map(code => ({
@@ -243,7 +215,7 @@ const removeImage = (index) => {
 }
 
 onMounted(() => {
-  changePetType(articleForm.petType)
+  handleChangePetType(articleForm.petType)
   updateDistrictOptions(articleForm.lostCityCode)
 })
 </script>
