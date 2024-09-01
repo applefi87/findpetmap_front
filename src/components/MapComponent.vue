@@ -29,7 +29,7 @@ import * as  articleService from 'src/services/articleService.js';
 
 import ArticleDetail from 'src/components/ArticleDetail.vue';
 
-const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
+const { t } = useI18n({ useScope: 'global' });
 const users = useUserStore()
 let map;
 let Leaflet;

@@ -1,4 +1,4 @@
-import { api, apiAuth } from 'src/boot/axios';
+import { api, apiAuth } from 'src/boot/axios.js';
 
 export async function createArticle(form) {
   try {

@@ -1,5 +1,5 @@
 import { useUserStore } from 'stores/user';
-import { api, apiAuth } from 'src/boot/axios';
+import { api, apiAuth } from 'src/boot/axios.js';
 import { languagesListObj2str } from "src/utils/languageListTool.js"
 
 

@@ -1,4 +1,4 @@
-import { api, apiAuth } from 'src/boot/axios';
+import { api, apiAuth } from 'src/boot/axios.js';
 
 export async function sendRegisterVerificationCode(email, isSchool, lang) {
   const res = await api.post('/email/registerVerificationCode/send', { email });

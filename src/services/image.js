@@ -1,4 +1,4 @@
-import { apiAuth } from 'src/boot/axios'
+import { apiAuth } from 'src/boot/axios.js'
 
 export const uploadImage = async (file, route) => {
   const formData = new FormData();

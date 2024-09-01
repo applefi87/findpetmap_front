@@ -21,10 +21,10 @@
           <b>applefi87@gmail.com</b> -->
         </q-scroll-area>
       </q-drawer>
-      <q-page-container>
-        <router-view />
-      </q-page-container>
     </q-no-ssr>
+    <q-page-container>
+      <router-view />
+    </q-page-container>
   </q-layout>
 </template>
 
@@ -37,10 +37,7 @@ import AppHeader from 'src/components/AppHeader.vue';
 import { logout } from '../services/user.js';
 import notify from 'src/utils/notify'
 
-
-
-
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const leftDrawer = ref(false);
 const leftDrawerOverlay = ref(true)
