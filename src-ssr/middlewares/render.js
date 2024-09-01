@@ -22,16 +22,15 @@ export default ssrMiddleware(({ app, resolve, render, serve }) => {
     const cookies = parseCookies(req)
     // Data generation will be reliable and complete for both server and client in the future.
     // 有cookie用cookie,不然抓req.headers['accept-language']
+    console.log(" cookies?.interfaceLanguage", cookies?.interfaceLanguage);
+    console.log("initInterfaceLanguage(req)", initInterfaceLanguage(req));
     const interfaceLanguage = cookies?.interfaceLanguage || initInterfaceLanguage(req)
     const token = cookies?.token
     // 查詢文章語言
-    render(/* the ssrContext: */ { req, res, interfaceLanguage, token })
-
-    render(/* the ssrContext: */ { req, res })
-      .then(html => {
-        // now let's send the rendered html to the client
-        res.send(html)
-      })
+    render(/* the ssrContext: */ { req, res, interfaceLanguage, token }).then(html => {
+      // now let's send the rendered html to the client
+      res.send(html)
+    })
       .catch(err => {
         // oops, we had an error while rendering the page
 
