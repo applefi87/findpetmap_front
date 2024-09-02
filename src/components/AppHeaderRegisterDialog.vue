@@ -13,7 +13,6 @@
               <br />
               <div class="text-h">{{ t("registerWellCome_4") }}</div>
             </q-card-section>
-            <!-- <p class="text-h6">1.可選匿名 <br>2.評價依照課程名保存，更好查閱 <br>3.好的評價置頂 <br>4.評價越受歡迎，帳號分數越高</p> -->
           </q-step>
           <!--  -->
           <q-step :name="2" :title="t('verifyEmail')" icon="email" :done="step > 2">
@@ -47,13 +46,15 @@
                 </template></q-input>
               <q-input filled v-model="registerForm.nickname" :label='t("nickname")' :rules="nicknameValChange"
                 ref=nicknameValid />
-              <!-- :hint="t('nicknameRules')" -->
-              <p class="gender">{{ t('gender') }}</p>
-              <div class="q-gutter-sm">
-                <q-radio v-model="registerForm.gender" val='male' :label='t("male")' />
-                <q-radio v-model="registerForm.gender" val='female' :label='t("female")' />
-                <q-radio v-model="registerForm.gender" val='others' :label='t("others")' />
-              </div>
+              <q-input v-model="registerForm.info.name" filled type="text" :label="t('userName')"
+                :rules="createI18nRules(rules.createLengthBetweenRule, t, nameMinLength, nameMaxLength)" />
+              <q-input v-model="registerForm.info.phone" filled type="text" :label="t('userPhone')"
+                :rules="createI18nRules(rules.createLengthBetweenRule, t, phoneMinLength, phoneMaxLength)" />
+              <q-input v-model="registerForm.info.lineId" filled type="text" :label="t('userLineId')"
+                :rules="createI18nRules(rules.createLengthBetweenRule, t, lineIdMinLength, lineIdMaxLength)" />
+              <q-input v-model="registerForm.info.others" filled type="textarea" :label="t('userOthers')"
+                :rules="createI18nRules(rules.createLengthBetweenRule, t, othersMinLength, othersMaxLength)" />
+
             </q-card-section>
           </q-step>
           <template v-slot:navigation>
@@ -63,10 +64,11 @@
                   <q-spinner-radio />
                 </template>
               </q-btn>
-              <q-btn v-else type="submit" color="primary" :label="t('register')" />
+              <q-btn v-else type="submit" color="primary" :label="t('register')" :loading="registering" />
               <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" :label="t('previous')"
-                class="q-ml-sm" />
-              <q-btn :label='t("close")' color="primary" flat class="q-ml-sm close-register" v-close-popup />
+                class="q-ml-sm" :loading="registering" />
+              <q-btn :label='t("close")' color="primary" flat class="q-ml-sm close-register" v-close-popup
+                :loading="registering" />
             </q-stepper-navigation>
           </template>
         </q-stepper>
@@ -80,12 +82,22 @@
 import { ref, reactive, inject, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from 'stores/user';
+import anValidator from 'an-validator';
 import { sendRegisterVerificationCode, verifyCode } from 'src/services/email.js';
 import { register } from 'src/services/user.js';
+import userConfigs from 'src/infrastructure/configs/userConfigs.js';
 import notify from 'src/utils/notify.js'
-import avValidator from 'an-validator';
 
-const { rules, createI18nRules } = avValidator
+const nameMinLength = userConfigs.name.minLength;
+const nameMaxLength = userConfigs.name.maxLength;
+const phoneMinLength = userConfigs.phone.minLength;
+const phoneMaxLength = userConfigs.phone.maxLength;
+const lineIdMinLength = userConfigs.lineId.minLength;
+const lineIdMaxLength = userConfigs.lineId.maxLength;
+const othersMinLength = userConfigs.others.minLength;
+const othersMaxLength = userConfigs.others.maxLength;
+
+const { rules, createI18nRules } = anValidator
 const users = useUserStore();
 const registerState = inject('registerState');
 const emit = defineEmits(['register-success']);
@@ -100,10 +112,9 @@ const emailFormatValid = ref(null);
 const mailSending = ref(false);
 const mailVerifying = ref(false);
 const mailCodeValid = ref(null);
-const step = ref(1);
+const step = ref(3);
 const stepper = ref(null);
 
-// Reactive object
 const registerForm = reactive({
   email: '',
   verificationCode: '',
@@ -111,7 +122,12 @@ const registerForm = reactive({
   password: '',
   nickname: '',
   gender: 'male',
-  role: 1
+  info: {
+    name: '',
+    phone: '',
+    lineId: '',
+    others: ''
+  }
 });
 const identifier = computed(() => t('identifier'))
 const identifierDisplay = ref(identifier.value)
@@ -151,30 +167,31 @@ const nextPage = async () => {
 
 const accountValChange = ref(createI18nRules(rules.createAccountRules, t))
 const nicknameValChange = ref(createI18nRules(rules.createNicknameRules, t, 4, 10))
+const registering = ref(false);
 const handleRegister = async () => {
   try {
+    registering.value = true;
     const rep = await register(registerForm);
-    await notify(rep);
     if (rep.success) {
+      await notify(rep);
       registerForm.email = '';
       registerForm.verificationCode = '';
       registerForm.account = '';
       registerForm.password = '';
       registerForm.nickname = '';
       registerForm.gender = '0';
+      registerForm.info = {}
       step.value = 1;
       emit('register-success');
       return;
     }
-    // Handle account and nickname validation errors
-    // (Add the accountVal and nicknameVal arrays if they are defined somewhere else in your code)
     if (rep.data.accountUnavailable) {
-      accountValChange.value[2] = val => val !== rep.data.account || rep.message.title;
+      accountValChange.value[2] = val => val !== rep.data.accountUnavailable || rep.message;
     } else {
       accountValChange.value[2] = val => true || '';
     }
-    if (rep.nicknameUnavailable) {
-      nicknameValChange.value[2] = val => val !== rep.nickname || rep.message.title;
+    if (rep.data.nicknameUnavailable) {
+      nicknameValChange.value[2] = val => val !== rep.data.nicknameUnavailable || rep.message;
     } else {
       nicknameValChange.value[2] = val => true || '';
     }
@@ -182,6 +199,8 @@ const handleRegister = async () => {
     nicknameValid.value.validate();
   } catch (error) {
     await notify(error);
+  } finally {
+    registering.value = false;
   }
 };
 
@@ -195,9 +214,7 @@ const handleRegister = async () => {
   width: 500px
   height: 600px
   position: relative
-  &:deep(.q-stepper__nav)
-    position: absolute
-    bottom: 0
+  overflow: scroll
   &:deep(.q-field)
     margin-top: 0.6rem
 .q-stepper__nav
