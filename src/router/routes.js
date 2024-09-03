@@ -41,7 +41,6 @@ const routes = [
       // { path: '', name: 'articles', displayName: 'articles', component: () => import('src/pages/article/ArticleListPage.vue') },
       { path: 'create', name: 'createArticle', displayName: 'createArticle', component: () => import('src/pages/article/CreateArticlePage.vue'), beforeEnter: requireLogin },
       { path: ':id', name: 'articleDetail', displayName: 'articleDetail', component: () => import('src/pages/article/ArticleDetailPage.vue') },
-      // { path: 'edit/:id', name: 'articleEdit', displayName: 'articleDetail', component: () => import('src/components/ArticleUpdate.vue') }
     ]
   },
   {
@@ -63,7 +62,7 @@ const routes = [
       // { path: '', name: 'userInfo', displayName: 'userInfo', component: () => import('src/pages/user/UserInfoPage.vue') },
       { path: '', name: 'userInfo', displayName: 'userInfo', component: () => import('src/pages/user/SettingPage.vue') },
       { path: 'changePWD', name: 'changePWD', displayName: 'changePWD', component: () => import('src/pages/user/ChangePWDPage.vue') },
-      // { path: 'edit', name: 'editMe', displayName: 'editMe', component: () => import('src/pages/user/EditInfoPage.vue') },
+      { path: 'edit', name: 'editMe', displayName: '編輯個人資料', component: () => import('src/pages/user/EditInfoPage.vue') },
     ],
     beforeEnter: requireLogin
   },

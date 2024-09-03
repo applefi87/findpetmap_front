@@ -54,7 +54,6 @@
                 :rules="createI18nRules(rules.createLengthBetweenRule, t, lineIdMinLength, lineIdMaxLength)" />
               <q-input v-model="registerForm.info.others" filled type="textarea" :label="t('userOthers')"
                 :rules="createI18nRules(rules.createLengthBetweenRule, t, othersMinLength, othersMaxLength)" />
-
             </q-card-section>
           </q-step>
           <template v-slot:navigation>
@@ -112,7 +111,7 @@ const emailFormatValid = ref(null);
 const mailSending = ref(false);
 const mailVerifying = ref(false);
 const mailCodeValid = ref(null);
-const step = ref(3);
+const step = ref(1);
 const stepper = ref(null);
 
 const registerForm = reactive({

@@ -2,7 +2,7 @@
 <template>
   <q-page class="q-pa-md">
     <q-btn to="/me/changePWD" :label="t('changePassword')" outline color="primary" />
-    <!-- <q-btn to="/me/edit" :label="t('editUserInfo')" outline color="primary" /> -->
+    <q-btn to="/me/edit" :label="t('editUserInfo')" outline color="primary" />
   </q-page>
 </template>
 

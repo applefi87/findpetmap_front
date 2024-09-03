@@ -76,36 +76,9 @@ export async function getMyInfo() {
   }
 }
 
-export async function editInfo(form) {
+export async function updateInfo(form) {
   try {
-    const formatForm = formatEditInfoForm(form)
-    const res = await apiAuth.post('/user/editInfo', formatForm)
-    return res
-  } catch (error) {
-    return error
-  }
-}
-function formatEditInfoForm(form) {
-  const copyForm = JSON.parse(JSON.stringify(form))
-  copyForm.interfaceLanguage = copyForm.interfaceLanguage.value;
-  copyForm.publishLanguages = languagesListObj2str(copyForm.publishLanguages)
-  copyForm.searchLanguages = languagesListObj2str(copyForm.searchLanguages)
-  return copyForm
-}
-
-export async function getMyBadges(form) {
-  try {
-    const res = await apiAuth.get('/user/getMyBadges')
-    return res.data
-  } catch (error) {
-    return error
-  }
-}
-
-export async function updateMyBadges(badges) {
-  try {
-    // const formatForm = formatEditInfoForm(form)
-    const res = await apiAuth.post('/user/updateMyBadges', { badges })
+    const res = await apiAuth.post('/user/updateInfo', form)
     return res
   } catch (error) {
     return error
