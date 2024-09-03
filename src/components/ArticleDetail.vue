@@ -69,7 +69,7 @@
               </q-item-label>
               <q-item-label class="q-mt-sm"><strong>{{ t('lostDate') }}:</strong>
                 {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full' }).format(new
-      Date(article.lostDate)) }}
+                  Date(article.lostDate)) }}
               </q-item-label>
               <q-item-label class="q-mt-sm"><strong>{{ t('lostCity') }}:</strong>
                 {{ cityCodeToNameMap[article.lostCityCode] }}
@@ -80,10 +80,18 @@
               <q-item-label class="q-mt-sm"><strong>{{ t('rewardAmount') }}:</strong>
                 {{ article.hasReward ? `${article.rewardAmount}` : t('noReward') }}
               </q-item-label>
+              <hr />
+              <q-item-label class="q-mt-sm"><strong>{{ t('userPhone') }}:</strong> {{ article.info.phone
+                }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('userName') }}:</strong> {{ article.info.name }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('userLineId') }}:</strong> {{ article.info.lineId
+                }}</q-item-label>
+              <q-item-label class="q-mt-sm"><strong>{{ t('userOthers') }}:</strong> {{ article.info.others
+                }}</q-item-label>
             </q-card-section>
             <div class="text-caption q-mt-sm" style="color: gray;">
               {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full', timeStyle: 'medium' }).format(new
-      Date(article.createdAt)) }}
+                Date(article.createdAt)) }}
             </div>
           </q-card>
         </div>
