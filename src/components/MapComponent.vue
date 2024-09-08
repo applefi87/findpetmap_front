@@ -24,7 +24,6 @@
 import { ref, onMounted, onBeforeUnmount, watch, nextTick, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-import "leaflet/dist/leaflet.css";
 import * as  articleService from 'src/services/articleService.js';
 
 const LazyArticleDetailExtended = defineAsyncComponent(() =>
