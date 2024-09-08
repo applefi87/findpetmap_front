@@ -48,13 +48,13 @@ export default configure((ctx) => {
       alias: {
         src: path.resolve(__dirname, 'src'),
       },
-      // extractCSS: true,
-      // purgeCSS: {
-      //   content: ['src/**/*.vue'],
-      //   safelist: [] // if needed
-      // },
-      // sourceMap: false,
-      // minify: true,
+      extractCSS: true,
+      purgeCSS: {
+        content: ['src/**/*.vue'],
+        safelist: [] // if needed
+      },
+      sourceMap: false,
+      minify: true,
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
