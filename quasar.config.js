@@ -99,7 +99,7 @@ export default configure((ctx) => {
           eslint: {
             lintCommand: 'eslint "./**/*.{js,mjs,cjs,vue}"'
           }
-        }, { server: false }]
+        }, { server: false }],
       ]
     },
 
