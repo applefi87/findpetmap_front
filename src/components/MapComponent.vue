@@ -14,21 +14,22 @@
           <q-tooltip>{{ t('close') }}</q-tooltip>
         </q-btn>
       </q-bar>
-      <ArticleDetail :articleId="articleId" v-if="articleId" @articleDeleted="articleDeleted"
+      <LazyArticleDetailExtended v-if="articleId" :articleId="articleId" @articleDeleted="articleDeleted"
         @updateArticleList="updateArticleList" @backPage="back2ArticleDetail" />
     </q-card>
   </q-dialog>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import "leaflet/dist/leaflet.css";
 import * as  articleService from 'src/services/articleService.js';
 
-import ArticleDetail from 'src/components/ArticleDetail.vue';
-
+const LazyArticleDetailExtended = defineAsyncComponent(() =>
+  import('components/ArticleDetail.vue')
+);
 const { t } = useI18n({ useScope: 'global' });
 const users = useUserStore()
 let map;
@@ -86,25 +87,36 @@ const locateHere = () => {
   getCurrentPosition();
 }
 
-onMounted(async () => {
+onMounted(() => {
   const isServerSide = process.env.SERVER
   if (!isServerSide) {
-    await nextTick()
-    Leaflet = await import('leaflet');
-    map = Leaflet.map('map').setView([25.0474014, 121.5374556], 13);
-    Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 17,
-      minZoom: 12,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    const leafletJs = document.createElement('script');
+    leafletJs.src = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js';
+    leafletJs.onload = () => {
+      const L = window.L;
+      nextTick(() => {
+        map = L.map('map').setView([25.0474014, 121.5374556], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 17,
+          minZoom: 12,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
 
-    map.on("locationfound", (e) => {
-      map.setView(e.latlng, e.accuracy / 2)
-    })
-    getCurrentPosition();
+        map.on("locationfound", (e) => {
+          map.setView(e.latlng, e.accuracy / 2)
+        })
+        getCurrentPosition();
 
-    map.on('moveend', handleMapDrag);
-    centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup(t("youAreHere")).openPopup();
+        map.on('moveend', handleMapDrag);
+        centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup(t("youAreHere")).openPopup();
+      })
+    }
+
+    const leafletCss = document.createElement('link');
+    leafletCss.rel = 'stylesheet';
+    leafletCss.href = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css';
+    document.head.appendChild(leafletCss);
+    document.body.appendChild(leafletJs);
   } else {
     map.invalidateSize(); // Recalculate map size
     map.setView(map.getCenter(), map.getZoom()); // Re-center the map

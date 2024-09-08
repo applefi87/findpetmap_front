@@ -1,23 +1,21 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="column">
-      <q-no-ssr>
-        <div class="filter-area q-pa-md">
-          <ArticleFilter @updateFilter="handleUpdateFilter" />
-        </div>
-        <div class="map-area q-pa-md q-gutter-y-sm">
-          <Map :filter="filter" />
-        </div>
-      </q-no-ssr>
-    </div>
+    <q-no-ssr>
+      <div class="filter-area q-pa-md">
+        <LazyArticleFilter @updateFilter="handleUpdateFilter" />
+      </div>
+      <div class="map-area q-pa-md q-gutter-y-sm">
+        <LazyMap :filter="filter" />
+      </div>
+    </q-no-ssr>
   </q-page>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
+const LazyMap = defineAsyncComponent(() => import('components/MapComponent.vue'));
+const LazyArticleFilter = defineAsyncComponent(() => import('components/ArticleFilter.vue'));
 
-import Map from 'components/MapComponent.vue'
-import ArticleFilter from 'components/ArticleFilter.vue'
 const filter = ref({});
 
 const handleUpdateFilter = (newFilter) => {

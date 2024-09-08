@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh lpR fff">
     <q-no-ssr>
-      <AppHeader @toggle-left-drawer="toggleLeftDrawer" />
+      <LazyAppHeader @toggle-left-drawer="toggleLeftDrawer" />
       <q-drawer v-model='leftDrawer' side="left" :overlay="leftDrawerOverlay" persistent bordered elevated
         :breakpoint="768" style="height: 100% ;display:flex;flex-direction: column">
         <q-scroll-area class="fit">
@@ -29,13 +29,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-import AppHeader from 'src/components/AppHeader.vue';
 import { logout } from '../services/user.js';
 import notify from 'src/utils/notify'
+
+const LazyAppHeader = defineAsyncComponent(() =>
+  import('components/AppHeader.vue')
+);
 
 const { t } = useI18n()
 
@@ -90,14 +93,4 @@ body
 .q-page-container
   padding-top: 10px
   height: 100vh
-
-/* Custom styles */
-.custom-item
-  background-color: #f5f5f5
-  border-radius: 5px
-  margin: 10px 0
-
-.custom-label
-  color: #333
-  font-weight: 500
 </style>

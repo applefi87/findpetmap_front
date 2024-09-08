@@ -1,15 +1,5 @@
 import { useUserStore } from 'stores/user';
 
-function requireAdmin(to, from, next) {
-  const users = useUserStore();
-  // 後端才檢查要有登入
-  if (users.role === 'admin' || typeof window === "undefined") {
-    next();
-  } else {
-    next({ path: '/' });
-  }
-}
-
 function requireLogin(to, from, next) {
   const users = useUserStore();
   // 後端才檢查要有登入

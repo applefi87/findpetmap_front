@@ -35,8 +35,8 @@ import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { changePWD } from '../../services/user.js';
-import anv from 'an-validator';
-const { rules, createI18nRules } = anv
+import { rules, createI18nRules } from 'an-validator';
+
 const router = useRouter()
 const { t } = useI18n({ useScope: 'global' })
 const pwdChanged = ref(false)

@@ -20,39 +20,40 @@ const { t } = useI18n({ useScope: 'global' })
 
 const emit = defineEmits(["close"]);
 
+const articleForm = reactive({
+  title: "",
+  petType: '',
+  color: '',
+  breed: "",
+  gender: '',
+  size: '',
+  age: 0,
+  hasMicrochip: true,
+  hasReward: true,
+  rewardAmount: 0,
+  lostDate: '',
+  lostCityCode: '',
+  lostDistrict: '',
+  coordinates: "",
+  content: '',
+})
 // const articleForm = reactive({
-// title: "",
-//   petType: '',
-//   color: '',
-//   gender: '',
-//   size: '',
-//   age: null,
+//   title: "寶貝名",
+//   petType: '貓',
+//   breed: "波斯貓",
+//   color: '黑',
+//   gender: 'F',
+//   size: 'M',
+//   age: 1.5,
 //   hasMicrochip: false,
 //   hasReward: false,
 //   rewardAmount: 0,
-//   lostDate: '',
-//   lostCityCode: '',
-//   lostDistrict: '',
-//   coordinates: "",
-//   content: '',
+//   lostDate: "2024/08/10",
+//   lostCityCode: 'A',
+//   lostDistrict: '內湖區',
+//   coordinates: "[25.07603715,121.58028603]",
+//   content: '我的狗不建了',
 // })
-const articleForm = reactive({
-  title: "寶貝名",
-  petType: '貓',
-  breed: "波斯貓",
-  color: '黑',
-  gender: 'F',
-  size: 'M',
-  age: 1.5,
-  hasMicrochip: false,
-  hasReward: false,
-  rewardAmount: 0,
-  lostDate: "2024/08/10",
-  lostCityCode: 'A',
-  lostDistrict: '內湖區',
-  coordinates: "[25.07603715,121.58028603]",
-  content: '我的狗不建了',
-})
 
 const images = ref([]);
 const isSubmiting = ref(false);

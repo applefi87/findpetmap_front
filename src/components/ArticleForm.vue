@@ -1,8 +1,8 @@
 <!-- 新增文章的介面 -->
 <template>
-  <q-form @submit.prevent="handleSubmit" style="width:100%">
-    <div class="row" style="max-width:80%">
-      <div class="col-12">
+  <q-no-ssr>
+    <q-form @submit.prevent="handleSubmit" style="width:100%">
+      <div style="max-width:90%">
 
         <!-- a center circle image for diaplay the select isPreview image as it on map icon-->
         <div v-if="images.length > 0" class="q-mb-md row justify-center">
@@ -42,9 +42,11 @@
         <q-select v-model="articleForm.color" :options="colorOptions" :label="t('color')"
           :rules="createI18nRules(rules.createMustInputRules, t)" />
         <q-select v-model="articleForm.gender" :options="genderOptions" :label="t('gender')" emit-value map-options
-          :option-label="(labelObj) => t(labelObj.label)" :rules="createI18nRules(rules.createMustInputRules, t)" />
+          :option-label="(labelObj) => t(labelObj?.label || '')"
+          :rules="createI18nRules(rules.createMustInputRules, t)" />
         <q-select v-model="articleForm.size" :options="sizeOptions" :label="t('size')" emit-value map-options
-          :option-label="(labelObj) => t(labelObj.label)" :rules="createI18nRules(rules.createMustInputRules, t)" />
+          :option-label="(labelObj) => t(labelObj?.label || '')"
+          :rules="createI18nRules(rules.createMustInputRules, t)" />
         <q-input v-model.number="articleForm.age" :label="t('age')" type="number"
           :rules="[val => (val >= ageMin && val <= ageMax) || t('ageBetween', { min: ageMin, max: ageMax })]" />
 
@@ -74,7 +76,8 @@
           map-options />
 
         <q-select v-model="articleForm.lostDistrict" :options="districtOptions" :label="t('lostDistrict')"
-          :rules="createI18nRules(rules.createMustInputRules, t)" :disable="!articleForm.lostCityCode" />
+          :rules="createI18nRules(rules.createMustInputRules, t)" />
+
         <MapSelectorComponent v-model="articleForm.coordinates" />
 
         <q-input v-model="articleForm.content" filled type="textarea"
@@ -87,9 +90,10 @@
             <q-btn type="submit" :label="t('submit')" :loading="props.isSubmiting" />
           </div>
         </div>
+
       </div>
-    </div>
-  </q-form>
+    </q-form>
+  </q-no-ssr>
 </template>
 
 <script setup>
@@ -184,6 +188,7 @@ const updateDistrictOptions = (cityCode) => {
     articleForm.lostDistrict = ""
   }
 };
+
 const titleMinLength = articleConfigs.title.minLength
 const titleMaxLength = articleConfigs.title.maxLength
 const contentMinLength = articleConfigs.content.minLength

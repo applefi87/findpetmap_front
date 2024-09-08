@@ -28,11 +28,9 @@
 
 <script setup>
 import { ref, nextTick, onBeforeUnmount } from 'vue';
-import anv from 'an-validator';
+import { rules, createI18nRules } from 'an-validator';
 import { useI18n } from 'vue-i18n';
-import "leaflet/dist/leaflet.css";
 
-const { rules, createI18nRules } = anv;
 const { t } = useI18n({ useScope: 'global' });
 
 // Props and emit for v-model
@@ -55,8 +53,7 @@ const internalCoordinates = ref(function () {
 }());
 const internalCoordinatesString = ref(internalCoordinates.value?.join(','));
 
-let map;
-let Leaflet;
+
 const centerMarker = ref(null);
 const isMapOpen = ref(false);
 
@@ -68,14 +65,17 @@ const closeMap = () => {
   isMapOpen.value = false;
 };
 
+let map;
 const initializeMap = async () => {
+
   await nextTick(); // Ensure the DOM is updated
   if (!map) {
-    // 不然偶爾會警告沒有map這html
-    setTimeout(async () => {
-      Leaflet = await import('leaflet');
-      map = Leaflet.map('mapSelect').setView(internalCoordinates.value || [25.0474014, 121.5374556], 15);
-      Leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const leafletJs = document.createElement('script');
+    leafletJs.src = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js';
+    leafletJs.onload = () => {
+      const L = window.L;
+      map = L.map('mapSelect').setView(internalCoordinates.value || [25.0474014, 121.5374556], 15);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         minZoom: 8,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -89,10 +89,9 @@ const initializeMap = async () => {
         })
         getCurrentPosition();
       }
-
       map.on('moveend', handleMapDrag);
 
-      centerMarker.value = Leaflet.marker(map.getCenter(), { draggable: false }).addTo(map);
+      centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map);
       let isUpdatingMarker = false;
       map.on('move', (event) => {
         if (!isUpdatingMarker) {
@@ -101,7 +100,13 @@ const initializeMap = async () => {
           isUpdatingMarker = false;
         }
       });
-    }, 100);
+    }
+    const leafletCss = document.createElement('link');
+    leafletCss.rel = 'stylesheet';
+    leafletCss.href = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css';
+    document.head.appendChild(leafletCss);
+    document.body.appendChild(leafletJs);
+
   }
   else {
     map.invalidateSize(); // Recalculate map size

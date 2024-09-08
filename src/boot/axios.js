@@ -60,15 +60,15 @@ async function handleApiAuthError(error) {
 // 只有本地開發會遇到伺服器 SSL 自簽問題
 const httpsAgent = isSSR && process.env.NODE_ENV === 'development' ? new https.Agent({ rejectUnauthorized: false }) : undefined;
 const api = axios.create({
-  baseURL: process.env.SERVER_URL,
+  baseURL: isSSR ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
   withCredentials: true,
-  headers: isSSR ? { Origin: 'https://knowforum.com' } : {},
+  headers: isSSR ? { Origin: 'https://findpetmap.com' } : {},
   httpsAgent: httpsAgent
 });
 const apiAuth = axios.create({
-  baseURL: process.env.SERVER_URL,
+  baseURL: isSSR ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
   withCredentials: true,
-  headers: import.meta.env.SSR ? { Origin: 'https://knowforum.com' } : {},
+  headers: import.meta.env.SSR ? { Origin: 'https://findpetmap.com' } : {},
   httpsAgent: httpsAgent
 });
 

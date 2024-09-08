@@ -25,9 +25,8 @@ import { useI18n } from 'vue-i18n';
 import { getMyInfo, updateInfo } from 'src/services/user.js';
 import { useUserStore } from 'stores/user';
 import userConfigs from 'src/infrastructure/configs/userConfigs.js';
-import anValidator from 'an-validator';
+import { rules, createI18nRules } from 'an-validator';
 
-const { rules, createI18nRules } = anValidator
 const nameMinLength = userConfigs.name.minLength;
 const nameMaxLength = userConfigs.name.maxLength;
 const phoneMinLength = userConfigs.phone.minLength;

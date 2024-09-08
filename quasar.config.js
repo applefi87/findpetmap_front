@@ -17,7 +17,7 @@ export default configure((ctx) => {
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
       'i18n',
-      'axios'
+      // 'axios'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -48,6 +48,13 @@ export default configure((ctx) => {
       alias: {
         src: path.resolve(__dirname, 'src'),
       },
+      extractCSS: true,
+      purgeCSS: {
+        content: ['src/**/*.vue'],
+        safelist: [] // if needed
+      },
+      sourceMap: false,
+      minify: true,
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,

@@ -2,26 +2,14 @@ const fs = require('fs');
 
 const paths = [
   { path: '/article/' },
-  // { path: '/article/add' },
-  // { path: '/article/:id' },
-  { path: '/board/' },
-  // { path: '/board/:id' },
-  // { path: '/adminLogin' },
-  // { path: '/admin/' },
-  // { path: '/admin/article' },
   { path: '/' },
-  // { path: '/me/edit' },
-  // { path: '/me/editProfile' },
-  // { path: '/me/editBadges' },
-  // { path: '/changePWD' },
-  // { path: '/forgetPWD' },
 ]
 
 
-const baseUrl = 'https://knowforum.com'; // Replace with your website's base URL
+const baseUrl = 'https://findpetmap.com'; // Replace with your website's base URL
 const outputFilePath = './public/sitemap.xml';
 
-const today = "2023-07-12"
+const today = new Date().toISOString().split('T')[0];
 const generateSitemap = () => {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
