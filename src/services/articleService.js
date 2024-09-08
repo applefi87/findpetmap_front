@@ -67,7 +67,9 @@ export async function deleteArticle(articleId) {
 export async function getArticleDetail(articleId) {
   try {
     // apiAuth為了取他是否有按讚
+    console.log(1);
     const res = await apiAuth.post(`/article/${articleId}`)
+    console.log("getes res as:", res);
     return res
   } catch (error) {
     console.log("article-err");

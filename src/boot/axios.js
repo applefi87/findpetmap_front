@@ -3,18 +3,13 @@ import https from 'https'
 import { i18n } from './i18n.js';
 import { useUserStore } from 'src/stores/user';
 import notify from 'src/utils/notify.js'
-const t = i18n.global.t;
+const t = (key) => i18n.global.t(key) || key;
 
 const isSSR = import.meta.env.SSR;
 
 // 介紹: 成功就不說
 // 如果失敗，會用handleError 翻譯，取出標準格式throw, 所以操作的一樣要有catch
 async function handleApiResponse(response) {
-  if (!response) {
-    const data = createErrorResponse(t('axios.responseNotFound'), 'handleApiResponse !response')
-    await notify(data)
-    return data
-  }
   const { data } = response;
   // 如果前端是200 &&!data.success 應該是有其他考量，交給前端處理
   // if (!data.success) {
@@ -37,7 +32,7 @@ async function handleApiError(error) {
 async function handleApiAuthError(error) {
   const { response, config } = error;
   if (!response) {
-    const data = createErrorResponse(t('axios.responseNotFound'), "handleApiAuthError 沒 response ")
+    const data = createErrorResponse(import.meta?.env?.SSR ? "ssr(axios.responseNotFound)" : t('axios.responseNotFound'), "handleApiAuthError 沒 response ")
     await notify(data)
     return data
   }
@@ -60,13 +55,13 @@ async function handleApiAuthError(error) {
 // 只有本地開發會遇到伺服器 SSL 自簽問題
 const httpsAgent = isSSR && process.env.NODE_ENV === 'development' ? new https.Agent({ rejectUnauthorized: false }) : undefined;
 const api = axios.create({
-  baseURL: isSSR ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
+  baseURL: process.env.SERVER_URL,
   withCredentials: true,
-  headers: isSSR ? { Origin: 'https://findpetmap.com' } : {},
+  headers: import.meta.env.SSR ? { Origin: 'https://findpetmap.com' } : {},
   httpsAgent: httpsAgent
 });
 const apiAuth = axios.create({
-  baseURL: isSSR ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
+  baseURL: process.env.SERVER_URL,
   withCredentials: true,
   headers: import.meta.env.SSR ? { Origin: 'https://findpetmap.com' } : {},
   httpsAgent: httpsAgent
