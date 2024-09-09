@@ -9,9 +9,9 @@ export function updateDataToLocalStorageAndCookie(key, data) {
   users[key] = data
   if (data && typeof data === 'object') {
     const stringifyData = encodeURIComponent(JSON.stringify(data))
-    Cookies.set(key, stringifyData, { expires: 365, path: '/', sameSite: 'Lax', secure: true })
+    Cookies.set(key, stringifyData, { expires: 365, path: '/', sameSite: 'Strict', secure: true, domain: '.findpetmap.com' })
   } else {
-    Cookies.set(key, data, { expires: 365, path: '/', sameSite: 'Lax', secure: true })
+    Cookies.set(key, data, { expires: 365, path: '/', sameSite: 'Strict', secure: true, domain: '.findpetmap.com' })
   }
 }
 
