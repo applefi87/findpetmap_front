@@ -57,6 +57,7 @@ import avValidator from 'an-validator';
 import { login } from '../services/user.js';
 import registerDialog from 'src/components/AppHeaderRegisterDialog.vue'
 import { languageOptions } from 'src/infrastructure/configs/languageOptions.js'
+import { normalCookieOptions } from 'src/utils/getCookieOption.js'
 const { rules, createI18nRules } = avValidator
 const route = useRoute()
 const router = useRouter()
@@ -83,8 +84,7 @@ function onRegisterSuccess() {
 
 async function handlechangeInterfaceLang(value) {
   try {
-    $q.cookies.set('interfaceLanguage', value, { expires: 365, path: '/', sameSite: 'Lax' })
-    // $q.cookies.set('interfaceLanguage', locale.value, { expires: 365, sameSite: 'Lax', httpOnly: true, secure: true })
+    $q.cookies.set('interfaceLanguage', value, normalCookieOptions)
   } catch (error) {
     console.log(error)
   } finally {

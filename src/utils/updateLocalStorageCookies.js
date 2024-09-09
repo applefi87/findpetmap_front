@@ -1,6 +1,6 @@
 import { useUserStore } from 'src/stores/user'
 import { Cookies } from 'quasar'
-
+import { normalCookieOptions } from 'src/utils/getCookieOption.js'
 
 
 
@@ -9,9 +9,9 @@ export function updateDataToLocalStorageAndCookie(key, data) {
   users[key] = data
   if (data && typeof data === 'object') {
     const stringifyData = encodeURIComponent(JSON.stringify(data))
-    Cookies.set(key, stringifyData, { expires: 365, path: '/', sameSite: 'Strict', secure: true, domain: '.findpetmap.com' })
+    Cookies.set(key, stringifyData, normalCookieOptions)
   } else {
-    Cookies.set(key, data, { expires: 365, path: '/', sameSite: 'Strict', secure: true, domain: '.findpetmap.com' })
+    Cookies.set(key, data, normalCookieOptions)
   }
 }
 

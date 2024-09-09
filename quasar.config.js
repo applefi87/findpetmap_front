@@ -74,7 +74,6 @@ export default configure((ctx) => {
       // },
       // rawDefine: {}
       // ignorePublicFolder: true,
-      // minify: false,
       // polyfillModulePreload: true,
       // distDir
 
@@ -88,7 +87,7 @@ export default configure((ctx) => {
 
           // if you want to use named tokens in your Vue I18n messages, such as 'Hello {name}',
           // you need to set `runtimeOnly: false`
-          // runtimeOnly: false,
+          runtimeOnly: false,
 
           ssr: ctx.modeName === 'ssr',
 
