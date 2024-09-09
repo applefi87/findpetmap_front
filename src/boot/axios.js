@@ -58,7 +58,7 @@ async function handleApiAuthError(error) {
 }
 
 // 只有本地開發會遇到伺服器 SSL 自簽問題
-const httpsAgent = isSSR && process.env.NODE_ENV === 'development' ? new https.Agent({ rejectUnauthorized: false }) : undefined;
+const httpsAgent = undefined;
 const api = axios.create({
   baseURL: isSSR ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
   withCredentials: true,
