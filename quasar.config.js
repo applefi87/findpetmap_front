@@ -49,6 +49,9 @@ export default configure((ctx) => {
         src: path.resolve(__dirname, 'src'),
       },
       extractCSS: true,
+      ssr: {
+        criticalCSS: true,  // Enable critical CSS to avoid FOUC and layout shifts
+      },
       purgeCSS: {
         content: ['src/**/*.vue'],
         safelist: [] // if needed

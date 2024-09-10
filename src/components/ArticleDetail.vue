@@ -3,8 +3,8 @@
   <div class="q-mt-md" style="width:90vw">
     <q-card v-if="article">
       <q-card-section>
+        <LazyCarousel :images="article.images" />
         <q-no-ssr>
-          <LazyCarousel :images="article.images" />
           <div class="text-subtitle2 q-mt-sm row justify-between ">
             <div>
               <q-btn-dropdown v-if="article.isSelf" v-model="optionState" icon="more_horiz" flat round>
