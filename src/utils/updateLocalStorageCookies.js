@@ -26,5 +26,5 @@ export function doesCookieExist(key) {
 }
 
 export function removeCookie(key) {
-  Cookies.remove(key, { path: '/', sameSite: 'Strict' })
+  Cookies.remove(key, normalCookieOptions)
 }
