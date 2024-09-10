@@ -56,8 +56,10 @@
               {{ article.hasMicrochip ? t('yes') : t('no') }}
             </q-item-label>
             <q-item-label class="q-mt-sm"><strong>{{ t('lostDate') }}:</strong>
-              {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full' }).format(new
+              <q-no-ssr>
+                {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full' }).format(new
       Date(article.lostDate)) }}
+              </q-no-ssr>
             </q-item-label>
             <q-item-label class="q-mt-sm"><strong>{{ t('lostCity') }}:</strong>
               {{ cityCodeToNameMap[article.lostCityCode] }}
@@ -78,10 +80,12 @@
             <q-item-label class="q-mt-sm"><strong>{{ t('userOthers') }}:</strong> {{ article.user.info.others
               }}</q-item-label>
           </q-card-section>
-          <div class="text-caption q-mt-sm" style="color: gray;">
-            {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full', timeStyle: 'medium' }).format(new
+          <q-no-ssr>
+            <div class="text-caption q-mt-sm" style="color: gray;">
+              {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full', timeStyle: 'medium' }).format(new
       Date(article.createdAt)) }}
-          </div>
+            </div>
+          </q-no-ssr>
         </q-card>
       </q-card-section>
       <q-card-section>
