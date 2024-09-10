@@ -1,7 +1,9 @@
 <template>
   <div style="width:80%; height: 80vh; margin:auto; padding: 20px">
     <q-btn @click="search" :label="t('search')" />
-    <div id="map" style="height: 100%; width: 900px"></div>
+    <q-no-ssr>
+      <div id="map" style="height: 100%; width: 900px"></div>
+    </q-no-ssr>
     <q-btn @click="locateHere" :label="t('locateHere')" />
   </div>
   <q-btn v-if="users.token" class="q-my-md circle-float" color="primary" fab round floating icon="add"

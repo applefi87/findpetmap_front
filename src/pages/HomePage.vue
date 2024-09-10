@@ -5,7 +5,7 @@
         <LazyArticleFilter @updateFilter="handleUpdateFilter" />
       </div>
       <div class="map-area q-pa-md q-gutter-y-sm">
-        <LazyMap :filter="filter" />
+        <Map :filter="filter" />
       </div>
     </q-no-ssr>
   </q-page>
@@ -13,7 +13,7 @@
 
 <script setup>
 import { ref, defineAsyncComponent } from 'vue';
-const LazyMap = defineAsyncComponent(() => import('components/MapComponent.vue'));
+import Map from 'components/MapComponent.vue';
 const LazyArticleFilter = defineAsyncComponent(() => import('components/ArticleFilter.vue'));
 
 const filter = ref({});

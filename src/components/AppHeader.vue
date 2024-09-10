@@ -2,12 +2,14 @@
 <template>
   <q-header elevated class="bg-primary text-white app-header">
     <q-toolbar>
-      <q-btn v-if="users.token" padding="none" flat dense round icon="menu" aria-label="Menu" @click="toggleDrawer"
-        style />
-      <div class="logo-container" v-if="!$q.platform.is.mobile">
-        <router-link to="/">
-          <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png" alt="Logo"></router-link>
-      </div>
+      <q-no-ssr>
+        <q-btn v-if="users.token" padding="none" flat dense round icon="menu" aria-label="Menu" @click="toggleDrawer"
+          style />
+        <div class="logo-container" v-if="!$q.platform.is.mobile">
+          <router-link to="/">
+            <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png" alt="Logo"></router-link>
+        </div>
+      </q-no-ssr>
       <q-toolbar-title style="padding:0"><q-btn to="/" :label="t('petFinder')" color="primary" unelevated no-caps
           size="lg" /></q-toolbar-title>
       <q-select class="langSelect" v-model="locale" @update:model-value="handleChangeInterfaceLang"

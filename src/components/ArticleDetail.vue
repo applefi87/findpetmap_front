@@ -3,7 +3,7 @@
   <div class="q-mt-md" style="width:90vw">
     <q-card v-if="article">
       <q-card-section>
-        <LazyCarousel :images="article.images" />
+        <Carousel :images="article.images" />
         <q-no-ssr>
           <div class="text-subtitle2 q-mt-sm row justify-between ">
             <div>
@@ -122,6 +122,7 @@
 
 <script setup>
 import { ref, onBeforeMount, watch, onServerPrefetch, defineAsyncComponent } from 'vue'
+import Carousel from 'components/CarouselComponent.vue'
 import { useMeta } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
@@ -132,7 +133,6 @@ import { shareArticle } from '../utils/shareLink.js'
 import { sizeLabelValueOptions, genderLabelValueOptions } from 'src/utils/updateSelectOptions.js'
 import notify from 'src/utils/notify.js'
 
-const LazyCarousel = defineAsyncComponent(() => import('components/CarouselComponent.vue'));
 const LazyArticleUpdateComponent = defineAsyncComponent(() =>
   import('src/components/ArticleUpdate.vue')
 );

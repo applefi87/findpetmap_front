@@ -37,7 +37,6 @@ export default function initInterfaceLanguage(req = null) {
       const userLanguages = navigator.languages || [navigator.language];
       acceptedLanguages = parseAcceptedLanguages(userLanguages.join(','));
     }
-    console.log(acceptedLanguages);
     return findInterfaceLanguage(acceptedLanguages, availableLanguages);
   } catch (error) {
     console.error('Error determining interface language:', error);

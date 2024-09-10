@@ -1,27 +1,25 @@
 <template>
   <q-layout view="hHh lpR fff">
-    <q-no-ssr>
-      <LazyAppHeader @toggle-left-drawer="toggleLeftDrawer" />
-      <q-drawer v-model='leftDrawer' side="left" :overlay="leftDrawerOverlay" persistent bordered elevated
-        :breakpoint="768" style="height: 100% ;display:flex;flex-direction: column">
-        <q-scroll-area class="fit">
-          <q-list padding>
-            <q-item class="custom-item" v-for="(item, index) in drawerItems" :key="index" clickable v-ripple
-              @click="handleAction(item)">
-              <q-item-section avatar>
-                <q-icon :name="item.icon" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label class="custom-label">{{ t(item.label) }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-          <!-- <b>{{ t('contactUs:') }}</b>
+    <AppHeader @toggle-left-drawer="toggleLeftDrawer" />
+    <q-drawer v-model='leftDrawer' side="left" :overlay="leftDrawerOverlay" persistent bordered elevated
+      :breakpoint="768" style="height: 100% ;display:flex;flex-direction: column">
+      <q-scroll-area class="fit">
+        <q-list padding>
+          <q-item class="custom-item" v-for="(item, index) in drawerItems" :key="index" clickable v-ripple
+            @click="handleAction(item)">
+            <q-item-section avatar>
+              <q-icon :name="item.icon" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="custom-label">{{ t(item.label) }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+        <!-- <b>{{ t('contactUs:') }}</b>
           <br>
           <b>applefi87@gmail.com</b> -->
-        </q-scroll-area>
-      </q-drawer>
-    </q-no-ssr>
+      </q-scroll-area>
+    </q-drawer>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -29,16 +27,13 @@
 </template>
 
 <script setup>
-import { ref, defineAsyncComponent } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import { logout } from '../services/user.js';
+import AppHeader from 'components/AppHeader.vue'
 import notify from 'src/utils/notify'
-
-const LazyAppHeader = defineAsyncComponent(() =>
-  import('components/AppHeader.vue')
-);
 
 const { t } = useI18n()
 
