@@ -10,7 +10,7 @@
       </div>
       <q-toolbar-title style="padding:0"><q-btn to="/" :label="t('petFinder')" color="primary" unelevated no-caps
           size="lg" /></q-toolbar-title>
-      <q-select class="langSelect" v-model="locale" @update:model-value="handlechangeInterfaceLang"
+      <q-select class="langSelect" v-model="locale" @update:model-value="handleChangeInterfaceLang"
         :options="languageOptions" :label='t("language")' borderless emit-value map-options style="width:100px"
         padding="none" />
       <q-no-ssr>
@@ -82,13 +82,13 @@ function onRegisterSuccess() {
 
 // 不用notify 因為即使出錯就算了
 
-async function handlechangeInterfaceLang(value) {
+async function handleChangeInterfaceLang(value) {
   try {
     $q.cookies.set('interfaceLanguage', value, normalCookieOptions)
   } catch (error) {
     console.log(error)
   } finally {
-    users.interfaceLanguage = locale.value
+    users.interfaceLanguage = value
   }
 }
 

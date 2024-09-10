@@ -5,8 +5,6 @@ import { useUserStore } from 'src/stores/user';
 import notify from 'src/utils/notify.js'
 const t = i18n.global.t;
 
-const isSSR = process.env.SERVER;
-
 // 介紹: 成功就不說
 // 如果失敗，會用handleError 翻譯，取出標準格式throw, 所以操作的一樣要有catch
 async function handleApiResponse(response) {

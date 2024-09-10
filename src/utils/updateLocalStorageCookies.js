@@ -6,8 +6,10 @@ import { normalCookieOptions } from 'src/utils/getCookieOption.js'
 
 export function updateDataToLocalStorageAndCookie(key, data) {
   const users = useUserStore()
-  users[key] = data
-  console.log("users[key]", users[key]);
+  // 要這樣用,不然目前測更新的users 似乎不是本地的localstorage, 而是伺服器抓下來的
+  users.$patch((state) => {
+    state[key] = data;
+  });
   if (data && typeof data === 'object') {
     const stringifyData = encodeURIComponent(JSON.stringify(data))
     Cookies.set(key, stringifyData, normalCookieOptions)
