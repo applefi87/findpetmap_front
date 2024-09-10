@@ -39,8 +39,6 @@ export const useUserStore = defineStore('user', {
     },
     clearLocalStorageAndCookie() {
       removeCookie("interfaceLanguage")
-      removeCookie("searchLanguages")
-      removeCookie("publishLanguages")
       removeCookie("token")
       localStorage.removeItem("users")
     },

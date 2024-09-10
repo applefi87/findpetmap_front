@@ -12,7 +12,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 export default store(() => {
   const pinia = createPinia()
-  if (!import.meta.env.SSR) {
+  if (!process.env.SERVER) {
     // Only use piniaPluginPersistedstate on the client side
     pinia.use(piniaPluginPersistedstate);
     // if you set manualStoreHydration: true, uncomment below:

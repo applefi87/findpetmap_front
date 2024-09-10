@@ -5,7 +5,7 @@ import { useUserStore } from 'src/stores/user';
 import notify from 'src/utils/notify.js'
 const t = i18n.global.t;
 
-const isSSR = import.meta.env.SSR;
+const isSSR = process.env.SERVER;
 
 // 介紹: 成功就不說
 // 如果失敗，會用handleError 翻譯，取出標準格式throw, 所以操作的一樣要有catch
@@ -58,17 +58,17 @@ async function handleApiAuthError(error) {
 }
 
 // 只有本地開發會遇到伺服器 SSL 自簽問題
-const httpsAgent = undefined;
+const httpsAgent = process.env.SERVER && process.env.NODE_ENV === 'development' ? new https.Agent({ rejectUnauthorized: false }) : undefined
 const api = axios.create({
-  baseURL: isSSR ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
+  baseURL: process.env.SERVER ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
   withCredentials: true,
-  headers: isSSR ? { Origin: 'https://findpetmap.com' } : {},
+  headers: process.env.SERVER ? { Origin: 'https://findpetmap.com' } : {},
   httpsAgent: httpsAgent
 });
 const apiAuth = axios.create({
-  baseURL: isSSR ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
+  baseURL: process.env.SERVER ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
   withCredentials: true,
-  headers: import.meta.env.SSR ? { Origin: 'https://findpetmap.com' } : {},
+  headers: process.env.SERVER ? { Origin: 'https://findpetmap.com' } : {},
   httpsAgent: httpsAgent
 });
 

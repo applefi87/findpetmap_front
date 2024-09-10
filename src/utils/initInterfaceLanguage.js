@@ -29,8 +29,7 @@ const availableLanguages = languageOptions.map(lang => lang.value);
 export default function initInterfaceLanguage(req = null) {
   try {
     let acceptedLanguages;
-    const isServer = import.meta.env.SSR;
-    if (isServer && req) {
+    if (process.env.SERVER && req) {
       // Server-side: use request headers
       acceptedLanguages = parseAcceptedLanguages(req.headers['accept-language']);
     } else {
@@ -38,6 +37,7 @@ export default function initInterfaceLanguage(req = null) {
       const userLanguages = navigator.languages || [navigator.language];
       acceptedLanguages = parseAcceptedLanguages(userLanguages.join(','));
     }
+    console.log(acceptedLanguages);
     return findInterfaceLanguage(acceptedLanguages, availableLanguages);
   } catch (error) {
     console.error('Error determining interface language:', error);

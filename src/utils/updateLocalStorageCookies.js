@@ -7,6 +7,7 @@ import { normalCookieOptions } from 'src/utils/getCookieOption.js'
 export function updateDataToLocalStorageAndCookie(key, data) {
   const users = useUserStore()
   users[key] = data
+  console.log("users[key]", users[key]);
   if (data && typeof data === 'object') {
     const stringifyData = encodeURIComponent(JSON.stringify(data))
     Cookies.set(key, stringifyData, normalCookieOptions)
