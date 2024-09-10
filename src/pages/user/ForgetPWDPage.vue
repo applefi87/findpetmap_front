@@ -69,7 +69,6 @@ const handleSendForgetPWDCode = async () => {
     }
   } catch (error) {
     await notify(error.response.data)
-    // console.log(error.response.data)
   } finally {
     mailSending.value = false
   }
@@ -83,7 +82,6 @@ const mailVerifying = ref(false)
 const mailCodeValid = ref(null)
 const handleResetPWD = async () => {
   try {
-    // console.log('in')
     if (!mailCodeValid.value.validate()) return
     mailVerifying.value = true
     const rep = await resetPWD(form, users.interfaceLanguage)
@@ -91,8 +89,7 @@ const handleResetPWD = async () => {
     if (!rep.success) throw new Error(rep.title)
     getTempPWD.value = true
   } catch (error) {
-    // await notify(error.response.data)
-    // console.log(error)
+    console.log(error)
   }
   mailVerifying.value = false
 }

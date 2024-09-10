@@ -46,7 +46,6 @@ function isEqual(obj1, obj2) {
 
 watch(() => props.filter, async (newFilter, oldFilter) => {
   if (!isEqual(newFilter, oldFilter)) {
-    console.log("try clear old data");
     clearOldData();
     await handleMapDrag();
   }
@@ -59,11 +58,8 @@ function clearOldData() {
 }
 function clearAllMarkers() {
   for (const id in markerList) {
-    console.log("remove marker", id);
     if (markerList[id]) {
-      console.log("have mark");
-      markerList[id].remove(); // Remove the marker from the map
-      console.log(markerList[id]);
+      markerList[id].remove();
     }
   }
   Object.keys(markerList).forEach(key => delete markerList[key]);

@@ -100,7 +100,7 @@ function createErrorResponse(errorMessage, extraMessage) {
 
 //
 function log(message) {
-  console.log(message);
+  // console.log(message);
 }
 async function extendToken(users, config) {
   log("extend token");

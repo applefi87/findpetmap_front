@@ -21,27 +21,26 @@ const findInterfaceLanguage = (acceptedLanguages, availableLanguages) => {
     availableLanguages.some(availableLang =>
       getPrimaryLanguageCode(availableLang) === getPrimaryLanguageCode(lang.code)
     )
-  )?.code || 'en-US'; // Default to 'en-US' if no match is found
+  )?.code || 'zh-TW';
 };
 
 const availableLanguages = languageOptions.map(lang => lang.value);
 
 export default function initInterfaceLanguage(req = null) {
-  return "zh-TW"
-  // try {
-  //   let acceptedLanguages;
-  //   const isServer = typeof window === 'undefined';
-  //   if (isServer && req) {
-  //     // Server-side: use request headers
-  //     acceptedLanguages = parseAcceptedLanguages(req.headers['accept-language']);
-  //   } else {
-  //     // Client-side: use navigator.languages or navigator.language
-  //     const userLanguages = navigator.languages || [navigator.language];
-  //     acceptedLanguages = parseAcceptedLanguages(userLanguages.join(','));
-  //   }
-  //   return findInterfaceLanguage(acceptedLanguages, availableLanguages);
-  // } catch (error) {
-  //   console.error('Error determining interface language:', error);
-  //   return 'en-US'; // Fallback to default language in case of an error
-  // }
+  try {
+    let acceptedLanguages;
+    const isServer = import.meta.env.SSR;
+    if (isServer && req) {
+      // Server-side: use request headers
+      acceptedLanguages = parseAcceptedLanguages(req.headers['accept-language']);
+    } else {
+      // Client-side: use navigator.languages or navigator.language
+      const userLanguages = navigator.languages || [navigator.language];
+      acceptedLanguages = parseAcceptedLanguages(userLanguages.join(','));
+    }
+    return findInterfaceLanguage(acceptedLanguages, availableLanguages);
+  } catch (error) {
+    console.error('Error determining interface language:', error);
+    return 'zh-TW';
+  }
 }

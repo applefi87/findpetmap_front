@@ -67,9 +67,7 @@ const handleClose = () => {
 onBeforeMount(() => {
   // 經緯相反
   const articleCoordinates = props.article?.location.coordinates
-  console.log("articleCoordinates:" + articleCoordinates);
   articleForm.coordinates = JSON.stringify([articleCoordinates[1], articleCoordinates[0]])
-  console.log("articleForm.coordinates:" + articleForm.coordinates);
   articleForm.lostDate = props.article?.lostDate ? new Date(props.article?.lostDate).toISOString().slice(0, 10).replace(/-/g, '/') : null
   // 預先把舊圖片的放到選擇的元件裡
   if (props.article?.images?.length > 0) {

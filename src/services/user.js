@@ -59,7 +59,6 @@ export async function resetPWD(emailObj, lang) {
 export async function changePWD(form) {
   try {
     const res = await apiAuth.post('/user/changePWD', form)
-    // console.log("user:" + JSON.stringify(res));
     return res
   } catch (error) {
     console.log("user-err:" + JSON.stringify(error));

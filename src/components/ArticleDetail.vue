@@ -235,7 +235,6 @@ onBeforeMount(async () => {
 })
 
 async function fetchArticle() {
-  console.log("fetchArticle");
   try {
     const { data } = await articleService.getArticleDetail(props.articleId)
     return JSON.parse(JSON.stringify(data))
@@ -259,7 +258,6 @@ async function clientHandleDatas() {
 }
 
 watch(() => props.articleId, async () => {
-  console.log("watch");
   await fetchAndInit()
 })
 

@@ -1,6 +1,5 @@
 import { ssrMiddleware } from 'quasar/wrappers'
 import initInterfaceLanguage from 'src/utils/initInterfaceLanguage.js'
-import { getReorderLanguagesObjByPlainArr, languagesListObj2str } from 'src/utils/languageListTool.js'
 // This middleware should execute as last one
 // since it captures everything and tries to
 // render the page with Vue
@@ -22,8 +21,6 @@ export default ssrMiddleware(({ app, resolve, render, serve }) => {
     const cookies = parseCookies(req)
     // Data generation will be reliable and complete for both server and client in the future.
     // 有cookie用cookie,不然抓req.headers['accept-language']
-    console.log(" cookies?.interfaceLanguage", cookies?.interfaceLanguage);
-    console.log("initInterfaceLanguage(req)", initInterfaceLanguage(req));
     const interfaceLanguage = cookies?.interfaceLanguage || initInterfaceLanguage(req)
     const token = cookies?.token
     // 查詢文章語言

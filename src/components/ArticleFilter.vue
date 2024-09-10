@@ -85,7 +85,6 @@ const applyFilter = () => {
   if (!includePetType.value) delete finalFilter.petType;
   if (!includeColor.value) delete finalFilter.color;
   if (!includeLostDate.value) delete finalFilter.lostDate;
-  console.log("emit updateFilter:", finalFilter);
   emit('updateFilter', finalFilter);
   isExpanded.value = false;
 };

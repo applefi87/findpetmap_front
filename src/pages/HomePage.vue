@@ -19,7 +19,6 @@ const LazyArticleFilter = defineAsyncComponent(() => import('components/ArticleF
 const filter = ref({});
 
 const handleUpdateFilter = (newFilter) => {
-  console.log("handleUpdateFilter:", newFilter);
   filter.value = { ...newFilter }; // Spread operator ensures a new object
 };
 </script>
