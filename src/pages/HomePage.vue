@@ -3,7 +3,7 @@
     <div class="filter-area q-pa-md">
       <LazyArticleFilter @updateFilter="handleUpdateFilter" />
     </div>
-    <Map :filter="filter" class="map-area q-gutter-y-sm" />
+    <Map :filter="filter" />
   </q-page>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction: column; height: 100%; ">
+  <div style="display: flex; flex-direction: column; height: 100%; " class="map-area q-gutter-y-sm">
     <q-no-ssr style="flex-grow: 1;">
       <div id="map"></div>
     </q-no-ssr>
@@ -98,7 +98,6 @@ onMounted(() => {
 
     // Step 3: Wait for the CSS to fully load before appending the JS file
     leafletCss.onload = () => {
-      console.log("leafletCss.onload");
       const leafletJs = document.createElement('script');
       leafletJs.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
       leafletJs.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
@@ -106,10 +105,8 @@ onMounted(() => {
       document.body.appendChild(leafletJs);
 
       leafletJs.onload = () => {
-        console.log("leafletJs.onload");
         const L = window.L;
         nextTick(() => {
-          console.log("nextTick");
           map = L.map('map').setView([25.0474014, 121.5374556], 13);
           L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 17,
