@@ -23,7 +23,7 @@ function requireNotLogin(to, from, next) {
 
 const routes = [
   {
-    path: '/article/',
+    path: '/article',
     displayName: 'articleRoute',
     name: 'articleRoute',
     component: () => import('layouts/MainLayout.vue'),

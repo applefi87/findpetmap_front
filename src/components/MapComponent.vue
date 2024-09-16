@@ -1,8 +1,7 @@
 <template>
-  <div style="width:80%; height: 80vh; margin:auto; padding: 20px">
-    <q-btn @click="search" :label="t('search')" />
+  <div style="width:100%; height: 100%; margin:auto">
     <q-no-ssr>
-      <div id="map" style="height: 100%; width: 900px"></div>
+      <div id="map" style="height: 100%; width: 100%"></div>
     </q-no-ssr>
     <q-btn @click="locateHere" :label="t('locateHere')" />
   </div>

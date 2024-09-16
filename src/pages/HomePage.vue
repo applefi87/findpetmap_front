@@ -1,13 +1,11 @@
 <template>
-  <q-page class="q-pa-md">
-    <q-no-ssr>
-      <div class="filter-area q-pa-md">
-        <LazyArticleFilter @updateFilter="handleUpdateFilter" />
-      </div>
-      <div class="map-area q-pa-md q-gutter-y-sm">
-        <Map :filter="filter" />
-      </div>
-    </q-no-ssr>
+  <q-page style="display: flex; flex-direction: column;">
+    <div class="filter-area q-pa-md">
+      <LazyArticleFilter @updateFilter="handleUpdateFilter" />
+    </div>
+    <div class="map-area q-pa-md q-gutter-y-sm">
+      <Map :filter="filter" />
+    </div>
   </q-page>
 </template>
 
@@ -23,13 +21,21 @@ const handleUpdateFilter = (newFilter) => {
 };
 </script>
 
-
 <style scoped>
 .filter-area {
-  flex: 1;
+  height: 50px;
+  /* Minimize the size of the button */
+  flex-shrink: 0;
+  /* Prevents it from shrinking further */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .map-area {
-  flex: 2;
+  flex-grow: 1;
+  /* The map will take up the remaining space */
+  overflow: hidden;
+  /* Prevent overflow */
 }
 </style>
