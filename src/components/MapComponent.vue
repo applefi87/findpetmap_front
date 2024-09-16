@@ -1,10 +1,11 @@
 <template>
-  <div style="width:100%; height: 100%; margin:auto">
-    <q-no-ssr>
-      <div id="map" style="height: 100%; width: 100%"></div>
+  <div style="display: flex; flex-direction: column; height: 100%; ">
+    <q-no-ssr style="flex-grow: 1;">
+      <div id="map" style="height: 100%; width: 100%; "></div>
     </q-no-ssr>
-    <q-btn @click="locateHere" :label="t('locateHere')" />
+    <q-btn @click="locateHere" :label="t('locateHere')" style="align-self: center; margin-top: 10px; flex-shrink: 0;" />
   </div>
+
   <q-btn v-if="users.token" class="q-my-md circle-float" color="primary" fab round floating icon="add"
     to="/article/create" />
   <q-dialog v-model="articleDialog" :maximized="$q.platform.is.mobile" @before-hide="back2ArticleDetail">
@@ -20,7 +21,6 @@
     </q-card>
   </q-dialog>
 </template>
-
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, nextTick, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -86,33 +86,50 @@ const locateHere = () => {
 onMounted(() => {
   const isServerSide = process.env.SERVER
   if (!isServerSide) {
-    const leafletJs = document.createElement('script');
-    leafletJs.src = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js';
-    leafletJs.onload = () => {
-      const L = window.L;
-      nextTick(() => {
-        map = L.map('map').setView([25.0474014, 121.5374556], 13);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 17,
-          minZoom: 12,
-          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
 
-        map.on("locationfound", (e) => {
-          map.setView(e.latlng, e.accuracy / 2)
-        })
-        getCurrentPosition();
-
-        map.on('moveend', handleMapDrag);
-        centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup(t("youAreHere")).openPopup();
-      })
-    }
-
+    // Step 1: Create the link element for Leaflet's CSS
     const leafletCss = document.createElement('link');
     leafletCss.rel = 'stylesheet';
-    leafletCss.href = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css';
+    leafletCss.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    leafletCss.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+    leafletCss.crossOrigin = 'anonymous';
+    // Step 2: Append the CSS to the document's head
     document.head.appendChild(leafletCss);
-    document.body.appendChild(leafletJs);
+
+    // Step 3: Wait for the CSS to fully load before appending the JS file
+    leafletCss.onload = () => {
+      console.log("leafletCss.onload");
+      const leafletJs = document.createElement('script');
+      leafletJs.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      leafletJs.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+      leafletJs.crossOrigin = 'anonymous';
+      document.body.appendChild(leafletJs);
+
+      leafletJs.onload = () => {
+        console.log("leafletJs.onload");
+        const L = window.L;
+        nextTick(() => {
+          console.log("nextTick");
+          map = L.map('map').setView([25.0474014, 121.5374556], 13);
+          L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            minZoom: 12,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          }).addTo(map);
+
+          map.on("locationfound", (e) => {
+            map.setView(e.latlng, e.accuracy / 2)
+          })
+          getCurrentPosition();
+
+          map.on('moveend', handleMapDrag);
+          centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map).bindPopup(t("youAreHere")).openPopup();
+        })
+      }
+    };
+    leafletCss.onerror = () => {
+      console.error("Failed to load Leaflet CSS.");
+    };
   } else {
     map.invalidateSize(); // Recalculate map size
     map.setView(map.getCenter(), map.getZoom()); // Re-center the map
@@ -125,46 +142,6 @@ onBeforeUnmount(() => {
     map.remove();
   }
 });
-
-const search = () => {
-  // const center = map.getCenter();
-  // console.log('Center Coordinates: ', center);
-  const bounds = map.getBounds();
-  const bottomLeft = bounds.getSouthWest();
-  const topRight = bounds.getNorthEast();
-  // console.log('Bottom-Left Coordinates: ', bottomLeft);
-  // console.log('Top-Right Coordinates: ', topRight);
-  const width = calculateDistance(
-    bottomLeft.lat,
-    bottomLeft.lng,
-    bottomLeft.lat,
-    topRight.lng
-  );
-
-  const height = calculateDistance(
-    bottomLeft.lat,
-    bottomLeft.lng,
-    topRight.lat,
-    bottomLeft.lng
-  );
-
-  // console.log(`Width (Left-Right Distance): ${width.toFixed(2)} km`);
-  // console.log(`Height (Top-Bottom Distance): ${height.toFixed(2)} km`);
-};
-
-// Function to calculate distance between two points
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radius of the Earth in km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in km
-  return distance;
-}
 
 function getCurrentPositionSuccessHandler(newPosition) {
   const { latitude, longitude } = newPosition.coords;

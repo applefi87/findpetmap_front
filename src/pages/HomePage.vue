@@ -1,5 +1,5 @@
 <template>
-  <q-page style="display: flex; flex-direction: column;">
+  <q-page style="display: flex; flex-direction: column; height: 100%;">
     <div class="filter-area q-pa-md">
       <LazyArticleFilter @updateFilter="handleUpdateFilter" />
     </div>
@@ -34,8 +34,9 @@ const handleUpdateFilter = (newFilter) => {
 
 .map-area {
   flex-grow: 1;
+  height: 100%;
   /* The map will take up the remaining space */
-  overflow: hidden;
+  /* overflow: hidden; */
   /* Prevent overflow */
 }
 </style>
