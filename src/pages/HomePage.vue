@@ -1,11 +1,9 @@
 <template>
-  <q-page style="display: flex; flex-direction: column; height: 100%;">
+  <q-page style="height: 100%; display: flex;flex-direction: column;">
     <div class="filter-area q-pa-md">
       <LazyArticleFilter @updateFilter="handleUpdateFilter" />
     </div>
-    <div class="map-area q-pa-md q-gutter-y-sm">
-      <Map :filter="filter" />
-    </div>
+    <Map :filter="filter" class="map-area q-gutter-y-sm" />
   </q-page>
 </template>
 

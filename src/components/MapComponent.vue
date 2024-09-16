@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; flex-direction: column; height: 100%; ">
     <q-no-ssr style="flex-grow: 1;">
-      <div id="map" style="height: 100%; width: 100%; "></div>
+      <div id="map"></div>
     </q-no-ssr>
     <q-btn @click="locateHere" :label="t('locateHere')" style="align-self: center; margin-top: 10px; flex-shrink: 0;" />
   </div>
