@@ -6,9 +6,10 @@
 
 <script setup>
 import { useSSRContext } from 'vue';
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
 import { updateDataToLocalStorageAndCookie, doesCookieExist } from 'src/utils/updateLocalStorageCookies.js'
-import { useI18n } from 'vue-i18n'
+import { defaultLanguage } from './infrastructure/configs/languageOptions';
 const users = useUserStore()
 const { locale, t } = useI18n({ useScope: 'global' })
 
@@ -25,7 +26,7 @@ try {
   } else {
     // token不用從後端傳回前端以免汙染
     const backendInterfaceLanguage = users.interfaceLanguage
-    locale.value = backendInterfaceLanguage || "zh-TW"
+    locale.value = backendInterfaceLanguage || defaultLanguage
     // If any match then not regular state so need to reset all as server rendered preference.
     if (!localStorage.getItem("users") || !doesCookieExist("interfaceLanguage") || (doesCookieExist("token") && !users.token) || (!doesCookieExist("token") && users.token)) {
       console.log("Welcome to PetFinder first time! Setting preference for you in localStorage & Cookie~");

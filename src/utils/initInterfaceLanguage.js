@@ -1,4 +1,4 @@
-import { languageOptions } from 'src/infrastructure/configs/languageOptions.js'
+import { languageOptions, defaultLanguage } from 'src/infrastructure/configs/languageOptions.js'
 
 const getPrimaryLanguageCode = (lang) => lang.split('-')[0];
 
@@ -21,7 +21,7 @@ const findInterfaceLanguage = (acceptedLanguages, availableLanguages) => {
     availableLanguages.some(availableLang =>
       getPrimaryLanguageCode(availableLang) === getPrimaryLanguageCode(lang.code)
     )
-  )?.code || 'zh-TW';
+  )?.code || defaultLanguage;
 };
 
 const availableLanguages = languageOptions.map(lang => lang.value);
@@ -40,6 +40,6 @@ export default function initInterfaceLanguage(req = null) {
     return findInterfaceLanguage(acceptedLanguages, availableLanguages);
   } catch (error) {
     console.error('Error determining interface language:', error);
-    return 'zh-TW';
+    return defaultLanguage;
   }
 }
