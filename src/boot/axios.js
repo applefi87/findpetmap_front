@@ -8,7 +8,6 @@ const t = i18n.global.t;
 // 介紹: 成功就不說
 // 如果失敗，會用handleError 翻譯，取出標準格式throw, 所以操作的一樣要有catch
 async function handleApiResponse(response) {
-  console.log('handleApiResponse', response);
   if (!response) {
     const data = createErrorResponse(t('axios.responseNotFound'), 'handleApiResponse !response')
     await notify(data)
@@ -34,7 +33,6 @@ async function handleApiError(error) {
 
 // 多了登錄相關判斷處理
 async function handleApiAuthError(error) {
-  console.log("handleApiAuthError:", error);
   const { response, config } = error;
   if (!response) {
     const data = createErrorResponse(t('axios.responseNotFound'), "handleApiAuthError 沒 response ")
@@ -73,7 +71,6 @@ const apiAuth = axios.create({
 });
 
 apiAuth.interceptors.request.use((config) => {
-  console.log("apiAuth.interceptors.request", config);
   const users = useUserStore();
   config.headers.authorization = `Bearer ${users.token}`;
   return config;
