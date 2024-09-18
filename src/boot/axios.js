@@ -55,7 +55,7 @@ async function handleApiAuthError(error) {
   return await handleApiError(error)
 }
 
-// 只有本地開發會遇到伺服器 SSL 自簽問題
+// 只有本地開發會遇到伺服器 SSL 自簽問題 yarn dev -m ssr 用這會過,但這在本地 build 會出問題因為本地自簽& build 後是 production, 記得這裡本地不會過
 const httpsAgent = process.env.SERVER && process.env.NODE_ENV === 'development' ? new https.Agent({ rejectUnauthorized: false }) : undefined
 const api = axios.create({
   baseURL: process.env.SERVER ? process.env.SERVER_URL_SSR : process.env.SERVER_URL,
