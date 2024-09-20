@@ -8,28 +8,20 @@
 
   <q-btn v-if="users.token" class="q-my-md circle-float" color="primary" fab round floating icon="add"
     to="/article/create" />
-  <q-dialog v-model="articleDialog" :maximized="$q.platform.is.mobile" @before-hide="back2ArticleDetail">
-    <q-card style="max-width:820px">
-      <q-bar style="background: transparent; position: sticky; top: 0; z-index: 1;">
-        <q-space />
-        <q-btn dense flat icon="close" v-close-popup @click="handleBackButton" size="lg">
-          <q-tooltip>{{ t('close') }}</q-tooltip>
-        </q-btn>
-      </q-bar>
-      <LazyArticleDetailExtended v-if="articleId" :articleId="articleId" @articleDeleted="articleDeleted"
-        @updateArticleList="updateArticleList" @backPage="back2ArticleDetail" />
-    </q-card>
-  </q-dialog>
+  <LazyArticleDialog v-if="articleId" :articleId="articleId" :isDialogVisible="isDialogVisible"
+    @update:isDialogVisible="isDialogVisible = $event" @articleDeleted="articleDeleted"
+    @updateArticleList="updateArticleList" @backPage="handleBackButton" />
 </template>
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, nextTick, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from 'src/stores/user'
-import * as  articleService from 'src/services/articleService.js';
 
-const LazyArticleDetailExtended = defineAsyncComponent(() =>
-  import('components/ArticleDetail.vue')
+import * as  articleService from 'src/services/articleService.js';
+const LazyArticleDialog = defineAsyncComponent(() =>
+  import('components/ArticleDialog.vue')
 );
+
 const { t } = useI18n({ useScope: 'global' });
 const users = useUserStore()
 let map;
@@ -219,16 +211,16 @@ function createArticleMarker(article) {
 }
 
 
-const articleDialog = ref(false);
+const isDialogVisible = ref(false);
 const articleId = ref(null);
 function openArticleDetail(id) {
   window.history.pushState({}, '', generateArticleUrl(id))
   articleId.value = id
-  articleDialog.value = true;
+  isDialogVisible.value = true;
 }
 
 function back2ArticleDetail() {
-  articleDialog.value = false;
+  isDialogVisible.value = false;
   window.history.pushState({}, '', generateArticleUrl())
 }
 function generateArticleUrl(id) {
@@ -240,7 +232,7 @@ function generateArticleUrl(id) {
 }
 // 網址相關
 const handleBackButton = (event) => {
-  if (articleDialog.value) {
+  if (isDialogVisible.value) {
     event.preventDefault();
     back2ArticleDetail()
   } else {

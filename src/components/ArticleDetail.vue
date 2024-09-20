@@ -58,7 +58,7 @@
             <q-item-label class="q-mt-sm"><strong>{{ t('lostDate') }}:</strong>
               <q-no-ssr>
                 {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full' }).format(new
-      Date(article.lostDate)) }}
+                  Date(article.lostDate)) }}
               </q-no-ssr>
             </q-item-label>
             <q-item-label class="q-mt-sm"><strong>{{ t('lostCity') }}:</strong>
@@ -83,7 +83,7 @@
           <q-no-ssr>
             <div class="text-caption q-mt-sm" style="color: gray;">
               {{ new Intl.DateTimeFormat(users.interfaceLanguage, { dateStyle: 'full', timeStyle: 'medium' }).format(new
-      Date(article.createdAt)) }}
+                Date(article.createdAt)) }}
             </div>
           </q-no-ssr>
         </q-card>
