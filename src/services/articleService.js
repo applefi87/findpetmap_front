@@ -74,3 +74,18 @@ export async function getArticleDetail(articleId) {
     throw error
   }
 }
+
+export async function getMyArticle(filter, skip, limit) {
+  try {
+    // const lang = langObj.map(o => o.value);
+    const res = await apiAuth.post('/article/my', {
+      filter,
+      skip,
+      limit
+    });
+    return res;
+  } catch (error) {
+    console.log('article-err');
+    throw error;
+  }
+}

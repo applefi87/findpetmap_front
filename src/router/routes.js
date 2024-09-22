@@ -49,8 +49,9 @@ const routes = [
     name: 'me',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      // { path: '', name: 'userInfo', displayName: 'userInfo', component: () => import('src/pages/user/UserInfoPage.vue') },
+
       { path: '', name: 'userInfo', displayName: 'userInfo', component: () => import('src/pages/user/SettingPage.vue') },
+      { path: 'article', name: 'myArticle', displayName: 'myArticle', component: () => import('src/pages/article/ArticleListPage.vue') },
       { path: 'changePWD', name: 'changePWD', displayName: 'changePWD', component: () => import('src/pages/user/ChangePWDPage.vue') },
       { path: 'edit', name: 'editMe', displayName: '編輯個人資料', component: () => import('src/pages/user/EditInfoPage.vue') },
     ],

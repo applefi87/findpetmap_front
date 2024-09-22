@@ -43,6 +43,7 @@ const toggleLeftDrawer = () => {
 const router = useRouter()
 const drawerItems = [
   { label: "userInfo", route: '/me', icon: 'contact_page' },
+  { label: "myArticle", route: '/me/article', icon: 'contact_page' },
   // { label: "setting", route: '/me/setting', icon: 'settings' },
   { label: "logout", route: '', icon: 'logout', action: handleLogout },
 ]
