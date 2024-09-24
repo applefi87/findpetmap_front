@@ -4,8 +4,10 @@
     <router-link :to="props.url" custom v-slot="{ navigate, href }">
       <a :href="href" @click="openArticleDetail($event, navigate, article._id)">
         <div class="article-section">
-          <div class="article-thumbnail" v-if="article.thumbnail">
-            <img :src="article.thumbnail" alt="article thumbnail">
+          <div class="article-thumbnail" v-if="article.previewImageFullPath">
+            <img
+              :src="`https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${article.previewImageFullPath}`"
+              alt="animal face">
           </div>
           <div class="article-info">
             <div class="article-topic">
@@ -28,12 +30,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
 
-const route = useRoute()
 const users = useUserStore()
 const { t } = useI18n({ useScope: 'global' })
 const props = defineProps({

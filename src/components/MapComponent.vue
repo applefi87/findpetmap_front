@@ -177,7 +177,7 @@ function createArticleMarker(article) {
   // Generate the HTML for the custom icon
   const iconHtml = `
     <div style="text-align: center;">
-      <img src="https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${article.previewImage}" class="markerImage" />
+      <img src="https://production-petfinder-private.s3.ap-northeast-1.amazonaws.com/${article.previewImageFullPath}" class="markerImage" />
       <div style="background-color: white; padding: 2px; border-radius: 3px;">
         ${article.rewardAmount}
       </div>
@@ -244,11 +244,11 @@ function updateArticleList(article) {
   if (clearMarkerById(article._id)) {
     const formatedArticle = JSON.parse(JSON.stringify(article))
     const previewImage = formatedArticle.images.find(item => item.isPreview)
-    console.log("previewImage:", previewImage);
-    console.log("previewImage.fullPath:", previewImage.fullPath.replace("original", "preview"));
-    formatedArticle.previewImage = previewImage.fullPath.replace("original", "preview")
+    // console.log("previewImage:", previewImage);
+    // console.log("previewImage.fullPath:", previewImage.fullPath.replace("original", "preview"));
+    formatedArticle.previewImageFullPath = previewImage.fullPath.replace("original", "preview")
     createArticleMarker(formatedArticle);
-    console.log("MapComponent.vue: updateArticleList formatedArticle", formatedArticle);
+    // console.log("MapComponent.vue: updateArticleList formatedArticle", formatedArticle);
   }
 }
 
