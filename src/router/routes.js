@@ -28,6 +28,7 @@ const routes = [
     name: 'articleRoute',
     component: () => import('layouts/MainLayout.vue'),
     children: [
+      { path: '', redirect: '/' },
       // { path: '', name: 'articles', displayName: 'articles', component: () => import('src/pages/article/ArticleListPage.vue') },
       { path: 'create', name: 'createArticle', displayName: 'createArticle', component: () => import('src/pages/article/CreateArticlePage.vue'), beforeEnter: requireLogin },
       { path: ':id', name: 'articleDetail', displayName: 'articleDetail', component: () => import('src/pages/article/ArticleDetailPage.vue') },
@@ -49,7 +50,6 @@ const routes = [
     name: 'me',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-
       { path: '', name: 'userInfo', displayName: 'userInfo', component: () => import('src/pages/user/SettingPage.vue') },
       { path: 'article', name: 'myArticle', displayName: 'myArticle', component: () => import('src/pages/article/ArticleListPage.vue') },
       { path: 'changePWD', name: 'changePWD', displayName: 'changePWD', component: () => import('src/pages/user/ChangePWDPage.vue') },
