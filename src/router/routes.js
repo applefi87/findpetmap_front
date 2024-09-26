@@ -2,6 +2,11 @@ import { useUserStore } from 'stores/user';
 
 function requireLogin(to, from, next) {
   const users = useUserStore();
+  if (process.env.SERVER) {
+    // 因為 ssrContent 辦法在這被取到資料，導致用戶能過但SSR 不行
+    // 所以這統一放，但頁面記得page堵好
+    return next()
+  }
   // 後端才檢查要有登入
   if (!!users.token || typeof window !== "undefined") {
     next();
@@ -13,6 +18,11 @@ function requireLogin(to, from, next) {
 function requireNotLogin(to, from, next) {
   const users = useUserStore();
   // 後端才檢查要有登入
+  if (process.env.SERVER) {
+    // 因為 ssrContent 辦法在這被取到資料，導致用戶能過但SSR 不行
+    // 所以這統一放，但頁面記得page堵好
+    return next()
+  }
   if (!users.token || typeof window === "undefined") {
     next();
   } else {
@@ -28,7 +38,7 @@ const routes = [
     name: 'articleRoute',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', redirect: '/' },
+      { path: '', name: "notFound", redirect: '/' },
       // { path: '', name: 'articles', displayName: 'articles', component: () => import('src/pages/article/ArticleListPage.vue') },
       { path: 'create', name: 'createArticle', displayName: 'createArticle', component: () => import('src/pages/article/CreateArticlePage.vue'), beforeEnter: requireLogin },
       { path: ':id', name: 'articleDetail', displayName: 'articleDetail', component: () => import('src/pages/article/ArticleDetailPage.vue') },
