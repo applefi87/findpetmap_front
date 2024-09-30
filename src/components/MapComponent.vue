@@ -243,12 +243,8 @@ const handleBackButton = (event) => {
 function updateArticleList(article) {
   if (clearMarkerById(article._id)) {
     const formatedArticle = JSON.parse(JSON.stringify(article))
-    const previewImage = formatedArticle.images.find(item => item.isPreview)
-    // console.log("previewImage:", previewImage);
-    // console.log("previewImage.fullPath:", previewImage.fullPath.replace("original", "preview"));
-    formatedArticle.previewImageFullPath = previewImage.fullPath.replace("original", "preview")
+    formatedArticle.previewImageFullPath = formatedArticle.previewImageFullPath
     createArticleMarker(formatedArticle);
-    // console.log("MapComponent.vue: updateArticleList formatedArticle", formatedArticle);
   }
 }
 

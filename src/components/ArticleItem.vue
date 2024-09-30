@@ -37,8 +37,7 @@ const users = useUserStore()
 const { t } = useI18n({ useScope: 'global' })
 const props = defineProps({
   url: String,
-  article: Object,
-  isAdminView: Boolean
+  article: Object
 })
 const emits = defineEmits(['articleReviewed', "openArticleDetail"]);
 //

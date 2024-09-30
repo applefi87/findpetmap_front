@@ -67,10 +67,9 @@ async function searchArticle() {
 }
 
 function updateArticleList(article) {
-  const theArticle = articleList.value.findIndex(a => a._id.toString() === article._id)
-  if (theArticle) {
-    theArticle = JSON.parse(JSON.stringify(article))
-  }
+  const theArticleIndex = articleList.value.findIndex(a => a._id.toString() === article._id)
+  if (theArticleIndex === -1) return
+  articleList.value[theArticleIndex] = article
 }
 
 // Delete related
@@ -100,6 +99,8 @@ const generateArticleUrl = (id) => {
   let result = `/article/`
   if (id) {
     result += `${id}`
+  } else {
+    return "/me/article"
   }
   return result;
 }
