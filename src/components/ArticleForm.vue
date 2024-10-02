@@ -99,15 +99,14 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import anv from 'an-validator';
-// import { useUserStore } from 'stores/user';
 import { cityCodeToNameMap, cityCodeToAreaList } from 'src/infrastructure/configs/cityConfigs.js';
 import articleConfigs from 'src/infrastructure/configs/articleConfigs.js';
 import imageConfigs from 'src/infrastructure/configs/imageConfigs.js';
 import MapSelectorComponent from 'components/MapCoordinateSelectComponent.vue'; // Import your new component
 import { changePetType, sizeLabelValueOptions, genderLabelValueOptions } from 'src/utils/updateSelectOptions.js'
 import notify from 'src/utils/notify.js'
-const { rules, createI18nRules } = anv
+import an_validator from 'an-validator';
+const { rules, createI18nRules } = an_validator
 
 const { t } = useI18n({ useScope: 'global' })
 

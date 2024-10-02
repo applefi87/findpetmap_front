@@ -81,11 +81,12 @@
 import { ref, reactive, inject, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from 'stores/user';
-import anValidator from 'an-validator';
 import { sendRegisterVerificationCode, verifyCode } from 'src/services/email.js';
 import { register } from 'src/services/user.js';
 import userConfigs from 'src/infrastructure/configs/userConfigs.js';
 import notify from 'src/utils/notify.js'
+import an_validator from 'an-validator';
+const { rules, createI18nRules } = an_validator
 
 const nameMinLength = userConfigs.name.minLength;
 const nameMaxLength = userConfigs.name.maxLength;
@@ -96,7 +97,6 @@ const lineIdMaxLength = userConfigs.lineId.maxLength;
 const othersMinLength = userConfigs.others.minLength;
 const othersMaxLength = userConfigs.others.maxLength;
 
-const { rules, createI18nRules } = anValidator
 const users = useUserStore();
 const registerState = inject('registerState');
 const emit = defineEmits(['register-success']);

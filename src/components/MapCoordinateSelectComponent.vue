@@ -28,8 +28,9 @@
 
 <script setup>
 import { ref, nextTick, onBeforeUnmount } from 'vue';
-import { rules, createI18nRules } from 'an-validator';
 import { useI18n } from 'vue-i18n';
+import an_validator from 'an-validator';
+const { rules, createI18nRules } = an_validator
 
 const { t } = useI18n({ useScope: 'global' });
 

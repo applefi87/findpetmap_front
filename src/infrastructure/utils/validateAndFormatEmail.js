@@ -1,8 +1,7 @@
-import anValidator from 'an-validator';
 import ValidationError from '../../infrastructure/errors/ValidationError.js';
-import UnknownError from '../../infrastructure/errors/UnknownError.js';
+import an_validator from 'an-validator';
+const { rules, validateByRules } = an_validator
 
-const { rules, validateByRules } = anValidator;
 // 信箱基本加工
 export default function (email) {
   //近來都要是標準email格式

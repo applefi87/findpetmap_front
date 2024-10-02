@@ -35,7 +35,8 @@ import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { changePWD } from '../../services/user.js';
-import { rules, createI18nRules } from 'an-validator';
+import an_validator from 'an-validator';
+const { rules, createI18nRules } = an_validator
 
 const router = useRouter()
 const { t } = useI18n({ useScope: 'global' })

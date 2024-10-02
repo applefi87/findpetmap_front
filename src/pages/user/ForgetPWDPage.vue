@@ -44,8 +44,8 @@ import { useI18n } from 'vue-i18n'
 import notify from 'src/utils/notify'
 import emailConfigs from 'src/infrastructure/configs/emailConfigs.js'
 import { sendForgetPWDCode, resetPWD } from '../../services/user.js';
-import anv from 'an-validator';
-const { rules, createI18nRules } = anv
+import an_validator from 'an-validator';
+const { rules, createI18nRules } = an_validator
 
 const { t } = useI18n({ useScope: 'global' })
 const users = useUserStore()

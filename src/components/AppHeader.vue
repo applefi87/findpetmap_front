@@ -55,12 +55,13 @@ import notify from 'src/utils/notify'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import avValidator from 'an-validator';
 import { login } from '../services/user.js';
 import registerDialog from 'src/components/AppHeaderRegisterDialog.vue'
 import { languageOptions } from 'src/infrastructure/configs/languageOptions.js'
 import { normalCookieOptions } from 'src/utils/getCookieOption.js'
-const { rules, createI18nRules } = avValidator
+import an_validator from 'an-validator';
+const { rules, createI18nRules } = an_validator
+
 const route = useRoute()
 const router = useRouter()
 const $q = useQuasar()

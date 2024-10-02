@@ -58,9 +58,9 @@
 <script setup>
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import anv from 'an-validator';
 import articleConfigs from 'src/infrastructure/configs/articleConfigs.js';
-const { rules, createI18nRules } = anv
+import an_validator from 'an-validator';
+const { rules, createI18nRules } = an_validator
 
 const { t } = useI18n({ useScope: 'global' })
 const emit = defineEmits(['updateFilter']);
