@@ -25,7 +25,6 @@ const LazyArticleDialog = defineAsyncComponent(() =>
 const { t } = useI18n({ useScope: 'global' });
 const users = useUserStore()
 let map;
-let Leaflet;
 const centerMarker = ref(null);
 const loadedRegions = ref([]);
 
@@ -102,7 +101,7 @@ onMounted(() => {
           map = L.map('map').setView([25.0474014, 121.5374556], 13);
           L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 17,
-            minZoom: 12,
+            minZoom: 13,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           }).addTo(map);
 
