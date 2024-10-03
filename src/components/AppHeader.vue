@@ -14,7 +14,7 @@
           size="lg" /></q-toolbar-title>
 
       <q-no-ssr>
-        <q-btn-dropdown padding="none" dense flat icon="menu" v-model="users.loginDisplayState" hide-dropdown-icon>
+        <q-btn-dropdown padding="none" dense flat icon="menu" v-model="optionsDropdown" hide-dropdown-icon>
           <q-list>
             <q-item clickable v-close-popup @click="aboutUsOpen = true">
               <q-item-section>{{ t('aboutUs') }}</q-item-section>
@@ -87,6 +87,7 @@ const { t, locale } = useI18n({ useScope: 'global' })
 //
 const isPwd = ref(true)
 const aboutUsOpen = ref(false)
+const optionsDropdown = ref(false)
 const registerState = ref(false)
 const emit = defineEmits(['toggle-left-drawer']);
 
