@@ -12,10 +12,23 @@
       </q-no-ssr>
       <q-toolbar-title style="padding:0"><q-btn to="/" :label="t('petFinder')" color="primary" unelevated no-caps
           size="lg" /></q-toolbar-title>
-      <q-select class="langSelect" v-model="locale" @update:model-value="handleChangeInterfaceLang"
-        :options="languageOptions" :label='t("language")' borderless emit-value map-options style="width:100px"
-        padding="none" />
+
       <q-no-ssr>
+        <q-btn-dropdown padding="none" dense flat icon="menu" v-model="users.loginDisplayState" hide-dropdown-icon>
+          <q-list>
+            <q-item clickable v-close-popup @click="aboutUsOpen = true">
+              <q-item-section>{{ t('aboutUs') }}</q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-select class="langSelect" v-model="locale" @update:model-value="handleChangeInterfaceLang"
+                  :options="languageOptions" :label="t('language')" borderless emit-value map-options
+                  style="width:100px" padding="none" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+
         <q-btn-dropdown v-if="!users.token" class="login" padding="none" dense flat :label='t("login")'
           v-model="users.loginDisplayState" hide-dropdown-icon>
           <div class="row no-wrap q-pa-md">
@@ -45,6 +58,7 @@
       </q-no-ssr>
     </q-toolbar>
   </q-header>
+  <AboutUsDialog v-model="aboutUsOpen"></AboutUsDialog>
   <registerDialog @register-success="onRegisterSuccess"></registerDialog>
 </template>
 
@@ -57,6 +71,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { login } from '../services/user.js';
 import registerDialog from 'src/components/AppHeaderRegisterDialog.vue'
+import AboutUsDialog from 'src/components/AboutUsDialog.vue'
 import { languageOptions } from 'src/infrastructure/configs/languageOptions.js'
 import { normalCookieOptions } from 'src/utils/getCookieOption.js'
 import an_validator from 'an-validator';
@@ -71,6 +86,7 @@ const users = useUserStore()
 const { t, locale } = useI18n({ useScope: 'global' })
 //
 const isPwd = ref(true)
+const aboutUsOpen = ref(false)
 const registerState = ref(false)
 const emit = defineEmits(['toggle-left-drawer']);
 
@@ -160,5 +176,5 @@ provide("registerState", registerState)
 .langSelect
   width: 120px
   &:deep() *
-    color: white
+    // color: white
 </style>
