@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="isDialogVisible" :maximized="$q.platform.is.mobile" @before-hide="handleBeforeHide">
-    <q-card :style="{ maxWidth: '820px' }">
+    <q-card style="max-width: 100%">
       <q-bar style="background: transparent; position: sticky; top: 0; z-index: 1;">
         <q-space />
         <q-btn dense flat icon="close" v-close-popup @click="handleClose" size="lg">

@@ -1,6 +1,6 @@
 <!-- 文章詳情，裡面包了許多元件，像留言區 留言清單 編輯文章的浮動式窗 -->
 <template>
-  <div class="q-mt-md" style="width:90vw">
+  <div class="q-mt-md" style="max-width:95vw; width:800px">
     <q-card v-if="article">
       <q-card-section>
         <Carousel :images="article.images" />

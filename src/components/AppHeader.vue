@@ -3,18 +3,12 @@
   <q-header elevated class="bg-primary text-white">
     <q-toolbar>
       <q-btn padding="none" flat dense round icon="menu" aria-label="Menu" @click="toggleDrawer" />
-      <div class="logo-container" v-if="!$q.platform.is.mobile">
-        <router-link to="/">
-          <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png" alt="Logo" />
-        </router-link>
-      </div>
-      <q-btn to="/" :label="t('petFinder')" color="primary" unelevated no-caps size="lg" class="title-button" />
       <router-link to="/" class="logo-link flex items-center q-ml-sm">
         <!-- Logo is hidden on small screens (below 'md') -->
         <div class="logo-container q-hidden-xs q-hidden-sm">
           <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png" alt="Logo" />
         </div>
-        <span class="title-text q-ml-sm">{{ t('petFinder') }}</span>
+        <span class="title-text q-ml-sm title-button">{{ t('petFinder') }}</span>
       </router-link>
 
       <q-space />
@@ -147,4 +141,8 @@ provide("registerState", registerState)
   width: 120px
   &:deep() *
     // color: white
+
+.title-button
+  font-size: 20px
+  color: white
 </style>

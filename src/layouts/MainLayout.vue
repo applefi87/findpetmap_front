@@ -5,25 +5,26 @@
       :breakpoint="768" style="height: 100%; display: flex; flex-direction: column;">
       <q-scroll-area class="fit">
         <q-list>
+          <!-- Static Items (Visible for all users) -->
           <q-item clickable v-close-popup @click="aboutUsOpen = true">
             <q-item-section>{{ t('aboutUs') }}</q-item-section>
           </q-item>
+
           <q-item>
             <q-item-section>
-              <q-select class="langSelect" v-model="locale" @update:model-value="handleChangeInterfaceLang"
-                :options="languageOptions" :label="t('language')" borderless emit-value map-options
-                style="width: 100px;" padding="none" />
+              <q-select v-model="locale" @update:model-value="handleChangeInterfaceLang" :options="languageOptions"
+                :label="t('language')" borderless emit-value map-options padding="none" />
             </q-item-section>
           </q-item>
-        </q-list>
-        <q-list padding v-if="users.token">
-          <q-item class="custom-item" v-for="(item, index) in drawerItems" :key="index" clickable v-ripple
+
+          <!-- Dynamic Items (Visible only if user is logged in) -->
+          <q-item v-for="(item, index) in filteredDrawerItems" :key="index" clickable v-ripple
             @click="handleAction(item)">
             <q-item-section avatar>
               <q-icon :name="item.icon" />
             </q-item-section>
             <q-item-section>
-              <q-item-label class="custom-label">{{ t(item.label) }}</q-item-label>
+              <q-item-label>{{ t(item.label) }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -41,7 +42,7 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from 'src/stores/user';
@@ -71,6 +72,9 @@ const drawerItems = [
   // { label: 'setting', route: '/me/setting', icon: 'settings' },
   { label: 'logout', route: '', icon: 'logout', action: handleLogout },
 ];
+const filteredDrawerItems = computed(() => {
+  return users.token ? drawerItems : [];
+});
 
 async function handleLogout() {
   try {
@@ -107,10 +111,3 @@ async function handleChangeInterfaceLang(value) {
   }
 }
 </script>
-
-<style lang="sass" scoped>
-.langSelect
-  width: 120px
-  &:deep() *
-    // color: white (uncomment if needed)
-</style>
