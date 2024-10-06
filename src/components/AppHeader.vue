@@ -1,34 +1,25 @@
 <!-- 最上面那條(不含註冊框) -->
 <template>
-  <q-header elevated class="bg-primary text-white app-header">
+  <q-header elevated class="bg-primary text-white">
     <q-toolbar>
-      <q-no-ssr>
-        <q-btn v-if="users.token" padding="none" flat dense round icon="menu" aria-label="Menu" @click="toggleDrawer"
-          style />
-        <div class="logo-container" v-if="!$q.platform.is.mobile">
-          <router-link to="/">
-            <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png" alt="Logo"></router-link>
+      <q-btn padding="none" flat dense round icon="menu" aria-label="Menu" @click="toggleDrawer" />
+      <div class="logo-container" v-if="!$q.platform.is.mobile">
+        <router-link to="/">
+          <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png" alt="Logo" />
+        </router-link>
+      </div>
+      <q-btn to="/" :label="t('petFinder')" color="primary" unelevated no-caps size="lg" class="title-button" />
+      <router-link to="/" class="logo-link flex items-center q-ml-sm">
+        <!-- Logo is hidden on small screens (below 'md') -->
+        <div class="logo-container q-hidden-xs q-hidden-sm">
+          <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png" alt="Logo" />
         </div>
-      </q-no-ssr>
-      <q-toolbar-title style="padding:0"><q-btn to="/" :label="t('petFinder')" color="primary" unelevated no-caps
-          size="lg" /></q-toolbar-title>
+        <span class="title-text q-ml-sm">{{ t('petFinder') }}</span>
+      </router-link>
+
+      <q-space />
 
       <q-no-ssr>
-        <q-btn-dropdown padding="none" dense flat icon="menu" v-model="optionsDropdown" hide-dropdown-icon>
-          <q-list>
-            <q-item clickable v-close-popup @click="aboutUsOpen = true">
-              <q-item-section>{{ t('aboutUs') }}</q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section>
-                <q-select class="langSelect" v-model="locale" @update:model-value="handleChangeInterfaceLang"
-                  :options="languageOptions" :label="t('language')" borderless emit-value map-options
-                  style="width:100px" padding="none" />
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-
         <q-btn-dropdown v-if="!users.token" class="login" padding="none" dense flat :label='t("login")'
           v-model="users.loginDisplayState" hide-dropdown-icon>
           <div class="row no-wrap q-pa-md">
@@ -58,7 +49,6 @@
       </q-no-ssr>
     </q-toolbar>
   </q-header>
-  <AboutUsDialog v-model="aboutUsOpen"></AboutUsDialog>
   <registerDialog @register-success="onRegisterSuccess"></registerDialog>
 </template>
 
@@ -71,8 +61,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { login } from '../services/user.js';
 import registerDialog from 'src/components/AppHeaderRegisterDialog.vue'
-import AboutUsDialog from 'src/components/AboutUsDialog.vue'
-import { languageOptions } from 'src/infrastructure/configs/languageOptions.js'
 import { normalCookieOptions } from 'src/utils/getCookieOption.js'
 import an_validator from 'an-validator';
 const { rules, createI18nRules } = an_validator
@@ -83,11 +71,9 @@ const $q = useQuasar()
 
 
 const users = useUserStore()
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
 //
 const isPwd = ref(true)
-const aboutUsOpen = ref(false)
-const optionsDropdown = ref(false)
 const registerState = ref(false)
 const emit = defineEmits(['toggle-left-drawer']);
 
@@ -100,17 +86,6 @@ function onRegisterSuccess() {
   registerState.value = false
 }
 
-// 不用notify 因為即使出錯就算了
-
-async function handleChangeInterfaceLang(value) {
-  try {
-    $q.cookies.set('interfaceLanguage', value, normalCookieOptions)
-  } catch (error) {
-    console.log(error)
-  } finally {
-    users.interfaceLanguage = value
-  }
-}
 
 // ****************登陸****
 const loginForm = reactive({ account: "", password: "" })
@@ -162,12 +137,6 @@ provide("registerState", registerState)
 </script>
 
 <style lang=sass scoped>
-.app-header
-  display: flex
-  justify-content: space-between
-  align-items: center
-  padding: 5px
-
 .logo-container img
   height: 2rem
 
