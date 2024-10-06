@@ -1,12 +1,12 @@
 <template>
   <q-layout view="hHh lpR fff" style="max-height: 100vh; display: flex;">
     <AppHeader @toggle-left-drawer="toggleLeftDrawer" />
-    <q-drawer v-model="leftDrawer" side="left" :overlay="leftDrawerOverlay" persistent bordered elevated
-      :breakpoint="768" style="height: 100%; display: flex; flex-direction: column;">
+    <q-drawer v-model="leftDrawer" side="left" :overlay="leftDrawerOverlay" bordered elevated :breakpoint="768"
+      style="height: 100%; display: flex; flex-direction: column;">
       <q-scroll-area class="fit">
         <q-list>
           <!-- Static Items (Visible for all users) -->
-          <q-item clickable v-close-popup @click="aboutUsOpen = true">
+          <q-item clickable v-close-popup @click="openAboutUs">
             <q-item-section>{{ t('aboutUs') }}</q-item-section>
           </q-item>
 
@@ -64,6 +64,11 @@ const toggleLeftDrawer = () => {
   leftDrawer.value = !leftDrawer.value;
 };
 
+const openAboutUs = () => {
+  aboutUsOpen.value = true;
+  leftDrawer.value = false;
+};
+
 const router = useRouter();
 
 const drawerItems = [
@@ -97,8 +102,6 @@ const handleAction = (item) => {
   }
 };
 
-// Variables and methods for the moved dropdown
-const optionsDropdown = ref(false);
 const aboutUsOpen = ref(false);
 
 async function handleChangeInterfaceLang(value) {
@@ -108,6 +111,7 @@ async function handleChangeInterfaceLang(value) {
     console.log(error);
   } finally {
     users.interfaceLanguage = value;
+    leftDrawer.value = false; // Close the drawer
   }
 }
 </script>

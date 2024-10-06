@@ -319,6 +319,7 @@ function clearMarkerById(id) {
   position: absolute
   bottom: 20px
   right: 20px
+  z-index: 1000
 
 .locate-button
   position: absolute
