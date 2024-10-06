@@ -4,12 +4,11 @@
       <q-no-ssr style="flex-grow: 1;">
         <div id="map"></div>
       </q-no-ssr>
-      <q-btn @click="locateHere" :label="t('locateHere')"
-        style="align-self: center; margin-top: 10px; flex-shrink: 0;" />
     </div>
 
     <q-fab class="fab-bottom-right" color="primary" icon="menu" direction="up" vertical-actions-transition>
       <q-fab-action icon="add" @click="navigateToAddArticle" :label="t('addArticle')" class="bg-white text-primary" />
+      <q-fab-action icon="my_location" @click="locateHere" :label="t('locateHere')" class="bg-white text-primary" />
       <q-fab-action icon="filter_list" @click="toggleFilterDialog" :label="t('filter')" class="bg-white text-primary" />
     </q-fab>
 
