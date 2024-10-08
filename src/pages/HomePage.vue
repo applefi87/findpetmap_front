@@ -1,6 +1,6 @@
 <template>
   <q-page style="height: 100%; display: flex;flex-direction: column;">
-    <div style="display: flex; flex-direction: column; height: 100%; " class="map-area q-gutter-y-sm">
+    <div style="display: flex; flex-direction: column; height: 100%; " class="map-area">
       <q-no-ssr style="flex-grow: 1;">
         <div id="map"></div>
       </q-no-ssr>
@@ -11,11 +11,6 @@
       <q-fab-action icon="my_location" @click="locateHere" :label="t('locateHere')" class="bg-white text-primary" />
       <q-fab-action icon="filter_list" @click="toggleFilterDialog" :label="t('filter')" class="bg-white text-primary" />
     </q-fab>
-
-    <div class="filter-area q-pa-md">
-      <LazyArticleFilter :isDialogOpen="isFilterDialogOpen" @update:isDialogOpen="isFilterDialogOpen = $event"
-        @updateFilter="handleUpdateFilter" />
-    </div>
     <LazyArticleDialog v-if="articleId" :articleId="articleId" :isDialogVisible="isDialogVisible"
       @update:isDialogVisible="isDialogVisible = $event" @articleDeleted="articleDeleted"
       @updateArticleList="updateArticleList" @backPage="handleBackButton" />
@@ -300,15 +295,6 @@ function clearMarkerById(id) {
   width: 80px !important
   height: 80px !important
   border-radius: 40px !important
-
-.filter-area
-  height: 50px
-  /* Minimize the size of the button */
-  flex-shrink: 0
-  /* Prevents it from shrinking further */
-  display: flex
-  justify-content: center
-  align-items: center
 
 .map-area
   position: relative

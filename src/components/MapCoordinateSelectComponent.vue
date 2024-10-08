@@ -3,18 +3,17 @@
     <q-btn @click="toggleMap" :label="isMapOpen ? t('closeMap') : t('openMap')" class="q-mb-md" />
 
     <q-dialog v-model="isMapOpen" @show="initializeMap" @hide="destroyMap">
-      <q-card style="width: 80%">
-        <q-card-section>
-          <div style="position: relative;">
+      <q-card style="width: 80%; height: 95vh;max-height: 95vh; display: flex; flex-direction: column;">
+        <q-card-section style="flex-grow: 1;">
+          <div style="position: relative; height: 100%;">
             <q-btn @click="closeMap" :label="t('close')" class="absolute-top-right q-mr-md q-mt-md" flat round
               icon="close" />
-            <br />
-            <div id="mapSelect" style="height: 80vh; width: 100%; margin: 0 auto;"></div>
+            <div id="mapSelect" style="height: 100%; width: 100%;"></div>
           </div>
         </q-card-section>
         <q-card-actions align="center">
           <q-btn @click="locateHere" :label="t('locateHere')" />
-          <q-btn @click="setCoordinates" :label="t('setCoordinates')" class="q-mt-md" />
+          <q-btn @click="setCoordinates" :label="t('setCoordinates')" />
         </q-card-actions>
       </q-card>
     </q-dialog>
