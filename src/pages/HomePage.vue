@@ -6,11 +6,17 @@
       </q-no-ssr>
     </div>
 
-    <q-fab class="fab-bottom-right" color="primary" icon="menu" direction="up" vertical-actions-transition>
-      <q-fab-action icon="add" @click="navigateToAddArticle" :label="t('addArticle')" class="bg-white text-primary" />
-      <q-fab-action icon="my_location" @click="locateHere" :label="t('locateHere')" class="bg-white text-primary" />
-      <q-fab-action icon="filter_list" @click="toggleFilterDialog" :label="t('filter')" class="bg-white text-primary" />
+    <q-fab class="fab-bottom-right" color="primary" icon="menu" direction="up" vertical-actions-transition
+      vertical-actions-align="right">
+      <q-fab-action icon="add" @click="navigateToAddArticle" :label="t('addArticle')" class="bg-white text-primary"
+        label-position="left" />
+      <q-fab-action icon="my_location" @click="locateHere" :label="t('locateHere')" class="bg-white text-primary"
+        label-position="left" />
+      <q-fab-action icon="filter_list" @click="toggleFilterDialog" :label="t('filter')" class="bg-white text-primary"
+        label-position="left" />
     </q-fab>
+    <LazyArticleFilter :isDialogOpen="isFilterDialogOpen" @update:isDialogOpen="isFilterDialogOpen = $event"
+      @updateFilter="handleUpdateFilter" />
     <LazyArticleDialog v-if="articleId" :articleId="articleId" :isDialogVisible="isDialogVisible"
       @update:isDialogVisible="isDialogVisible = $event" @articleDeleted="articleDeleted"
       @updateArticleList="updateArticleList" @backPage="handleBackButton" />
@@ -303,8 +309,8 @@ function clearMarkerById(id) {
 
 .fab-bottom-right
   position: absolute
-  bottom: 20px
-  right: 20px
+  bottom: 10px
+  right: 10px
   z-index: 1000
 
 .locate-button
