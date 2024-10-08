@@ -35,7 +35,7 @@
               <q-input filled v-model="registerForm.verificationCode" :label='t("verificationCode")'
                 :rules="createI18nRules(rules.createRules, t, 'number', true, 8)" ref="mailCodeValid">
                 <template v-slot:before>
-                  {{ identifierDisplay }}
+                  {{ identifier }}
                 </template>
               </q-input>
             </q-card-section>
@@ -137,17 +137,16 @@ const registerForm = reactive({
     others: ''
   }
 });
-const identifier = computed(() => t('identifier'))
-const identifierDisplay = ref(identifier.value)
+const newIdentifier = ref(null)
+const identifier = computed(() => newIdentifier.value ? newIdentifier.value : t('identifier'))
 
 const sendMail = async () => {
   try {
     if (!emailFormatValid.value.validate()) return;
     mailSending.value = true;
     const rep = await sendRegisterVerificationCode(registerForm.email, mustSchool, users.interfaceLanguage);
+    newIdentifier.value = rep.data.batchId
     await notify(rep);
-    // console.log(rep.data.batchId);
-    identifierDisplay.value = rep.data.batchId
   } catch (error) {
     await notify(error);
   } finally {

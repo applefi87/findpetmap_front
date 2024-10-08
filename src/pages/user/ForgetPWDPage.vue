@@ -38,7 +38,7 @@
 // 忘記密碼:
 // 確認有申請>臨時code也有hash過>提供新密碼>自己重設
 
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useUserStore } from 'src/stores/user'
 import { useI18n } from 'vue-i18n'
 import notify from 'src/utils/notify'
@@ -57,14 +57,15 @@ const mailSending = ref(false)
 
 // ***********rule val區******************************
 
-const identifier = ref(t('identifier'))
+const newIdentifier = ref(null)
+const identifier = computed(() => newIdentifier.value ? newIdentifier.value : t('identifier'))
 const handleSendForgetPWDCode = async () => {
   try {
     if (!(emailFormatValid.value.validate() && accountFormatValid.value.validate())) return
     mailSending.value = true
     const res = await sendForgetPWDCode(form, users.interfaceLanguage)
     if (res.success) {
-      identifier.value = res.data.batchId
+      newIdentifier.value = res.data.batchId
       await notify(res)
     }
   } catch (error) {
