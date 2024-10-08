@@ -7,11 +7,18 @@
         <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green">
           <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
             <q-card-section style="font-size:1rem;font-weight:700">
-              {{ t("registerWellCome_1") }}<br />
-              {{ t("registerWellCome_2") }}<br /><br />
-              <div class="text-h">{{ t("registerWellCome_3") }}</div>
+              <div class="text-h5">
+                <b>{{ t("registerWellCome_1") }}</b>
+              </div>
               <br />
-              <div class="text-h">{{ t("registerWellCome_4") }}</div>
+              {{ t("registerWellCome_2") }}<br /><br />
+              <div class="text-h">
+                {{ t("registerWellCome_3") }}
+              </div>
+              <br />
+              <div class="text-h">
+                {{ t("registerWellCome_4") }}
+              </div>
             </q-card-section>
           </q-step>
           <!--  -->
@@ -46,6 +53,8 @@
                 </template></q-input>
               <q-input filled v-model="registerForm.nickname" :label='t("nickname")' :rules="nicknameValChange"
                 ref=nicknameValid />
+              <hr />
+              <div class="text-h6">{{ t("basicInfoRegister") }}</div>
               <q-input v-model="registerForm.info.name" filled type="text" :label="t('userName')"
                 :rules="createI18nRules(rules.createLengthBetweenRule, t, nameMinLength, nameMaxLength)" />
               <q-input v-model="registerForm.info.phone" filled type="text" :label="t('userPhone')"
