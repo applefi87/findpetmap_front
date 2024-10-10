@@ -1,8 +1,8 @@
 <!-- 文章詳情的外框，當用網址導向文章就會長這樣 -->
 <template>
-  <q-page class="q-pa-md">
+  <q-page class="q-pa-xs">
     <q-toolbar>
-      <q-btn flat icon="arrow_back" round @click="goBack" />
+      <q-btn flat icon="arrow_back" :label="t('back')" round @click="goBack" />
     </q-toolbar>
     <articleDetail :articleId="articleId" v-if="articleId" @backPage="goBack" @articleDeleted="articleDeleted" />
   </q-page>
@@ -11,6 +11,9 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import articleDetail from '../../components/ArticleDetail.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const route = useRoute()
 const router = useRouter()
