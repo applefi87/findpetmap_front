@@ -41,7 +41,7 @@
             </q-card-section>
           </q-step>
           <!--  -->
-          <q-step :name="3" :title="t('basicinfo')" icon="settings" :done="step > 3">
+          <q-step :name="3" :title="t('basicInfo')" icon="settings" :done="step > 3">
             <q-card-section class="q-pt-none">
               <q-input filled v-model="registerForm.account" autocomplete="new-account" :label='t("account")'
                 :rules="accountValChange" ref=accountValid />
