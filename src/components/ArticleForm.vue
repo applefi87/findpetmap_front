@@ -60,7 +60,8 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy ref="datePickerRef" cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="articleForm.lostDate" @update:model-value="() => { datePickerRef.hide() }">
+                  <q-date v-model="articleForm.lostDate" :options="dateOptions"
+                    @update:model-value="() => { datePickerRef.hide() }">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup :label="t('close')" color="primary" flat />
                     </div>
@@ -149,6 +150,10 @@ const onFileRejected = async (rejectedEntries) => {
 }
 
 const datePickerRef = ref(null)
+const dateOptions = (date) => {
+  return new Date(date) <= new Date();
+}
+
 const uploaderRef = ref(null)
 const updateRewardAmount = (value) => {
   if (!value) {
