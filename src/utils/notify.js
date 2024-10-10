@@ -5,7 +5,7 @@ import { Notify } from 'quasar'
 export default (rep) => {
   let title = ''
   let text = ''
-  let duration = 3000
+  let duration = 1000
   let position = 'center'
   let type = 'positive'
 

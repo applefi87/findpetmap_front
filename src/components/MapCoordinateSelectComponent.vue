@@ -3,7 +3,7 @@
     <q-btn @click="toggleMap" :label="isMapOpen ? t('closeMap') : t('openMap')" class="q-mb-md" />
 
     <q-dialog v-model="isMapOpen" @show="initializeMap" @hide="destroyMap">
-      <q-card style="width: 80%; height: 95vh;max-height: 95vh; display: flex; flex-direction: column;">
+      <q-card style="width: 80%; height: 95vh; max-height: 95vh; display: flex; flex-direction: column;">
         <q-card-section style="flex-grow: 1;">
           <div style="position: relative; height: 100%;">
             <q-btn @click="closeMap" :label="t('close')" class="absolute-top-right q-mr-md q-mt-md" flat round
@@ -29,11 +29,10 @@
 import { ref, nextTick, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import an_validator from 'an-validator';
-const { rules, createI18nRules } = an_validator
+const { rules, createI18nRules } = an_validator;
 
 const { t } = useI18n({ useScope: 'global' });
 
-// Props and emit for v-model
 const props = defineProps({
   modelValue: {
     type: String,
@@ -43,7 +42,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-
 const internalCoordinates = ref(function () {
   try {
     return props.modelValue ? JSON.parse(props.modelValue) : null;
@@ -51,8 +49,8 @@ const internalCoordinates = ref(function () {
     return null;
   }
 }());
-const internalCoordinatesString = ref(internalCoordinates.value?.join(','));
 
+const internalCoordinatesString = ref(internalCoordinates.value?.join(',') || '');
 
 const centerMarker = ref(null);
 const isMapOpen = ref(false);
@@ -67,8 +65,7 @@ const closeMap = () => {
 
 let map;
 const initializeMap = async () => {
-
-  await nextTick(); // Ensure the DOM is updated
+  await nextTick();
   if (!map) {
     const leafletJs = document.createElement('script');
     leafletJs.src = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js';
@@ -82,43 +79,38 @@ const initializeMap = async () => {
       }).addTo(map);
 
       if (!internalCoordinates.value) {
-        map.on("locationfound", (e) => {
+        map.on('locationfound', (e) => {
           if (!internalCoordinates.value) {
-            map.setView(e.latlng, e.accuracy / 2)
+            map.setView(e.latlng, e.accuracy / 2);
           }
-        })
+        });
         getCurrentPosition();
       }
-      map.on('moveend', handleMapDrag);
 
-      centerMarker.value = L.marker(map.getCenter(), { draggable: false }).addTo(map);
-      let isUpdatingMarker = false;
-      map.on('move', (event) => {
-        if (!isUpdatingMarker) {
-          isUpdatingMarker = true;
-          centerMarker.value.setLatLng(event.target.getCenter());
-          isUpdatingMarker = false;
-        }
-      });
-    }
+      // Add click event listener to the map
+      map.on('click', handleMapClick);
+
+      // If there are existing coordinates, place a marker
+      if (internalCoordinates.value) {
+        centerMarker.value = L.marker(internalCoordinates.value, { draggable: false }).addTo(map);
+      }
+    };
     const leafletCss = document.createElement('link');
     leafletCss.rel = 'stylesheet';
     leafletCss.href = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css';
     document.head.appendChild(leafletCss);
     document.body.appendChild(leafletJs);
-
-  }
-  else {
-    map.invalidateSize(); // Recalculate map size
-    map.setView(map.getCenter(), map.getZoom()); // Re-center the map
+  } else {
+    map.invalidateSize();
+    map.setView(map.getCenter(), map.getZoom());
   }
 };
 
 const destroyMap = () => {
   if (map) {
-    map.off('moveend', handleMapDrag);
-    map.remove(); // Remove map instance
-    map = null; // Clean up the map object
+    map.off('click', handleMapClick);
+    map.remove();
+    map = null;
   }
 };
 
@@ -127,45 +119,49 @@ const locateHere = () => {
 };
 
 const setCoordinates = () => {
-  internalCoordinates.value = [parseFloat(map.getCenter().lat.toFixed(8)), parseFloat(map.getCenter().lng.toFixed(8))];
-  // console.log("setCoordinates:", internalCoordinates.value);
-  // console.log("setCoordinates type:", typeof internalCoordinates.value);
-  // const result = JSON.stringify(internalCoordinates.value)
-  // console.log("setCoordinates result:", result);
-  // console.log("setCoordinates type:", typeof result);
-  emit('update:modelValue', JSON.stringify(internalCoordinates.value));
-  internalCoordinatesString.value = internalCoordinates.value.join(',');
+  if (centerMarker.value) {
+    const latlng = centerMarker.value.getLatLng();
+    internalCoordinates.value = [parseFloat(latlng.lat.toFixed(8)), parseFloat(latlng.lng.toFixed(8))];
+    emit('update:modelValue', JSON.stringify(internalCoordinates.value));
+    internalCoordinatesString.value = internalCoordinates.value.join(',');
+  }
   closeMap();
 };
 
 const getCurrentPosition = () => {
-  if ("geolocation" in navigator) {
+  if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(getCurrentPositionSuccessHandler, () => { }, {
       enableHighAccuracy: true,
       timeout: 5000,
       maximumAge: 0,
     });
   } else {
-    alert("Your device or browser does not support geolocation.");
+    alert('Your device or browser does not support geolocation.');
   }
 };
 
 onBeforeUnmount(() => {
-  destroyMap(); // Ensure map is destroyed when the component unmounts
+  destroyMap();
 });
 
 function getCurrentPositionSuccessHandler(newPosition) {
   const { latitude, longitude } = newPosition.coords;
   if (map) {
     map.setView([latitude, longitude], 13);
-    centerMarker.value.setLatLng([latitude, longitude]);
+    if (centerMarker.value) {
+      centerMarker.value.setLatLng([latitude, longitude]);
+    } else {
+      centerMarker.value = L.marker([latitude, longitude], { draggable: false }).addTo(map);
+    }
   }
 }
 
-function handleMapDrag() {
+function handleMapClick(e) {
+  const { latlng } = e;
   if (centerMarker.value) {
-    centerMarker.value.setLatLng(map.getCenter());
+    centerMarker.value.setLatLng(latlng);
+  } else {
+    centerMarker.value = L.marker(latlng, { draggable: false }).addTo(map);
   }
 }
-
 </script>
