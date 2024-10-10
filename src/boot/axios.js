@@ -49,7 +49,7 @@ async function handleApiAuthError(error) {
   } else if (response.status === 401) {
     const users = useUserStore();
     users.clearLocalStorageAndCookie()
-    await notify({ success: false, message: { title: "loginExpired" } })
+    await notify({ success: false, message: { title: t("loginExpired") } })
     // 透過這裡通知登入過期的，用下面方法避免丟error觸發其他頁面的自動notify error
     return { success: false }
   }
