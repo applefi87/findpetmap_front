@@ -5,7 +5,7 @@
       <ArticleListWithSearch />
     </q-no-ssr>
     <!-- Add article button -->
-    <q-btn class="q-my-md circle-float" color="primary" fab round floating icon="add" to="/article/add" />
+    <q-btn class="q-my-md circle-float" color="primary" fab round floating icon="add" to="/article/create" />
   </q-page>
 </template>
 

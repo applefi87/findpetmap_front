@@ -3,6 +3,9 @@
   <div style="width:80%; margin:auto; padding: 20px">
     <ArticleItem v-for="( article, index ) in articleList " :key="index" :article="article"
       @openArticleDetail="openArticleDetail" :url=generateArticleUrl(article._id) />
+    <div v-if="articleList.length === 0" class="no-article q-pa-md text-center text-grey-7">
+      {{ t('noAnyArticle') }}
+    </div>
   </div>
   <ArticleDialog v-if="articleId" :articleId="articleId" :isDialogVisible="isDialogVisible"
     @update:isDialogVisible="isDialogVisible = $event" @articleDeleted="articleDeleted"
