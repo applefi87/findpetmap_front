@@ -10,7 +10,7 @@
             <span class="text-h6">{{ t("mapIconPreview") }}</span>
           </div>
           <div v-for="image in images.filter(i => i.isPreview)" :key="image.previewUrl" class="center-circle q-mx-sm">
-            <q-img :src="image.previewUrl" class="circle-image" />
+            <q-img :src="image.previewUrl" class="marker-image" />
           </div>
         </div>
         <div class="q-mt-md">
@@ -247,12 +247,11 @@ onMounted(() => {
   margin: auto
 
 
-.circle-image
-  width: 100%
-  height: 100%
-  border-radius: 50%
-  object-fit: cover
-  border: 2px solid #ccc /* Optional: add border to the circle */
+.marker-image
+  width: 80px !important
+  height: 80px !important
+  border-radius: 40px !important
+  border: 2px solid white
 
 
 .image-item

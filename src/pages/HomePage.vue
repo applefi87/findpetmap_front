@@ -124,7 +124,7 @@ onMounted(() => {
         nextTick(() => {
           map = L.map('map').setView([25.0474014, 121.5374556], 13);
           L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 17,
+            maxZoom: 18,
             minZoom: 13,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           }).addTo(map);
@@ -301,6 +301,7 @@ function clearMarkerById(id) {
   width: 80px !important
   height: 80px !important
   border-radius: 40px !important
+  border: 2px solid white
 
 .map-area
   position: relative
