@@ -27,6 +27,7 @@
 import { ref, onMounted, onBeforeUnmount, nextTick, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar';
 import { useUserStore } from 'src/stores/user'
 import * as  articleService from 'src/services/articleService.js';
 
@@ -36,6 +37,7 @@ const LazyArticleDialog = defineAsyncComponent(() =>
 const LazyArticleFilter = defineAsyncComponent(() => import('components/ArticleFilter.vue'));
 
 const { t } = useI18n({ useScope: 'global' });
+const $q = useQuasar();
 const users = useUserStore()
 const router = useRouter();
 
@@ -122,10 +124,14 @@ onMounted(() => {
       leafletJs.onload = () => {
         const L = window.L;
         nextTick(() => {
+          let minZoom = 13; // Default zoom level
+          if ($q.screen.lt.md) {
+            minZoom = 11; // Smaller zoom level for small screens
+          }
           map = L.map('map').setView([25.0474014, 121.5374556], 13);
           L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
-            minZoom: 13,
+            minZoom: minZoom,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           }).addTo(map);
 
