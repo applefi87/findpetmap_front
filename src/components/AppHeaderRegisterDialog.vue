@@ -4,7 +4,8 @@
   <q-dialog persistent v-model="registerState">
     <div class="trttt">
       <q-form class="q-gutter-md" @submit.prevent="handleRegister()">
-        <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green">
+        <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green"
+          style="width:100%">
           <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
             <q-card-section style="font-size:1rem;font-weight:700">
               <div class="text-h5">
@@ -46,11 +47,13 @@
               <q-input filled v-model="registerForm.account" autocomplete="new-account" :label='t("account")'
                 :rules="accountValChange" ref=accountValid />
               <q-input filled v-model="registerForm.password" autocomplete="new-password" :label='t("password")'
-                :type="isPwd ? 'password' : 'text'" ref=passwordValid
-                :rules="createI18nRules(rules.createPasswordRules, t, 'basic', false)"><template v-slot:append>
+                :type="isPwd ? 'password' : 'text'" ref="passwordValid"
+                :rules="createI18nRules(rules.createPasswordRules, t, 'basic', false)">
+                <template v-slot:append>
                   <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                     @click="isPwd = !isPwd" />
-                </template></q-input>
+                </template>
+              </q-input>
               <q-input filled v-model="registerForm.nickname" :label='t("nickname")' :rules="nicknameValChange"
                 ref=nicknameValid />
               <hr />
