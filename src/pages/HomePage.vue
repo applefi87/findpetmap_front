@@ -7,7 +7,7 @@
     </div>
 
     <q-fab class="fab-bottom-right" color="primary" icon="menu" direction="up" vertical-actions-transition
-      vertical-actions-align="right">
+      vertical-actions-align="right" ref="fab">
       <q-fab-action icon="add" @click="navigateToAddArticle" :label="t('addArticle')" class="bg-white text-primary"
         label-position="left" />
       <q-fab-action icon="my_location" @click="locateHere" :label="t('locateHere')" class="bg-white text-primary"
@@ -40,6 +40,8 @@ const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const users = useUserStore()
 const router = useRouter();
+
+const fab = ref(null)
 
 const isFilterDialogOpen = ref(false);
 const filter = ref({});
@@ -101,6 +103,7 @@ function clearAllMarkers() {
   Object.keys(markerList).forEach(key => delete markerList[key]);
 }
 onMounted(() => {
+  fab.value.show()
   const isServerSide = process.env.SERVER
   if (!isServerSide) {
 
