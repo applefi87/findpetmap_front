@@ -5,7 +5,7 @@
     <div class="trttt">
       <q-form class="q-gutter-md" @submit.prevent="handleRegister()">
         <q-stepper v-model="step" ref="stepper" color="primary" animated class="aaa" done-color="green"
-          style="width:100%">
+          style="width:100%; margin:0">
           <q-step :name="1" :title='t("register")' icon="regidter" :done="step > 1">
             <q-card-section style="font-size:1rem;font-weight:700">
               <div class="text-h5">

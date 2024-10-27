@@ -1,6 +1,12 @@
 <template>
-  <q-page style="height: 100%; display: flex;flex-direction: column;">
-    <div style="display: flex; flex-direction: column; height: 100%; " class="map-area">
+  <q-page style="height: 100%; display: flex; flex-direction: column;">
+    <!-- Title Area with Custom Class -->
+    <div class="page-title">
+      {{ t('postArticle') }}
+    </div>
+
+    <!-- Map Area -->
+    <div style="display: flex; flex-direction: column; flex-grow: 1;" class="map-area">
       <q-no-ssr style="flex-grow: 1;">
         <div id="map"></div>
       </q-no-ssr>
@@ -294,6 +300,16 @@ function clearMarkerById(id) {
 }
 </script>
 <style lang=sass>
+.page-title
+  padding: 10px
+  text-align: center
+  font-size: 30px
+  font-weight: 600
+  background-color: #48cdcd
+  color: #eee
+  border-radius: 8px
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1)
+
 .circle-float
   position: fixed
   bottom: 20px

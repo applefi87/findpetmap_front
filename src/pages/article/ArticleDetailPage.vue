@@ -4,7 +4,8 @@
     <q-toolbar>
       <q-btn flat icon="arrow_back" :label="t('back')" round @click="goBack" />
     </q-toolbar>
-    <articleDetail :articleId="articleId" v-if="articleId" @backPage="goBack" @articleDeleted="articleDeleted" />
+    <articleDetail :articleId="articleId" v-if="articleId" @backPage="goBack" @articleDeleted="articleDeleted"
+      style="margin:auto" />
   </q-page>
 </template>
 
