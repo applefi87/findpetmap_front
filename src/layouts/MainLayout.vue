@@ -1,8 +1,8 @@
 <template>
-  <q-layout view="hHh lpR fff" style="max-height: 100vh; display: flex;">
+  <q-layout view="hHh lpR fff" class="bg-surface flex flex-column">
     <AppHeader @toggle-left-drawer="toggleLeftDrawer" />
-    <q-drawer v-model="leftDrawer" side="left" :overlay="leftDrawerOverlay" bordered elevated :breakpoint="768"
-      style="height: 100%; display: flex; flex-direction: column;">
+    <q-drawer v-model="leftDrawer" side="left" :overlay="leftDrawerOverlay" bordered :breakpoint="768"
+      class="bg-surface-2 elev-1 rounded-r-lg flex flex-column">
       <q-scroll-area class="fit">
         <q-list>
           <!-- Static Items (Visible for all users) -->

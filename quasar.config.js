@@ -22,6 +22,7 @@ export default configure((ctx) => {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: [
+      'tokens.css',
       'app.scss'
     ],
 
@@ -127,6 +128,14 @@ export default configure((ctx) => {
       // Quasar plugins
       plugins: ['Notify', 'Loading', 'Meta', 'Cookies'],
       config: {
+        brand: {
+          primary: 'var(--color-primary)',
+          secondary: 'var(--color-secondary)',
+          positive: 'var(--color-success)',
+          negative: 'var(--color-negative)',
+          warning: 'var(--color-warning)',
+          info: 'var(--color-info)'
+        },
         notify: { /* look at QuasarConfOptions from the API card */ },
         loading: { /* look at QuasarConfOptions from the API card */ }
       }

@@ -1,11 +1,16 @@
 <!-- 文章詳情的外框，當用網址導向文章就會長這樣 -->
 <template>
-  <q-page class="q-pa-xs">
-    <q-toolbar>
-      <q-btn flat icon="arrow_back" :label="t('back')" round @click="goBack" />
+  <q-page class="q-pa-md bg-surface">
+    <q-toolbar class="bg-primary text-white elev-2 rounded-b-lg q-pl-md q-pr-md">
+      <q-btn flat round icon="arrow_back" class="text-white" :label="t('back')" @click="goBack" />
     </q-toolbar>
-    <articleDetail :articleId="articleId" v-if="articleId" @backPage="goBack" @articleDeleted="articleDeleted"
-      style="margin:auto" />
+    <articleDetail
+      :articleId="articleId"
+      v-if="articleId"
+      @backPage="goBack"
+      @articleDeleted="articleDeleted"
+      class="rounded-lg elev-2 bg-surface q-pa-md"
+    />
   </q-page>
 </template>
 
@@ -36,38 +41,5 @@ const articleDeleted = (id) => {
 
 </script>
 
-<style lang='sass' scoped>
-.q-page
-  display: flex
-  flex-direction: column
-  align-items: center
-
-.q-form
-  margin: 20px
-  max-width: 600px
-
-.q-input__label
-  font-size: 16px
-  font-weight: 500
-  color: #424242
-
-.q-input__underline:before
-  border-color: #424242
-
-.q-input__underline:after
-  border-color: #5e5e5e
-
-.q-input__details
-  color: #5e5e5e
-  font-size: 14px
-
-.q-card
-  max-width: 600px
-  margin-top: 20px
-
-.markdown-preview
-  padding: 20px
-
-.q-btn
-  margin-top: 20px
+<style scoped>
 </style>

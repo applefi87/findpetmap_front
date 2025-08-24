@@ -1,0 +1,132 @@
+/* Design Tokens */
+:root {
+  /* Amber palette */
+  --amber-50:   #fff8e1;
+  --amber-100:  #ffecb3;
+  --amber-200:  #ffe082;
+  --amber-300:  #ffd54f;
+  --amber-400:  #ffca28;
+  --amber-500:  #FF9821;
+  --amber-600:  #ffb300;
+  --amber-700:  #ffa000;
+  --amber-800:  #ff8f00;
+  --amber-900:  #ff6f00;
+
+  /* Neutral / Slate */
+  --neutral-50:  #f8fafc;
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1f2937;
+  --neutral-900: #0f172a;
+
+  /* Semantic colors */
+  --success-500: #22c55e;
+  --warning-500: #f59e0b;
+  --error-500:   #ef4444;
+  --info-500:    #3b82f6;
+
+  /* Light theme mapping */
+  --color-primary:        var(--amber-500);
+  --color-primary-hover:  var(--amber-600);
+  --color-primary-press:  var(--amber-700);
+
+  --color-bg:             #ffffff;
+  --color-surface:        #0d1428;
+  --color-surface-2:      #f9fafb;
+
+  --color-text:           var(--neutral-800);
+  --color-text-muted:     var(--neutral-600);
+  --color-border:         var(--neutral-200);
+  --color-divider:        var(--neutral-200);
+
+  --focus-ring:           var(--amber-500);
+
+  /* Semantic theme mapping */
+  --color-secondary:      var(--neutral-700);
+  --color-success:        var(--success-500);
+  --color-warning:        var(--warning-500);
+  --color-negative:       var(--error-500);
+  --color-info:           var(--info-500);
+
+  /* Border radius */
+  --radius-xs:   8px;
+  --radius-sm:   12px;
+  --radius-md:   16px;
+  --radius-lg:   20px;
+  --radius-xl:   24px;
+  --radius-full: 999px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Typography */
+  --font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --line-tight:    1.2;
+  --line-normal:   1.45;
+  --line-relaxed:  1.6;
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold:600;
+
+  /* Borders */
+  --border-width: 1px;
+  --focus-width:  2px;
+  --divider-style: solid;
+
+  /* Shadows / Elevation */
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-2: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-3: 0 8px 20px rgba(0,0,0,0.10);
+
+  /* Motion */
+  --ease-standard: cubic-bezier(.2, .0, .2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+
+  /* Breakpoints (hooks only) */
+  --bp-sm: 600px;
+  --bp-md: 1024px;
+  --bp-lg: 1440px;
+}
+
+:root.body--dark,
+:root[data-theme="dark"] {
+  /* Dark theme overrides */
+  --color-primary:        var(--amber-500);
+  --color-primary-hover:  var(--amber-400);
+  --color-primary-press:  var(--amber-300);
+
+  --color-bg:             #0b1220;
+  --color-surface:        #0f172a;
+  --color-surface-2:      #111827;
+
+  --color-text:           #e5e7eb;
+  --color-text-muted:     #9ca3af;
+  --color-border:         #263245;
+  --color-divider:        #1f2937;
+
+  /* Elevation overlays for dark mode */
+  --overlay-1: rgba(255,255,255,0.03);
+  --overlay-2: rgba(255,255,255,0.05);
+  --overlay-3: rgba(255,255,255,0.06);
+
+  --focus-ring:           var(--amber-400);
+}

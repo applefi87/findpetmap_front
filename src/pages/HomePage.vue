@@ -305,8 +305,8 @@ function clearMarkerById(id) {
   text-align: center
   font-size: 30px
   font-weight: 600
-  background-color: #48cdcd
-  color: #eee
+  background-color: #ffc107
+  color: #333
   border-radius: 8px
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1)
 

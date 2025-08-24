@@ -1,9 +1,9 @@
 <!-- 最上面那條(不含註冊框) -->
 <template>
-  <q-header elevated class="bg-primary text-white">
-    <q-toolbar>
-      <q-btn padding="none" flat dense round icon="menu" aria-label="Menu" @click="toggleDrawer" />
-      <router-link to="/" class="logo-link flex items-center q-ml-sm">
+  <q-header elevated class="bg-primary text-white elev-2 rounded-b-lg">
+    <q-toolbar class="items-center q-pl-md q-pr-md">
+      <q-btn padding="none" flat dense round icon="menu" class="text-white" aria-label="Menu" @click="toggleDrawer" />
+      <router-link to="/" class="logo-link flex items-center q-ml-md">
         <!-- Logo is hidden on small screens (below 'md') -->
         <div class="logo-container q-hidden-xs q-hidden-sm">
           <img src="https://img.icons8.com/ios/100/FFFFFF/storytelling.png" alt="Logo" />
@@ -15,7 +15,7 @@
 
       <q-no-ssr>
         <q-btn-dropdown v-if="!users.token" class="login" padding="none" dense flat :label='t("login")'
-          v-model="users.loginDisplayState" hide-dropdown-icon>
+          v-model="users.loginDisplayState" hide-dropdown-icon style="color:#0d1428">
           <div class="row no-wrap q-pa-md">
             <div class="column">
               <q-form @submit.prevent="handleLogin" class="q-gutter-xs loginBox">
@@ -132,7 +132,7 @@ provide("registerState", registerState)
 
 <style lang=sass scoped>
 .logo-container img
-  height: 2rem
+  height: var(--space-6)
 
 .search-container input
   width: 100%
@@ -143,6 +143,7 @@ provide("registerState", registerState)
     // color: white
 
 .title-button
-  font-size: 20px
-  color: white
+  font-size: var(--font-size-xl)
+  font-weight: var(--weight-medium)
+  color: var(--color-surface)
 </style>
